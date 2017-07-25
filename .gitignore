@@ -28,3 +28,5 @@ config/secrets.yml
 /vendor/bundle
 
 .DS_Store
+
+*.swp
