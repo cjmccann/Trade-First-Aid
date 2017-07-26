@@ -12,8 +12,24 @@ class User < ApplicationRecord
       user.username = auth.uid
       # user.email = auth.info.email
       user.password = Devise.friendly_token[0,20]
+      user.token = auth["credentials"]["token"]
+      user.expires_at = auth["credentials"]["expires_at"]
+      user.refresh_token = auth["credentials"]["refresh_token"]
 
       # response = token.get('/fantasy/v2/users;use_login=1/games')
     end
+  end
+
+  def get_oauth_token 
+    token = Yahoo::Token.new(self.token, self.expires_at, self.refresh_token)
+  end
+
+  def refresh_token_if_expired
+
+  end
+
+  def token_expired?
+    expiry = Time.at(self.expires_at)
+    expiry < Time.now ? true : false
   end
 end
