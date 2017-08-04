@@ -1,11 +1,6 @@
 <h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
-<% @leagues.each do |league| %>
-  <h2><%= league.name =%></h2>
-  <ul>
-    <li> <%= league.game_id =%> </li>
-    <li> <%= league.league_id =%> </li>
-    <li> <%= league.code =%> </li>
-    <li> <%= league.manager_id =%> </li>
-  </ul>
+<% if @favorite_team.nil? %>
+  <%= render 'initial_team_import' %>
+<% else %>
+  <%= render @favorite_team %> 
 <% end %>

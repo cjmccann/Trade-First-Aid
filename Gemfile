@@ -59,3 +59,11 @@ gem 'devise'
 gem 'omniauth'
 gem 'oauth2'
 gem 'omniauth-oauth2'
+
+gem 'therubyracer'
+gem 'less-rails'
+gem 'twitter-bootstrap-rails'
+gem 'font-awesome-rails'
+
+gem 'jquery-rails'
+gem 'jquery-ui-rails'

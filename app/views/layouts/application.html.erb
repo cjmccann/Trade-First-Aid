@@ -9,21 +9,25 @@
   </head>
 
   <body>
+    <%= nav_bar brand: 'Fantasy Football Trade Analyzer', brand_link: home_index_path, fixed: :top do %>
+      <%= menu_group do %>
+        <% menu_item 'Home', root_path %>
+      <% end %>
+      <% if current_user %>
+        <%= menu_group pull: :right do %>
+          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+        <% end %>
+      <% else %>
+        <%= menu_group pull: :right do %>
+          <%= drop_down 'Log in with' do %>
+            <%= render 'devise/shared/links' %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
-
-    <% if user_signed_in? %>
-      <div>
-        <strong><%= current_user.email %></strong>
-        <%= link_to 'Edit profile', edit_user_registration_path, :class => 'navbar-link' %> |
-        <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-      </div>
-      <hr>
-    <% else %>
-      <%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> |
-      <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>
-      <hr>
-    <% end %>
 
     <%= yield %>
   </body>

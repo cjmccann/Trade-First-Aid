@@ -1,0 +1,9 @@
+<% @leagues.each do |league| %>
+  <h2><%= league.name =%></h2>
+  <ul>
+    <li> <%= league.game_id =%> </li>
+    <li> <%= league.league_id =%> </li>
+    <li> <%= league.code =%> </li>
+    <li> <%= league.manager_id =%> </li>
+  </ul>
+<% end %>

@@ -33,18 +33,16 @@ class League < ApplicationRecord
     #self.leagues.create(valid_nfl_teams)
 
     valid_nfl_teams.each do |team|
-      where(league_id: team[:league_id], 
-            manager_id: team[:manager_id], 
-            user_id: user.id).first_or_create do |league|
-
-              league.game_id = team[:game_id]
-              league.code = team[:code]
-              league.league_id = team[:league_id]
-              league.manager_id = team[:manager_id]
-              league.user_id = user.id
-              league.name = user.api_client.get_league_name(team[:game_id], team[:league_id])
-              binding.pry
+      league_temp = where(league_id: team[:league_id], manager_id: team[:manager_id], user_id: user.id).first_or_create do |league|
+        league.game_id = team[:game_id]
+        league.code = team[:code]
+        league.league_id = team[:league_id]
+        league.manager_id = team[:manager_id]
+        league.user_id = user.id
+        league.name = user.api_client.get_league_name(team[:game_id], team[:league_id])
       end
+
+      Team.from_league_init(league_temp)
     end
   end
 

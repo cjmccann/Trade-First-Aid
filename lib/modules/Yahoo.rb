@@ -101,6 +101,14 @@ module Yahoo
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
+      data['fantasy_content']['team']
+    end
+
+    def get_team_name(game_id, league_id, manager_id)
+      refresh_token_if_expired
+
+      data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
+      binding.pry
     end
 
     def get_team_stats(game_id, league_id, manager_id)
@@ -124,7 +132,6 @@ module Yahoo
     def get_hash_response(url)
       doc = Nokogiri::XML(@oauth_token.get(url).response.body)
       hash = Hash.from_xml(doc.to_s)
-      binding.pry
       hash
     end
   end

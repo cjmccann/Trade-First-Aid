@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803065234) do
+ActiveRecord::Schema.define(version: 20170804053919) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(version: 20170803065234) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.index ["user_id"], name: "index_leagues_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.integer "manager_id"
+    t.boolean "imported"
+    t.integer "league_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "icon_url"
+    t.index ["league_id"], name: "index_teams_on_league_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -43,6 +54,7 @@ ActiveRecord::Schema.define(version: 20170803065234) do
     t.text "token"
     t.string "expires_at"
     t.string "refresh_token"
+    t.integer "favorite_team"
     t.index ["email"], name: "index_users_on_email"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
