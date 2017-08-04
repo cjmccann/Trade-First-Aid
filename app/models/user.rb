@@ -29,4 +29,11 @@ class User < ApplicationRecord
   def initialize_leagues
     League.from_seasons(self, api_client.get_user_seasons)
   end
+
+  def update_user_token(oauth_token)
+    self.token = oauth_token.token
+    self.expires_at = oauth_token.expires_at
+    self.refresh_token = oauth_token.refresh_token
+    self.save
+  end
 end

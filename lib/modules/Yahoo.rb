@@ -5,7 +5,9 @@ module Yahoo
         Rails.application.secrets.YAHOO_APP_ID,
         Rails.application.secrets.YAHOO_APP_SECRET,
         :site => 'https://fantasysports.yahooapis.com',
-        :parse_json => true
+        :parse_json => true,
+        :authorize_url => '/oauth2/request_auth',
+        :token_url => '/oauth2/get_token',
       )
     end
   end
@@ -18,6 +20,17 @@ module Yahoo
         :expires_at => expires_at,
         :refresh_token => refresh_token
       )
+    end
+
+    def refresh!
+      super({ 
+        :redirect_uri => 'http://lvh.me/users/auth/yahoo/callback',
+        :headers => { 'Authorization' => get_authorization_header }
+      })
+    end
+
+    def get_authorization_header
+      "Basic #{Base64.strict_encode64("#{self.client.id}:#{self.client.secret}")}"
     end
   end
 
@@ -38,13 +51,17 @@ module Yahoo
     def initialize(user)
       @oauth_token = Yahoo::Token.new(user.token, user.expires_at, user.refresh_token)
       @username = user.username
+      refresh_token_if_expired
     end
 
     def refresh_token_if_expired
       if token_expired?
-        @oauth_token.refresh!
+        binding.pry
+        @oauth_token.client.site = 'https://api.login.yahoo.com'
+        @oauth_token = @oauth_token.refresh!
+        @oauth_token.client.site = 'https://fantasysports.yahooapis.com'
 
-        # TODO: Update user's properties w/ new token here??
+        User.where(:username => @username).first.update_user_token(@oauth_token)
       end
     end
 
@@ -57,7 +74,6 @@ module Yahoo
       refresh_token_if_expired
 
       get_hash_response(GAMES_URL)
-      binding.pry
     end
 
     def get_user_seasons 
@@ -79,41 +95,37 @@ module Yahoo
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")
-      binding.pry
     end
 
     def get_team_metadata(game_id, league_id, manager_id)
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
-      binding.pry
     end
 
     def get_team_stats(game_id, league_id, manager_id)
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/stats;type=week;week=2")
-      binding.pry
     end
 
     def get_all_players_from_team(game_id, league_id, manager_id)
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/players")
-      binding.pry
     end
 
     def get_player_stats
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/player/348.p.6791/stats")
-      binding.pry
     end
 
     def get_hash_response(url)
       doc = Nokogiri::XML(@oauth_token.get(url).response.body)
-      Hash.from_xml(doc.to_s)
+      hash = Hash.from_xml(doc.to_s)
+      binding.pry
+      hash
     end
-
   end
 end
