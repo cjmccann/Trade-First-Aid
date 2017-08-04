@@ -1,6 +1,5 @@
-<h1>Home#index</h1>
-<% if @favorite_team.nil? %>
-  <%= render 'initial_team_import' %>
+<% if @team.nil? %>
+  <%= render 'teams/team_import' %>
 <% else %>
-  <%= render @favorite_team %> 
+  <%= render 'teams/favorite_team' %> 
 <% end %>

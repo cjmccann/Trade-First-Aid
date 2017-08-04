@@ -13,6 +13,24 @@
       <%= menu_group do %>
         <% menu_item 'Home', root_path %>
       <% end %>
+      <% if current_user && current_user.favorite_team %>
+        <%= menu_group do %>
+          <%= drop_down 'My Teams' do %>
+            <% current_user.teams.each do |team| %>
+              <% if team.imported %>
+                <li><a href="<%= team_path(team) %>"><%= team.name %>
+                  <% if current_user.favorite_team == team.id %>
+                    <%= fa_icon 'star' %>
+                  <% end %>
+                </a></li>
+              <% end %>
+            <% end %>
+
+            <%= drop_down_divider %>
+            <%= menu_item 'Import another team', leagues_path %>
+          <% end %>
+        <% end %>
+      <% end %>
       <% if current_user %>
         <%= menu_group pull: :right do %>
           <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>

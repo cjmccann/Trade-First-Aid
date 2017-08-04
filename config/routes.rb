@@ -14,6 +14,10 @@ Rails.application.routes.draw do
 
   resources :teams, shallow: true do
     resources :players
+
+    member do
+      post 'import'
+    end
   end
 
   get 'home/index'

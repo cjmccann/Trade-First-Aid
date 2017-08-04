@@ -8,6 +8,7 @@ class User < ApplicationRecord
   validates :username, :presence => true, :uniqueness => true
 
   has_many :leagues
+  has_many :teams
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, username: auth.uid).first_or_create do |user|
