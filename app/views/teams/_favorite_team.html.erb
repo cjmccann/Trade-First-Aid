@@ -1,2 +1,8 @@
 <h2 class='centerheader'><%= @team.name %></h2>
 <h3 class='centerheader'><%= @team.league.name %></h3>
+
+<ul>
+<% @team.player_arr.each do |id| %>
+  <li><%= Player.find(id).name %></li>
+<% end %>
+</ul>

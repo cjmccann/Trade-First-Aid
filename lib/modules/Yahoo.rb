@@ -121,6 +121,7 @@ module Yahoo
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/players")
+      data['fantasy_content']['team']['players']['player']
     end
 
     def get_player_stats

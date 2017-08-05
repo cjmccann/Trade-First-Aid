@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170804075955) do
+ActiveRecord::Schema.define(version: 20170805023330) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -24,6 +24,20 @@ ActiveRecord::Schema.define(version: 20170804075955) do
     t.index ["user_id"], name: "index_leagues_on_user_id"
   end
 
+  create_table "players", force: :cascade do |t|
+    t.string "name"
+    t.string "yahoo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "icon_url"
+    t.string "player_id"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "team_key"
+    t.string "team_abbr"
+    t.text "positions"
+  end
+
   create_table "teams", force: :cascade do |t|
     t.string "name"
     t.integer "manager_id"
@@ -33,6 +47,7 @@ ActiveRecord::Schema.define(version: 20170804075955) do
     t.datetime "updated_at", null: false
     t.string "icon_url"
     t.integer "user_id"
+    t.text "player_arr"
     t.index ["league_id"], name: "index_teams_on_league_id"
     t.index ["user_id"], name: "index_teams_on_user_id"
   end
@@ -57,6 +72,7 @@ ActiveRecord::Schema.define(version: 20170804075955) do
     t.string "expires_at"
     t.string "refresh_token"
     t.integer "favorite_team"
+    t.string "icon_url"
     t.index ["email"], name: "index_users_on_email"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

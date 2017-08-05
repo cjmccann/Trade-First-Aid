@@ -20,6 +20,7 @@ class User < ApplicationRecord
       user.token = auth["credentials"]["token"]
       user.expires_at = auth["credentials"]["expires_at"]
       user.refresh_token = auth["credentials"]["refresh_token"]
+      user.icon_url = auth['extra']['raw_info']['profile']['image']['imageUrl']
     end
   end
 
