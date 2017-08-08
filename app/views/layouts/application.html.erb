@@ -33,7 +33,17 @@
       <% end %>
       <% if current_user %>
         <%= menu_group pull: :right do %>
-          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+          <% if current_user.email.nil? || current_user.email.empty? %>
+            <%= drop_down current_user.provider.capitalize do %>
+              <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
+              <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+            <% end %>
+          <% else %>
+            <%= drop_down "#{current_user.email} | #{current_user.provider.capitalize}" do %>
+              <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
+              <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+            <% end %>
+          <% end %>
         <% end %>
       <% else %>
         <%= menu_group pull: :right do %>

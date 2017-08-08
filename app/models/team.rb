@@ -14,6 +14,11 @@ class Team < ApplicationRecord
       team.imported = false
       team.user = league.user
       team.player_arr = []
+
+      if team.user.email.empty? || team.user.email.nil?
+        team.user.email = team_data['managers']['manager']['email']
+        team.user.save
+      end
     end
   end
 
@@ -34,7 +39,7 @@ class Team < ApplicationRecord
     data = self.user.api_client.get_all_players_from_team(self.league.game_id, self.league.league_id, self.league.manager_id)
 
     data.each do |player|
-      player = Player.from_team_init(player)
+      player = Player.from_team_init(self, player)
       self.player_arr.push(player.id)
     end
   end

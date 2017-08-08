@@ -1,0 +1,28 @@
+<table data-toggle="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <% stat_order_arr = [] %>
+      <% @team.league.stat_settings.each do |key, val| %>
+        <% if val[:position_type] == 'O' %>
+          <th><%= val[:display_name] %></th>
+          <% stat_order_arr.push(key) %>
+        <% end %>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @team.player_arr.each_with_index do |id, i| %>
+      <% player = Player.find(id) %>
+
+      <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
+        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= player.name %></td>
+
+        <% stat_order_arr.each_with_index do |stat_id, j| %>
+          <td><%= player.cur_stats[stat_id] %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

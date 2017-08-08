@@ -56,7 +56,6 @@ module Yahoo
 
     def refresh_token_if_expired
       if token_expired?
-        binding.pry
         @oauth_token.client.site = 'https://api.login.yahoo.com'
         @oauth_token = @oauth_token.refresh!
         @oauth_token.client.site = 'https://fantasysports.yahooapis.com'
@@ -94,7 +93,7 @@ module Yahoo
     def get_league_settings(game_id, league_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")
+      data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")['fantasy_content']['league']['settings']
     end
 
     def get_team_metadata(game_id, league_id, manager_id)
@@ -108,7 +107,6 @@ module Yahoo
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
-      binding.pry
     end
 
     def get_team_stats(game_id, league_id, manager_id)
@@ -124,10 +122,10 @@ module Yahoo
       data['fantasy_content']['team']['players']['player']
     end
 
-    def get_player_stats
+    def get_player_stats(player_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/player/348.p.6791/stats")
+      data = get_hash_response("fantasy/v2/player/#{player_id}/stats")['fantasy_content']['player']['player_stats']['stats']['stat']
     end
 
     def get_hash_response(url)
