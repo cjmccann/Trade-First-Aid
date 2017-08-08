@@ -15,7 +15,7 @@ class Team < ApplicationRecord
       team.user = league.user
       team.player_arr = []
 
-      if team.user.email.empty? || team.user.email.nil?
+      if (team.user.email.empty? || team.user.email.nil?) && !team_data['managers']['manager']['email'].nil?
         team.user.email = team_data['managers']['manager']['email']
         team.user.save
       end

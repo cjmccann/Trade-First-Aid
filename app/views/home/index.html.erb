@@ -1,5 +1,11 @@
-<% if @team.nil? %>
-  <%= render 'teams/team_import' %>
+<% if current_user %>
+  <% if @team.nil? %>
+    <%= render 'teams/team_import' %>
+  <% else %>
+    <%= render 'teams/favorite_team' %> 
+  <% end %>
 <% else %>
-  <%= render 'teams/favorite_team' %> 
+  <h1>Fantasy Football Trade Analyzer</h1>
+  <%= link_to('Login', new_user_session_path) %>
+
 <% end %>

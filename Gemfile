@@ -69,3 +69,5 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 gem 'bootstrap-table-rails'
+
+gem 'mysql2'

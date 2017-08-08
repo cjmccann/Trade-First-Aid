@@ -30,3 +30,5 @@ config/secrets.yml
 .DS_Store
 
 *.swp
+
+config/database.yml

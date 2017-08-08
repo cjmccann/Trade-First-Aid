@@ -1,12 +1,13 @@
-<table data-toggle="table">
+<div style="width:90%; margin: auto;">
+<table class="table table-striped table-condensed" data-toggle="table" data-sort-name="name">
   <thead>
     <tr>
-      <th>Name</th>
+      <th data-field="name" data-sortable="true">Name</th>
 
       <% stat_order_arr = [] %>
       <% @team.league.stat_settings.each do |key, val| %>
         <% if val[:position_type] == 'O' %>
-          <th><%= val[:display_name] %></th>
+          <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
           <% stat_order_arr.push(key) %>
         <% end %>
       <% end %>
@@ -26,3 +27,4 @@
     <% end %>
   </tbody>
 </table>
+</div>
