@@ -31,4 +31,4 @@ config/secrets.yml
 
 *.swp
 
-config/database.yml
+/config/database.yml
