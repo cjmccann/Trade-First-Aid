@@ -33,6 +33,9 @@ GEM
       activemodel (= 5.1.2)
       activesupport (= 5.1.2)
       arel (~> 8.0)
+    activerecord-sqlserver-adapter (5.1.1)
+      activerecord (~> 5.1.0)
+      tiny_tds
     activesupport (5.1.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
@@ -214,6 +217,8 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
+    tiny_tds (2.0.0)
+      mini_portile2 (~> 2.0)
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.3)
@@ -243,6 +248,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-sqlserver-adapter
   bootstrap-table-rails
   byebug
   capybara (~> 2.13)
@@ -268,6 +274,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   sqlite3
   therubyracer
+  tiny_tds
   turbolinks (~> 5)
   twitter-bootstrap-rails
   tzinfo-data

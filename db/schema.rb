@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808012405) do
+ActiveRecord::Schema.define(version: 20170814070558) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(version: 20170808012405) do
     t.string "team_abbr"
     t.text "positions"
     t.text "cur_stats"
+    t.text "proj_stats"
+    t.integer "roto_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -52,6 +54,21 @@ ActiveRecord::Schema.define(version: 20170808012405) do
     t.text "player_arr"
     t.index ["league_id"], name: "index_teams_on_league_id"
     t.index ["user_id"], name: "index_teams_on_user_id"
+  end
+
+  create_table "trades", force: :cascade do |t|
+    t.text "players_in"
+    t.text "players_out"
+    t.integer "league_id"
+    t.integer "user_id"
+    t.integer "team_id"
+    t.integer "partner"
+    t.text "results"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["league_id"], name: "index_trades_on_league_id"
+    t.index ["team_id"], name: "index_trades_on_team_id"
+    t.index ["user_id"], name: "index_trades_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

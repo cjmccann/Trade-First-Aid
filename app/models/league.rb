@@ -13,6 +13,8 @@ class League < ApplicationRecord
     valid_nfl_teams = [ ]
 
     seasons.each do |season|
+      next if season['season'] != '2016'
+
       if season['code'] == 'nfl'
         if season['teams']['team'].kind_of?(Array)
           team_array = season['teams']['team']
@@ -53,20 +55,26 @@ class League < ApplicationRecord
     stats = { }
 
     data['stat_categories']['stats']['stat'].each do |stat_hash|
-      stats[stat_hash['stat_id']] = {
+      next if stat_hash['position_type'] == 'DT'
+
+      stats[stat_hash['name']] = {
         enabled: stat_hash['enabled'],
         name: stat_hash['name'],
         display_name: stat_hash['display_name'],
         sort_order: stat_hash['sort_order'],
-        position_type: stat_hash['position_type']
+        position_type: stat_hash['position_type'],
+        roto_names: @@yahoo_mappings[stat_hash['name']],
+        stat_id: stat_hash['stat_id']
       }
     end
 
     data['stat_modifiers']['stats']['stat'].each do |stat_mod|
-      single_stat_hash = stats[stat_mod['stat_id']]
-      single_stat_hash[:modifier] = stat_mod['value']
-
-      stat_mod['bonuses'].nil? ? single_stat_hash[:bonuses] = [] : single_stat_hash[:bonuses] = stat_mod['bonuses']['bonus']
+      stats.each do |key, value|
+        if stat_mod['stat_id'] == value['stat_id']
+          value[:modifier] = stat_mod['value']
+          stat_mod['bonuses'].nil? ? value[:bonuses] = [] : value[:bonuses] = stat_mod['bonuses']['bonus']
+        end
+      end
     end 
 
     stats
@@ -78,9 +86,43 @@ class League < ApplicationRecord
     { league_key: split_key[2], manager_id: split_key[4] }
   end
 
+  def self.yahoo_mappings
+    @@yahoo_mappings
+  end
+
   def stat_display_name(key)
 
   end
 
   private
+    # Yahoo unsupported settings: Incomplete Passes, Pick Sixes Thrown, Passing 1st downs, 40+ yd completions, 40+ yd passing touchdowns,
+    # Rushing 1st downs, 40+ yard run, 40+ yard rushing touchdowns, 40+ Yard Receptions, 40+ Yard Receiving Touchdowns, Field Goals Missed 0-19 Yards...,
+    # Point After Attempt Missed, all defensive categories, Offensive Fumble Return TD
+  
+    @@yahoo_mappings = { 
+      'Passing Attempts' => ['PassingAttempts'],
+      'Completions' => ['PassingCompletions'],
+      'Passing Yards' => ['PassingYards'],
+      'Passing Touchdowns' => ['PassingTouchdowns'],
+      'Interceptions' => ['PassingInterceptions'],
+      'Sacks' => ['PassingSacks'],
+      'Rushing Attempts' => ['RushingAttempts'],
+      'Rushing Yards' => ['RushingYards'],
+      'Rushing Touchdowns' => ['RushingTouchdowns'],
+      'Targets' => ['ReceivingTargets'],
+      'Receptions' => ['Receptions'],
+      'Receiving Yards' => ['ReceivingYards'],
+      'Receiving Touchdowns' => ['ReceivingTouchdowns'],
+      'Return Yards' => ['PuntReturnYards', 'KickReturnYards'],
+      'Return Touchdowns' => ['PuntReturnTouchdowns', 'KickReturnTouchdowns'],
+      '2-Point Conversions' => ['TwoPointConversionPasses', 'TwoPointConversionRuns', 'TwoPointConversionReceptions'],
+      'Field Goals 0-19 Yards' => ['FieldGoalsMade0to19'],
+      'Field Goals 20-29 Yards' => ['FieldGoalsMade20to29'],
+      'Field Goals 30-39 Yards' => ['FieldGoalsMade30to39'],
+      'Field Goals 40-49 Yards' => ['FieldGoalsMade40to49'],
+      'Field Goals 50+ Yards' => ['FieldGoalsMade50Plus'],
+      'Point After Attempt Made' => ['ExtraPointsMade'],
+      'Fumbles' => ['Fumbles'],
+      'Fumbles Lost' => ['FumblesLost'],
+    }
 end

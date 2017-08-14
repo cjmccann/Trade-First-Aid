@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  players_in: MyText
+  players_out: MyText
+  league: one
+  user: one
+  team: one
+  results: MyText
+
+two:
+  players_in: MyText
+  players_out: MyText
+  league: two
+  user: two
+  team: two
+  results: MyText

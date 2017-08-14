@@ -27,11 +27,11 @@ class Team < ApplicationRecord
     
     if self.user.favorite_team.nil?
       self.user.favorite_team = self.id
+      self.user.save
     end
 
     add_all_players
 
-    self.user.save
     self.save
   end
 
@@ -39,7 +39,9 @@ class Team < ApplicationRecord
     data = self.user.api_client.get_all_players_from_team(self.league.game_id, self.league.league_id, self.league.manager_id)
 
     data.each do |player|
-      player = Player.from_team_init(self, player)
+      next if player['display_position'] == 'DEF'
+
+      player = Player.from_yahoo_team_init(self, player)
       self.player_arr.push(player.id)
     end
   end

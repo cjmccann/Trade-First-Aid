@@ -6,22 +6,23 @@
 
       <% stat_order_arr = [] %>
       <% @team.league.stat_settings.each do |key, val| %>
-        <% if val[:position_type] == 'O' %>
-          <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
-          <% stat_order_arr.push(key) %>
-        <% end %>
+        <% next if val[:roto_names].nil? %>
+        <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
+        <% stat_order_arr.push(key) %>
       <% end %>
     </tr>
   </thead>
   <tbody>
     <% @team.player_arr.each_with_index do |id, i| %>
       <% player = Player.find(id) %>
+      <% rotoplayer = RotoPlayerSeason.where( 'PlayerID' => player.roto_id, 'Season' => 2016 ).first %>
 
       <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
         <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= player.name %></td>
 
         <% stat_order_arr.each_with_index do |stat_id, j| %>
-          <td><%= player.cur_stats[stat_id] %></td>
+          <% next if League.yahoo_mappings[stat_id].nil? %>
+          <td><%= League.yahoo_mappings[stat_id].reduce(0) { |base, roto_key| base += rotoplayer[roto_key] } %></td>
         <% end %>
       </tr>
     <% end %>
