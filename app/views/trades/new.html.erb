@@ -2,15 +2,19 @@
   <div id='teamContainer'>
     <h2 class="centerheader">Create a Trade</h2>
     <div class='team left'>
+      <h3 class="centerheader">My Team</h3>
       <% @cur_team = @my_team %>
       <%= render 'team_table' %>
     </div>
     <div class='team right'>
+      <h3 class="centerheader">Other Team</h3>
       <% @cur_team = @other_teams.first %>
       <%= render 'team_table' %>
     </div>
   </div>
   <div class='sidebar'>
-    Test3
+    <%= render 'sidebar' %>
   </div>
 </div>
+
+<div id='tradeData' data-my-team='<%= @my_team.id %>' data-other-team='<%= @other_teams.first.id %>'></div>
