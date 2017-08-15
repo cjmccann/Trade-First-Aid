@@ -6,7 +6,7 @@ class TeamsController < ApplicationController
   def import
     team = Team.find(params[:id])
 
-    team.import
+    team.import(current_user)
     redirect_to team
   end
 end

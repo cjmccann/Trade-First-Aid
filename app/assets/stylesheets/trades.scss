@@ -1,0 +1,36 @@
+// Place all the styles related to the Trades controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#tradeContainer {
+    width: 100%;
+    font-size:12px;
+}
+
+#teamContainer {
+    width: 86%;
+}
+
+div.team {
+    float: left;
+    width: 50%;
+}
+
+div.sidebar {
+    float: left;
+    width: 14%;
+}
+
+div.innerTeamContainer {
+    width: 95%;
+    margin: auto;
+}
+
+.th-inner.sortable {
+    padding-right: 18px !important;
+}
+
+.tradeteam {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

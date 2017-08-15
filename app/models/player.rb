@@ -16,7 +16,6 @@ class Player < ApplicationRecord
       player.team_abbr = data['editorial_team_abbr']
 
       rotoplayer = RotoPlayer.where( 'YahooPlayerID' => player.player_id ).first
-      binding.pry if rotoplayer.nil?
       player.roto_id = rotoplayer['PlayerID']
     end
   end

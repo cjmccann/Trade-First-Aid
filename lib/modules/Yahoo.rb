@@ -96,6 +96,14 @@ module Yahoo
       data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")['fantasy_content']['league']['settings']
     end
 
+    def get_league_teams(game_id, league_id)
+      refresh_token_if_expired
+
+      data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/teams")
+
+      data['fantasy_content']['league']['teams']['team']
+    end
+
     def get_team_metadata(game_id, league_id, manager_id)
       refresh_token_if_expired
 

@@ -13,14 +13,12 @@
     </tr>
   </thead>
   <tbody>
-    <% @team.player_arr.each_with_index do |id, i| %>
-      <% player = Player.find(id) %>
-      <% rotoplayer = RotoPlayerSeason.where( 'PlayerID' => player.roto_id, 'Season' => 2016 ).first %>
-
+    <% rotoplayers = RotoPlayerSeason.where( 'PlayerID' => @team.rotoplayer_arr, 'Season' => 2016 ) %>
+    <% rotoplayers.each_with_index do |rotoplayer, i| %>
       <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
-        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= player.name %></td>
+        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= rotoplayer.Name %></td>
 
-        <% stat_order_arr.each_with_index do |stat_id, j| %>
+        <% stat_order_arr.each do |stat_id| %>
           <% next if League.yahoo_mappings[stat_id].nil? %>
           <td><%= League.yahoo_mappings[stat_id].reduce(0) { |base, roto_key| base += rotoplayer[roto_key] } %></td>
         <% end %>

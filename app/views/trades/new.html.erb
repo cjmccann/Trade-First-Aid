@@ -1,0 +1,16 @@
+<div id='tradeContainer'>
+  <div id='teamContainer'>
+    <h2 class="centerheader">Create a Trade</h2>
+    <div class='team left'>
+      <% @cur_team = @my_team %>
+      <%= render 'team_table' %>
+    </div>
+    <div class='team right'>
+      <% @cur_team = @other_teams.first %>
+      <%= render 'team_table' %>
+    </div>
+  </div>
+  <div class='sidebar'>
+    Test3
+  </div>
+</div>

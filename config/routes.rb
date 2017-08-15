@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   resources :leagues, shallow: true do
     resources :teams
+    resources :trades
   end
 
   resources :teams, shallow: true do

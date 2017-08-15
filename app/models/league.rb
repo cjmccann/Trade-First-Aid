@@ -3,6 +3,7 @@ class League < ApplicationRecord
 
   belongs_to :user
   has_many :teams
+  has_many :trades
 
   validates :game_id, presence: true
   validates :code, presence: true
@@ -47,7 +48,11 @@ class League < ApplicationRecord
         league.stat_settings = convert_stat_settings(user.api_client.get_league_settings(league.game_id, league.league_id))
       end
 
-      Team.from_league_init(league_temp)
+      teams = user.api_client.get_league_teams(league_temp.game_id, league_temp.league_id)
+
+      teams.each do |team_data|
+        Team.from_yahoo_league_init(league_temp, team_data)
+      end
     end
   end
 
@@ -70,7 +75,7 @@ class League < ApplicationRecord
 
     data['stat_modifiers']['stats']['stat'].each do |stat_mod|
       stats.each do |key, value|
-        if stat_mod['stat_id'] == value['stat_id']
+        if stat_mod['stat_id'] == value[:stat_id]
           value[:modifier] = stat_mod['value']
           stat_mod['bonuses'].nil? ? value[:bonuses] = [] : value[:bonuses] = stat_mod['bonuses']['bonus']
         end

@@ -1,5 +1,5 @@
 <h2 class='centerheader'><%= @team.name %></h2>
 <h3 class='centerheader'><%= @team.league.name %></h3>
-<div id="buttonContainer"><button class="centerButton">Create Trade</button><button class="centerButton">Set as favorite</button></div>
+<div id="buttonContainer"><%= button_to 'Create Trade', new_league_trade_path(@team.league), method: :get %><button class="centerButton">Set as favorite</button></div>
 
 <%= render 'teams/favorite_team_table' %>

@@ -1,0 +1,29 @@
+<div class='innerTeamContainer'>
+  <table class="table table-striped table-condensed tradeteam" data-toggle="table" data-sort-name="name">
+    <thead>
+      <tr>
+        <th data-field="name" data-sortable="true">Name</th>
+
+        <% stat_order_arr = [] %>
+        <% @cur_team.league.stat_settings.each do |key, val| %>
+          <% next if val[:roto_names].nil? %>
+          <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
+          <% stat_order_arr.push(key) %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% rotoplayers = RotoPlayerProjection.where( 'PlayerID' => @cur_team.rotoplayer_arr, 'Season' => 2017 ) %>
+      <% rotoplayers.each_with_index do |rotoplayer, i| %>
+        <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
+          <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= rotoplayer.Name %></td>
+
+          <% stat_order_arr.each do |stat_id| %>
+            <% next if League.yahoo_mappings[stat_id].nil? %>
+            <td><%= League.yahoo_mappings[stat_id].reduce(0) { |base, roto_key| base += rotoplayer[roto_key] } %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
