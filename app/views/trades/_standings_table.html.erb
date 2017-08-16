@@ -1,0 +1,28 @@
+<div class='innerStandingsContainer'>
+  <table id='standingsTable' class="table table-striped table-condensed" data-toggle="table" data-sort-name="total" data-sort-order='desc'>
+    <thead>
+      <tr>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="total" data-sortable="true">Total Pts</th>
+
+        <% stat_order_arr = [] %>
+        <% read_only_stats = [] %>
+        <% @league.stat_settings.each do |key, val| %>
+          <% next if val[:roto_names].nil? %>
+          <% if val[:is_display_stat] %>
+            <% read_only_stats.push(key) %>
+            <% next %>
+          <% end %>
+          <th data-field="<%= key %>" data-sortable="true"><%= key %></th>
+          <% stat_order_arr.push(val[:name]) %>
+        <% end %>
+
+        <% read_only_stats.each do |key| %>
+          <% val = @league.stat_settings[key] %>
+          <th data-field="<%= key %>" data-sortable="true" data-display-only="true"><%= key %></th>
+          <% stat_order_arr.push(val[:name]) %>
+        <% end %>
+      </tr>
+    </thead>
+  </table>
+</div>

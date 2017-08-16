@@ -17,7 +17,8 @@
   </div>
 
   <div id='standings'>
-    <h2 class="centerheader">Team Standings + Trade Effects</h3>
+    <h2 class="centerheader">Projected Points Per Category</h3>
+    <%= render 'standings_table' %>
   </div>
 </div>
 
@@ -25,5 +26,6 @@
           data-my-team='<%= @my_team.id %>' 
           data-other-team='<%= @other_teams.first.id %>'
           data-teams='<%= @league.team_id_map.to_json %>'
-          data-stats='<%= @league.stats.to_json %>'>
+          data-player-stats='<%= @league.player_stats.to_json %>'
+          data-team-stats='<%= @league.team_stats.to_json %>'>
 </div>

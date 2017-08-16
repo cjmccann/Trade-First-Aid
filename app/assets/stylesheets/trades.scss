@@ -41,11 +41,22 @@ div.innerSidebarContainer {
     margin: auto;
 }
 
+div.innerStandingsContainer {
+    width: 95%;
+    margin: auto;
+}
+
 .th-inner.sortable {
     padding-right: 18px !important;
 }
 
 .tradeteam {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#standingsTable {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -1,9 +1,12 @@
-// $(document).on('turbolinks:load', function() {
-//    $(".playerToggle").click(function(){
-//        var e = this;
-//        console.log('clicked')
-//    });
-//});
+$(document).on('turbolinks:load', function() {
+    ret = $('#standingsTable')
+
+    if (ret.length) {
+        $('#standingsTable').bootstrapTable({
+            data: $('#tradeData').data('team-stats')
+        });
+    }
+});
 
 $(document).on('click', '.playerToggle', function(e){
     var tr = $(e.target).closest('tr');
@@ -69,3 +72,5 @@ function getPlayerName(id) {
 function getPlayerPos(id) {
     return $('tr[data-player-id="' + id + '"]').find('td[data-field="pos"]').text();
 }
+
+

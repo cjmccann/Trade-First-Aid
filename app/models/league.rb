@@ -1,6 +1,7 @@
 class League < ApplicationRecord
   serialize :stat_settings
-  serialize :stats
+  serialize :player_stats
+  serialize :team_stats
 
   belongs_to :user
   has_many :teams
@@ -70,7 +71,8 @@ class League < ApplicationRecord
         sort_order: stat_hash['sort_order'],
         position_type: stat_hash['position_type'],
         roto_names: @@yahoo_mappings[stat_hash['name']],
-        stat_id: stat_hash['stat_id']
+        stat_id: stat_hash['stat_id'],
+        is_display_stat: stat_hash['is_only_display_stat'] == '1' ? true : false
       }
     end
 
@@ -97,32 +99,74 @@ class League < ApplicationRecord
   end
 
   def calculate_team_stats
-    stats = { }
+    stats = [ ]
 
     self.teams.each do |team|
       players = RotoPlayerProjection.where( 'PlayerID' => team.rotoplayer_arr, 'Season' => 2017 )
-      team_stats = { }
+      team_stats = { 'name' => team.name }
+      total_points = 0.0
 
       self.stat_settings.each do |key, data|
         next if data[:roto_names].nil?       
 
-        team_stats[key] = { total: 0.0, values: { } }
+        total = 0.0
 
         players.each do |player|
           value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
           next if value == 0.0
 
-          modifier = data[:modifier].nil? ? 0 : data[:modifier]
-          team_stats[key][:total] += (value * modifier).round(2)
-          team_stats[key][:values][player.PlayerID] = (value * modifier).round(2)
+          if data[:modifier].nil?
+            modifier = 1
+          else
+            modifier = data[:modifier]
+            total_points += (value * modifier)
+          end
+
+          total += (value * modifier)
         end
+
+        team_stats[key] = total.round(2)
       end
 
-      stats[team.id] = team_stats
+      team_stats['total'] = total_points.round(2)
+      stats.push(team_stats)
     end
 
-    self.stats = stats
-    self.save
+    self.team_stats = stats
+  end
+
+  def calculate_player_stats
+    stats = { }
+
+    self.teams.each do |team|
+      players = RotoPlayerProjection.where( 'PlayerID' => team.rotoplayer_arr, 'Season' => 2017 )
+      
+      players.each do |player|
+        player_stats = { }
+        total_value = 0.0
+
+        self.stat_settings.each do |key, data|
+          next if data[:roto_names].nil?
+
+          value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
+          next if value == 0.0
+          
+          if data[:modifier].nil?
+            modifier = 1
+          else
+            modifier = data[:modifier]
+            total_value += (value * modifier)
+          end
+
+          player_stats[key] = (value * modifier).round(2)
+        end
+
+        player_stats['total_value'] = total_value.round(2)
+        stats[player.PlayerID] = player_stats
+      end
+    end
+
+    self.player_stats = stats
   end
 
   def team_id_map
