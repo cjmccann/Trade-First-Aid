@@ -1,5 +1,6 @@
 class League < ApplicationRecord
   serialize :stat_settings
+  serialize :stats
 
   belongs_to :user
   has_many :teams
@@ -14,7 +15,7 @@ class League < ApplicationRecord
     valid_nfl_teams = [ ]
 
     seasons.each do |season|
-      next if season['season'] != '2016'
+      next unless (season['season'] == '2016' || season['season'] == '2015')
 
       if season['code'] == 'nfl'
         if season['teams']['team'].kind_of?(Array)
@@ -62,7 +63,7 @@ class League < ApplicationRecord
     data['stat_categories']['stats']['stat'].each do |stat_hash|
       next if stat_hash['position_type'] == 'DT'
 
-      stats[stat_hash['name']] = {
+      stats[stat_hash['display_name']] = {
         enabled: stat_hash['enabled'],
         name: stat_hash['name'],
         display_name: stat_hash['display_name'],
@@ -76,7 +77,7 @@ class League < ApplicationRecord
     data['stat_modifiers']['stats']['stat'].each do |stat_mod|
       stats.each do |key, value|
         if stat_mod['stat_id'] == value[:stat_id]
-          value[:modifier] = stat_mod['value']
+          value[:modifier] = stat_mod['value'].to_f
           stat_mod['bonuses'].nil? ? value[:bonuses] = [] : value[:bonuses] = stat_mod['bonuses']['bonus']
         end
       end
@@ -95,8 +96,42 @@ class League < ApplicationRecord
     @@yahoo_mappings
   end
 
-  def stat_display_name(key)
+  def calculate_team_stats
+    stats = { }
 
+    self.teams.each do |team|
+      players = RotoPlayerProjection.where( 'PlayerID' => team.rotoplayer_arr, 'Season' => 2017 )
+      team_stats = { }
+
+      self.stat_settings.each do |key, data|
+        next if data[:roto_names].nil?       
+
+        team_stats[key] = { total: 0.0, values: { } }
+
+        players.each do |player|
+          value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
+          next if value == 0.0
+
+          modifier = data[:modifier].nil? ? 0 : data[:modifier]
+          team_stats[key][:total] += (value * modifier).round(2)
+          team_stats[key][:values][player.PlayerID] = (value * modifier).round(2)
+        end
+      end
+
+      stats[team.id] = team_stats
+    end
+
+    self.stats = stats
+    self.save
+  end
+
+  def team_id_map
+    map = { }
+    self.teams.each do |team|
+      map[team.id] = team.name
+    end
+    
+    map
   end
 
   private

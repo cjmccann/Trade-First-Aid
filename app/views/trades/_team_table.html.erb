@@ -7,10 +7,10 @@
         <th data-field="pos">Pos</th>
 
         <% stat_order_arr = [] %>
-        <% @cur_team.league.stat_settings.each do |key, val| %>
+        <% @league.stat_settings.each do |key, val| %>
           <% next if val[:roto_names].nil? %>
           <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
-          <% stat_order_arr.push(key) %>
+          <% stat_order_arr.push(val[:name]) %>
         <% end %>
       </tr>
     </thead>

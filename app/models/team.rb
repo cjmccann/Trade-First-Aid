@@ -2,7 +2,6 @@ class Team < ApplicationRecord
   belongs_to :league
   belongs_to :user, optional: true
 
-  serialize :player_arr
   serialize :rotoplayer_arr
 
   def self.from_yahoo_league_init(league, team_data)
@@ -14,7 +13,6 @@ class Team < ApplicationRecord
       team.manager_id = team_data['team_id']
       team.league_id = league.id
       team.imported = false
-      team.player_arr = []
       team.rotoplayer_arr = []
 
       if (team_data['team_id'].to_i == league.manager_id)
@@ -31,7 +29,7 @@ class Team < ApplicationRecord
   def import(user)
     self.imported = true
     
-    if user.favorite_team.nil?
+    if (self.manager_id == self.league.manager_id) && user.favorite_team.nil?
       user.favorite_team = self.id
       user.save
     end
@@ -43,13 +41,16 @@ class Team < ApplicationRecord
 
   def add_all_players(user)
     data = user.api_client.get_all_players_from_team(self.league.game_id, self.league.league_id, self.manager_id)
+    yahoo_ids = []
 
     data.each do |player|
       next if player['display_position'] == 'DEF'
 
-      player = Player.from_yahoo_team_init(self, player)
-      self.player_arr.push(player.id)
-      self.rotoplayer_arr.push(player.roto_id)
+      yahoo_ids.push(player['player_id'])
+    end
+
+    RotoPlayer.where( 'YahooPlayerID' => yahoo_ids ).each do |rotoplayer|
+      self.rotoplayer_arr.push(rotoplayer.PlayerID)
     end
   end
 end

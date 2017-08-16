@@ -14,7 +14,7 @@
     <% if team.imported %>
       <td> <%= fa_icon 'check-square-o' %> </td>
     <% else %>
-      <td><%= button_to [:import, team] do%>Import Now<% end %></td>
+      <td><%= button_to [:import, team.league] do%>Import Now<% end %></td>
     <% end %>
     </tr>
   <% end %>

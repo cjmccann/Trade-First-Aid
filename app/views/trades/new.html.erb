@@ -15,6 +15,15 @@
   <div class='sidebar'>
     <%= render 'sidebar' %>
   </div>
+
+  <div id='standings'>
+    <h2 class="centerheader">Team Standings + Trade Effects</h3>
+  </div>
 </div>
 
-<div id='tradeData' data-my-team='<%= @my_team.id %>' data-other-team='<%= @other_teams.first.id %>'></div>
+<div id='tradeData' 
+          data-my-team='<%= @my_team.id %>' 
+          data-other-team='<%= @other_teams.first.id %>'
+          data-teams='<%= @league.team_id_map.to_json %>'
+          data-stats='<%= @league.stats.to_json %>'>
+</div>

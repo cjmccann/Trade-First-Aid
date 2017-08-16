@@ -6,6 +6,18 @@ class LeaguesController < ApplicationController
   end
 
   def index
+  end
 
+  def import
+    league = League.find(params[:id])
+
+    league.teams.each do |team|
+      team.import(current_user)
+    end
+
+    league.calculate_team_stats
+
+    my_team = league.teams.where( 'manager_id' => league.manager_id )[0]
+    redirect_to my_team
   end
 end
