@@ -6,6 +6,8 @@ $(document).on('turbolinks:load', function() {
             data: $('#tradeData').data('team-stats')
         });
     }
+
+    $('div.sidebar').height($('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -18,34 +20,112 @@ $(document).on('click', '.playerToggle', function(e){
     var otherTeam = $('#tradeData').data('other-team');
 
     if (ret.filter('.fa-check-square-o').is(':visible')) {
-        if (tr.data('team-id') == myTeam) {
-            givePlayer(playerId);
+        if (tr.data('team-name') == myTeam) {
+            givePlayer(playerId, myTeam, otherTeam);
         } else {
-            getPlayer(playerId);
+            getPlayer(playerId, myTeam, otherTeam);
         }
     } else {
-        if (tr.data('team-id') == myTeam) {
-            removeGivenPlayer(playerId);
+        if (tr.data('team-name') == myTeam) {
+            removeGivenPlayer(playerId, myTeam, otherTeam);
         } else {
-            removeReceivedPlayer(playerId);
+            removeReceivedPlayer(playerId, myTeam, otherTeam);
         }
     }
 });
 
-function givePlayer(id) {
-    addPlayerToTable(id, '#playersTraded')
+function givePlayer(id, myTeam, otherTeam) {
+    addPlayerToTable(id, '#playersTraded');
+    removeTransitions();
+    addPlayerStats(id, otherTeam);
+    removePlayerStats(id, myTeam);
+    setTransitions();
 }
 
-function getPlayer(id) {
-    addPlayerToTable(id, '#playersReceived')
+function getPlayer(id, myTeam, otherTeam) {
+    addPlayerToTable(id, '#playersReceived');
+    removeTransitions();
+    addPlayerStats(id, myTeam);
+    removePlayerStats(id, otherTeam);
+    setTransitions();
 }
 
-function removeGivenPlayer(id) {
-    removePlayerFromTable(id, '#playersTraded')
+function removeGivenPlayer(id, myTeam, otherTeam) {
+    removePlayerFromTable(id, '#playersTraded');
+    removeTransitions();
+    removePlayerStats(id, otherTeam);
+    addPlayerStats(id, myTeam);
+    setTransitions();
 }
 
-function removeReceivedPlayer(id) {
-    removePlayerFromTable(id, '#playersReceived')
+function removeReceivedPlayer(id, myTeam, otherTeam) {
+    removePlayerFromTable(id, '#playersReceived');
+    removeTransitions();
+    removePlayerStats(id, myTeam);
+    addPlayerStats(id, otherTeam);
+    setTransitions();
+}
+
+
+function addPlayerStats(id, team) {
+    playerData = $('#tradeData').data('player-stats')[id]
+    statOrder = $('#standingsTableData').data('stat-order')
+    myTeam = $('#tradeData').data('my-team')
+
+    tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
+
+    for (var stat_key in playerData) {
+        elem = tr.children()[statOrder[stat_key]]
+
+        transitionClass = '';
+        if (team == myTeam) {
+            transitionClass = '<div class="plus">(+' + playerData[stat_key] + ')</div>';
+        }
+
+
+        $('#standingsTable').bootstrapTable('updateCell', { 
+            index: $(tr).data('index'),
+            field: stat_key,
+            value: (parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1) + transitionClass
+        });
+    }
+}
+
+function removePlayerStats(id, team) {
+    playerData = $('#tradeData').data('player-stats')[id]
+    statOrder = $('#standingsTableData').data('stat-order')
+    myTeam = $('#tradeData').data('my-team')
+
+    tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
+
+    for (var stat_key in playerData) {
+        elem = tr.children()[statOrder[stat_key]]
+
+        transitionClass = '';
+        if (team == myTeam) {
+            transitionClass = '<div class="minus">(-' + playerData[stat_key] + ')</div>';
+        }
+
+        $('#standingsTable').bootstrapTable('updateCell', { 
+            index: $(tr).data('index'),
+            field: stat_key,
+            value: (parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1) + transitionClass
+        });
+    }
+
+}
+
+function setTransitions() {
+    $('.minus').each(function() { $(this).parent().addClass('minus'); });
+    $('.plus').each(function() { $(this).parent().addClass('plus'); });
+}
+
+function removeTransitions() {
+    $('div.plus').remove();
+    $('.plus').removeClass('.plus');
+
+    $('div.minus').remove();
+    $('.minus').removeClass('.minus');
 }
 
 function addPlayerToTable(id, table_id) {
@@ -72,5 +152,3 @@ function getPlayerName(id) {
 function getPlayerPos(id) {
     return $('tr[data-player-id="' + id + '"]').find('td[data-field="pos"]').text();
 }
-
-

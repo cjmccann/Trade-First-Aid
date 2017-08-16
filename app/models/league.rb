@@ -161,7 +161,7 @@ class League < ApplicationRecord
           player_stats[key] = (value * modifier).round(2)
         end
 
-        player_stats['total_value'] = total_value.round(2)
+        player_stats['total'] = total_value.round(2)
         stats[player.PlayerID] = player_stats
       end
     end
@@ -172,7 +172,7 @@ class League < ApplicationRecord
   def team_id_map
     map = { }
     self.teams.each do |team|
-      map[team.id] = team.name
+      map[team.name] = team.id
     end
     
     map

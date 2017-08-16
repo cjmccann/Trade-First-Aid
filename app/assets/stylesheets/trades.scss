@@ -16,23 +16,24 @@ div.team {
 }
 
 div.team.right {
-    border-right: 2px solid gray;
+    // border-right: 2px solid gray;
 }
 
 div#standings {
     float: left;
-    width: 80%;
+    width: 100%;
     margin-top: 20px;
 }
 
 div.sidebar {
-    float: left;
+    float: right;
     width: 20%;
     font-size:14px;
+    border-left: 2px solid gray;
 }
 
 div.innerTeamContainer {
-    width: 95%;
+    width: 80%;
     margin: auto;
 }
 
@@ -99,4 +100,54 @@ div.innerStandingsContainer {
     width: 60%;
     float: left;
     font-size: 16px;
+}
+
+.plus {
+    -webkit-animation-duration: 5s;
+    -webkit-animation-name: fading-plus;
+    -animation-duration: 5s;
+    -animation-name: fading-plus;
+}
+
+@-webkit-keyframes fading-plus {
+    from {
+        background-color: #6091FB;
+    }
+    to {
+        background-color: white;
+    }
+}
+
+@-webkit-keyframes fading-plus {
+    from {
+        background-color: #6091FB;
+    }
+    to {
+        background-color: white;
+    }
+}
+
+.minus {
+    -webkit-animation-duration: 5s;
+    -webkit-animation-name: fading-minus;
+    -animation-duration: 5s;
+    -animation-name: fading-minus;
+}
+
+@-webkit-keyframes fading-minus{
+    from {
+        background-color: #FF5C64;
+    }
+    to {
+        background-color: white;
+    }
+}
+
+@-webkit-keyframes fading-minus{
+    from {
+        background-color: #FF5C64;
+    }
+    to {
+        background-color: white;
+    }
 }
