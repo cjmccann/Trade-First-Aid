@@ -3,6 +3,7 @@ class Team < ApplicationRecord
   belongs_to :user, optional: true
 
   serialize :rotoplayer_arr
+  serialize :player_metadata
 
   def self.from_yahoo_league_init(league, team_data)
     where(league_id: league.id, manager_id: team_data['team_id']).first_or_create do |team|
@@ -14,6 +15,7 @@ class Team < ApplicationRecord
       team.league_id = league.id
       team.imported = false
       team.rotoplayer_arr = []
+      team.player_metadata = {}
 
       if (team_data['team_id'].to_i == league.manager_id)
         team.user = league.user
@@ -51,6 +53,7 @@ class Team < ApplicationRecord
 
     RotoPlayer.where( 'YahooPlayerID' => yahoo_ids ).each do |rotoplayer|
       self.rotoplayer_arr.push(rotoplayer.PlayerID)
+      self.player_metadata[rotoplayer.PlayerID] = { 'photo' => rotoplayer.PhotoUrl }
     end
   end
 end

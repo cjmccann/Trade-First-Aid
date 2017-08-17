@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170816045018) do
+ActiveRecord::Schema.define(version: 20170817034916) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170816045018) do
     t.string "icon_url"
     t.integer "user_id"
     t.text "rotoplayer_arr"
+    t.text "player_metadata"
     t.index ["league_id"], name: "index_teams_on_league_id"
     t.index ["user_id"], name: "index_teams_on_user_id"
   end

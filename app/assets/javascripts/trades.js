@@ -8,6 +8,20 @@ $(document).on('turbolinks:load', function() {
     }
 
     $('div.sidebar').height($('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
+
+    if ($('#tradeData').length) {
+        tradeDataDiv = $('#tradeData')
+
+        if (!tradeDataDiv.data('my-team-stats')) {
+            teamStatsArr = tradeDataDiv.data('team-stats')
+
+            for (var i = 0; i < teamStatsArr.length; i++) {
+                if (teamStatsArr[i]['name'] == tradeDataDiv.data('my-team')) {
+                    tradeDataDiv.data('my-team-stats', jQuery.extend({}, teamStatsArr[i]));
+                }
+            }
+        }
+    }
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -36,33 +50,37 @@ $(document).on('click', '.playerToggle', function(e){
 
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
-    removeTransitions();
+
     addPlayerStats(id, otherTeam);
     removePlayerStats(id, myTeam);
+
     setTransitions();
 }
 
 function getPlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersReceived');
-    removeTransitions();
+
     addPlayerStats(id, myTeam);
     removePlayerStats(id, otherTeam);
+
     setTransitions();
 }
 
 function removeGivenPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersTraded');
-    removeTransitions();
+
     removePlayerStats(id, otherTeam);
     addPlayerStats(id, myTeam);
+
     setTransitions();
 }
 
 function removeReceivedPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersReceived');
-    removeTransitions();
+
     removePlayerStats(id, myTeam);
     addPlayerStats(id, otherTeam);
+
     setTransitions();
 }
 
@@ -77,16 +95,10 @@ function addPlayerStats(id, team) {
     for (var stat_key in playerData) {
         elem = tr.children()[statOrder[stat_key]]
 
-        transitionClass = '';
-        if (team == myTeam) {
-            transitionClass = '<div class="plus">(+' + playerData[stat_key] + ')</div>';
-        }
-
-
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: (parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1) + transitionClass
+            value: ((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1)) / 1
         });
     }
 }
@@ -101,30 +113,36 @@ function removePlayerStats(id, team) {
     for (var stat_key in playerData) {
         elem = tr.children()[statOrder[stat_key]]
 
-        transitionClass = '';
-        if (team == myTeam) {
-            transitionClass = '<div class="minus">(-' + playerData[stat_key] + ')</div>';
-        }
-
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: (parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1) + transitionClass
+            value: ((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1)) / 1
         });
     }
 
 }
 
 function setTransitions() {
-    $('.minus').each(function() { $(this).parent().addClass('minus'); });
-    $('.plus').each(function() { $(this).parent().addClass('plus'); });
+    new_data = $('#standingsTable').bootstrapTable('getRowByUniqueId', $('#tradeData').data('my-team'))
+    old_data = $('#tradeData').data('my-team-stats')
+
+    tr = $('#standingsTable').find('td:contains("' + $('#tradeData').data('my-team') + '")').parent();
+
+    for(var key in new_data) {
+        if (key == 'name') { continue; }
+
+        if (new_data[key] > old_data[key]) {
+            tr.find('td:contains("' + new_data[key] + '")').addClass('plus');
+        } else if (new_data[key] < old_data[key]) {
+            tr.find('td:contains("' + new_data[key] + '")').addClass('minus');
+        }
+    }
+
+    $('#tradeData').data('my-team-stats',  jQuery.extend({}, new_data))
 }
 
 function removeTransitions() {
-    $('div.plus').remove();
     $('.plus').removeClass('.plus');
-
-    $('div.minus').remove();
     $('.minus').removeClass('.minus');
 }
 
@@ -151,4 +169,12 @@ function getPlayerName(id) {
 
 function getPlayerPos(id) {
     return $('tr[data-player-id="' + id + '"]').find('td[data-field="pos"]').text();
+}
+
+function rankFormatter(value, row, index) {
+    return "<strong>" + (index + 1) + "</strong>";
+}
+
+function teamPicFormatter(value, row, index) {
+    return "<img class='teamPhoto' src='" + row['teamIcon'] + "'>"
 }

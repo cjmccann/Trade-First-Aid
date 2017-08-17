@@ -15,8 +15,12 @@ class League < ApplicationRecord
   def self.from_seasons(user, seasons)
     valid_nfl_teams = [ ]
 
+    if seasons.is_a?(Hash)
+      seasons = [ seasons ]
+    end
+
     seasons.each do |season|
-      next unless (season['season'] == '2016' || season['season'] == '2015')
+      next unless (season['season'] == '2017' || season['season'] == '2016')
 
       if season['code'] == 'nfl'
         if season['teams']['team'].kind_of?(Array)
@@ -129,6 +133,8 @@ class League < ApplicationRecord
       end
 
       team_stats['total'] = total_points.round(2)
+      team_stats['teamIcon'] = team.icon_url
+
       stats.push(team_stats)
     end
 

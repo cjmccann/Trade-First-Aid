@@ -13,6 +13,7 @@
 div.team {
     float: left;
     width: 50%;
+    font-size: 16px;
 }
 
 div.team.right {
@@ -29,7 +30,7 @@ div.sidebar {
     float: right;
     width: 20%;
     font-size:14px;
-    border-left: 2px solid gray;
+    border-left: 2px solid #ddd;
 }
 
 div.innerTeamContainer {
@@ -64,11 +65,12 @@ div.innerStandingsContainer {
 }
 
 .fa-check-square-o, .fa-square-o {
-    min-width: 12px;
+    min-width: 16px;
 }
 
 .playerToggle {
     cursor: pointer;
+    text-align: center;
 }
 
 #tradeData {
@@ -103,9 +105,9 @@ div.innerStandingsContainer {
 }
 
 .plus {
-    -webkit-animation-duration: 5s;
+    -webkit-animation-duration: 7s;
     -webkit-animation-name: fading-plus;
-    -animation-duration: 5s;
+    -animation-duration: 7s;
     -animation-name: fading-plus;
 }
 
@@ -150,4 +152,17 @@ div.innerStandingsContainer {
     to {
         background-color: white;
     }
+}
+
+img.player {
+    width: 16px;
+    white-space: nowrap;
+}
+
+td.photo {
+    width: 16px;
+}
+
+img.teamPhoto {
+    width: 20px;
 }

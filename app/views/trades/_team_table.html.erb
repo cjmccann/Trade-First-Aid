@@ -3,19 +3,23 @@
     <thead>
       <tr>
         <th></th>
-        <th data-field="name" data-sortable="true">Name</th>
-        <th data-field="pos">Pos</th>
-        <th data-field="totalValue" data-sortable="true">Total Value</th>
+        <th></th>
+        <th data-field="name">Name</th>
+        <th data-field="pos" data-sortable="true">Pos</th>
+        <th data-field="totalValue" data-sortable="true">Total Pts</th>
       </tr>
     </thead>
     <tbody>
-      <% rotoplayers = RotoPlayerProjection.where( 'PlayerID' => @cur_team.rotoplayer_arr, 'Season' => 2017 ) %>
-      <% rotoplayers.each do |rotoplayer| %>
+      <% rotoplayer_projs = RotoPlayerProjection.where( 'PlayerID' => @cur_team.rotoplayer_arr, 'Season' => 2017 ) %>
+      <% rotoplayers = RotoPlayer.where( 'PlayerID' => @cur_team.rotoplayer_arr ) %>
+
+      <% rotoplayer_projs.each do |rotoplayer| %>
         <tr data-player-id='<%= rotoplayer.PlayerID %>' data-team-name='<%= @cur_team.name %>'>
           <td class='playerToggle'>
             <%= fa_icon 'square-o', { 'data-player-id' => rotoplayer.PlayerID } %>
             <%= fa_icon 'check-square-o', { 'data-player-id' => rotoplayer.PlayerID, 'style' => 'display:none;' } %>
           </td>
+          <td class="photo"><img class="player" src="<%= @cur_team.player_metadata[rotoplayer.PlayerID]['photo'] %>" ></td>
           <td data-field="name"><%= rotoplayer.Name %></td>
           <td data-field="pos"><%= rotoplayer.Position %></td>
           <td data-field="totalValue"><%= @cur_team.league.player_stats[rotoplayer.PlayerID]['total'] %></td>
