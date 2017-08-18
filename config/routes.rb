@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     resources :leagues
   end
 
+  get 'trades/demo' => 'trades#demo'
+
   resources :leagues, shallow: true do
     resources :teams
     resources :trades
@@ -20,6 +22,8 @@ Rails.application.routes.draw do
   resources :teams, shallow: true do
     resources :players
   end
+
+  #match 'trades/demo' => 'trades#demo', :via => :get
 
   get 'home/index'
   root 'home#index'

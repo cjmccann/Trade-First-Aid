@@ -6,7 +6,5 @@ class Trade < ApplicationRecord
   serialize :players_in
   serialize :players_out
   serialize :results
-
-
-
+  
 end

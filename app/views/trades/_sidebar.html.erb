@@ -25,15 +25,17 @@
       </tbody>
     </table>
   </div>
-  <div class='sidebarButtons'>
-    <div class='sidebarButton'>
-      <button>Reset</button>
+  <% unless @demo %>
+    <div class='sidebarButtons'>
+      <div class='sidebar button'>
+        <button>Reset</button>
+      </div>
+      <div class='sidebar save'>
+        <button>Save Trade</button>
+      </div>
+      <div class='sidebar button'>
+        <button>Cancel</button>
+      </div>
     </div>
-    <div class='sidebarSave'>
-      <button>Save Trade</button>
-    </div>
-    <div class='sidebarButton'>
-      <button>Cancel</button>
-    </div>
-  </div>
+  <% end %>
 </div>

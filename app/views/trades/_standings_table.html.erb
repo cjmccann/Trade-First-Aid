@@ -3,13 +3,14 @@
                              data-toggle="table" 
                              data-sort-name="total" 
                              data-sort-order='desc'
-                             data-unique-id='name'>
+                             data-unique-id='name'
+                             data-show-footer='true'>
     <thead>
       <tr>
         <th data-formatter="rankFormatter"></th>
         <th data-formatter="teamPicFormatter"></th>
-        <th data-field="name">Name</th>
-        <th data-field="total" data-sortable="false">Total Pts</th>
+        <th data-field="name" data-footer-formatter="formatDeltaLabel">Name</th>
+        <th data-field="total" data-sortable="false" data-footer-formatter="formatDeltas">Total Pts</th>
 
         <% read_only_stats = [] %>
         <% index = 4 %>
@@ -20,14 +21,14 @@
             <% read_only_stats.push(key) %>
             <% next %>
           <% end %>
-          <th data-field="<%= key %>"><%= key %></th>
+          <th data-field="<%= key %>" data-footer-formatter="formatDeltas"><%= key %></th>
           <% stat_order_map[key] = index %>
           <% index += 1 %>
         <% end %>
 
         <% read_only_stats.each do |key| %>
           <% val = @league.stat_settings[key] %>
-          <th data-field="<%= key %>" data-display-only="true"><%= key %></th>
+          <th data-field="<%= key %>" data-footer-formatter="formatDeltas" data-display-only="true"><%= key %></th>
           <% stat_order_map[key] = index %>
           <% index += 1 %>
         <% end %>

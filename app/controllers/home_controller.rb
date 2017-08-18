@@ -8,8 +8,7 @@ class HomeController < ApplicationController
       @team = Team.find(current_user.favorite_team) if !current_user.favorite_team.nil?
 
     else
-
-
+      @demo_league = League.where( league_id: '995273').first
     end
   end
 end

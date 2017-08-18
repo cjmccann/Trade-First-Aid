@@ -12,9 +12,8 @@ class TradesController < ApplicationController
   end
 
   def demo
-    @league = League.where('league_id' => '995273').first
+    @league = League.find('995273')
     @my_team = @league.teams[0]
-    @other_teams = @league.teams.to_a.slice(0, @league.teams.length - 1)
-    @demo = true
+    @other_teams = @league.teams.slice(0, @league.teams.length - 1)
   end
 end

@@ -26,7 +26,7 @@ div#standings {
     margin-top: 20px;
 }
 
-div.sidebar {
+div#sidebar {
     float: right;
     width: 20%;
     font-size:14px;
@@ -53,9 +53,6 @@ div.innerStandingsContainer {
 }
 
 .tradeteam {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 #standingsTable {
@@ -63,6 +60,7 @@ div.innerStandingsContainer {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 
 .fa-check-square-o, .fa-square-o {
     min-width: 16px;
@@ -93,13 +91,13 @@ div.innerStandingsContainer {
     text-align: center;
 }
 
-.sidebarButton {
-    width: 20%;
+.sidebar.button {
+    width: 29%;
     float: left;
 }
 
-.sidebarSave {
-    width: 60%;
+.sidebar.save {
+    width: 40%;
     float: left;
     font-size: 16px;
 }
@@ -130,9 +128,9 @@ div.innerStandingsContainer {
 }
 
 .minus {
-    -webkit-animation-duration: 5s;
+    -webkit-animation-duration: 7s;
     -webkit-animation-name: fading-minus;
-    -animation-duration: 5s;
+    -animation-duration: 7s;
     -animation-name: fading-minus;
 }
 
@@ -165,4 +163,12 @@ td.photo {
 
 img.teamPhoto {
     width: 20px;
+}
+
+td.deltaGood {
+    background-color: #6091FB;
+}
+
+td.deltaBad{
+    background-color: #FF5C64;
 }

@@ -44,7 +44,7 @@ class League < ApplicationRecord
     #self.leagues.create(valid_nfl_teams)
 
     valid_nfl_teams.each do |team|
-      league_temp = where(league_id: team[:league_id], manager_id: team[:manager_id], user_id: user.id).first_or_create do |league|
+      league_temp = where(league_id: team[:league_id].to_i, manager_id: team[:manager_id].to_i, user_id: user.id).first_or_create do |league|
         league.game_id = team[:game_id]
         league.code = team[:code]
         league.league_id = team[:league_id]
@@ -55,6 +55,10 @@ class League < ApplicationRecord
       end
 
       teams = user.api_client.get_league_teams(league_temp.game_id, league_temp.league_id)
+
+      if teams.is_a?(Hash)
+        teams = [ teams ]
+      end
 
       teams.each do |team_data|
         Team.from_yahoo_league_init(league_temp, team_data)

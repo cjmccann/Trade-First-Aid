@@ -4,10 +4,14 @@ $(document).on('turbolinks:load', function() {
     if (ret.length) {
         $('#standingsTable').bootstrapTable({
             data: $('#tradeData').data('team-stats')
+        }).on('all.bs.table', function(name, data) { setDeltaColors(); });
+
+        $('#standingsTable').parent().on('scroll', function () {
+            $('.fixed-table-footer').scrollLeft($(this).scrollLeft());
         });
     }
 
-    $('div.sidebar').height($('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
+    $('div#sidebar').height($('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
 
     if ($('#tradeData').length) {
         tradeDataDiv = $('#tradeData')
@@ -21,6 +25,8 @@ $(document).on('turbolinks:load', function() {
                 }
             }
         }
+
+        tradeDataDiv.data('deltas', { });
     }
 });
 
@@ -51,8 +57,8 @@ $(document).on('click', '.playerToggle', function(e){
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
 
-    addPlayerStats(id, otherTeam);
-    removePlayerStats(id, myTeam);
+    addPlayerStats(id, otherTeam, false);
+    removePlayerStats(id, myTeam, true);
 
     setTransitions();
 }
@@ -60,8 +66,8 @@ function givePlayer(id, myTeam, otherTeam) {
 function getPlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersReceived');
 
-    addPlayerStats(id, myTeam);
-    removePlayerStats(id, otherTeam);
+    addPlayerStats(id, myTeam, false);
+    removePlayerStats(id, otherTeam, true);
 
     setTransitions();
 }
@@ -69,8 +75,8 @@ function getPlayer(id, myTeam, otherTeam) {
 function removeGivenPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersTraded');
 
-    removePlayerStats(id, otherTeam);
-    addPlayerStats(id, myTeam);
+    removePlayerStats(id, otherTeam, false);
+    addPlayerStats(id, myTeam, true);
 
     setTransitions();
 }
@@ -78,48 +84,113 @@ function removeGivenPlayer(id, myTeam, otherTeam) {
 function removeReceivedPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersReceived');
 
-    removePlayerStats(id, myTeam);
-    addPlayerStats(id, otherTeam);
+    removePlayerStats(id, myTeam, false);
+    addPlayerStats(id, otherTeam, true);
 
     setTransitions();
 }
 
 
-function addPlayerStats(id, team) {
-    playerData = $('#tradeData').data('player-stats')[id]
+function addPlayerStats(id, team, refresh) {
+    tradeDataDiv = $('#tradeData')
+    playerData = tradeDataDiv.data('player-stats')[id]
+    myTeam = tradeDataDiv.data('my-team')
+    deltas = tradeDataDiv.data('deltas')
     statOrder = $('#standingsTableData').data('stat-order')
-    myTeam = $('#tradeData').data('my-team')
 
     tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
 
+    i = 0;
+    len = Object.keys(playerData).length - 1;
+
     for (var stat_key in playerData) {
+        reinitTable = false;
+
+        if (refresh && i >= len) {
+            reinitTable = true;
+        }
+
         elem = tr.children()[statOrder[stat_key]]
+
+        if (team == myTeam) {
+            deltas[stat_key] = getAdditiveDelta(deltas[stat_key], playerData[stat_key]);
+        }
 
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: ((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1)) / 1
+            value: ((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1)) / 1,
+            reinit: reinitTable
         });
+
+        i++;
     }
 }
 
-function removePlayerStats(id, team) {
-    playerData = $('#tradeData').data('player-stats')[id]
+function removePlayerStats(id, team, refresh) {
+    tradeDataDiv = $('#tradeData')
+    playerData = tradeDataDiv.data('player-stats')[id]
+    myTeam = tradeDataDiv.data('my-team')
+    deltas = tradeDataDiv.data('deltas')
     statOrder = $('#standingsTableData').data('stat-order')
-    myTeam = $('#tradeData').data('my-team')
 
     tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
+    
+    i = 0;
+    len = Object.keys(playerData).length - 1;
 
     for (var stat_key in playerData) {
+        reinitTable = false;
+
+        if (refresh && i >= len) {
+            reinitTable = true;
+        }
+
         elem = tr.children()[statOrder[stat_key]]
+
+        if (team == myTeam) {
+            deltas[stat_key] = getSubtractiveDelta(deltas[stat_key], playerData[stat_key]);
+        }
 
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: ((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1)) / 1
+            value: ((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1)) / 1,
+            reinit: reinitTable
         });
+
+        i++;
+    }
+}
+
+function getAdditiveDelta(oldDelta, newDelta) {
+    if (typeof oldDelta === 'undefined') {
+        oldDelta = 0
     }
 
+    totalDelta = (parseFloat(oldDelta) + newDelta).toFixed(1) / 1;
+
+    return formatDeltaString(totalDelta);
+}
+
+function getSubtractiveDelta(oldDelta, newDelta) {
+    if (typeof oldDelta === 'undefined') {
+        oldDelta = 0
+    }
+
+    totalDelta = (parseFloat(oldDelta) - newDelta).toFixed(1) / 1;
+
+    return formatDeltaString(totalDelta);
+}
+
+function formatDeltaString(totalDelta) {
+    if (totalDelta > 0) {
+        totalDelta = '+' + totalDelta
+    } else {
+        totalDelta = totalDelta.toString();
+    }
+
+    return totalDelta;
 }
 
 function setTransitions() {
@@ -138,7 +209,7 @@ function setTransitions() {
         }
     }
 
-    $('#tradeData').data('my-team-stats',  jQuery.extend({}, new_data))
+    $('#tradeData').data('my-team-stats',  jQuery.extend({}, new_data));
 }
 
 function removeTransitions() {
@@ -177,4 +248,36 @@ function rankFormatter(value, row, index) {
 
 function teamPicFormatter(value, row, index) {
     return "<img class='teamPhoto' src='" + row['teamIcon'] + "'>"
+}
+
+function formatDeltas(data) {
+    deltas = $('#tradeData').data('deltas');
+
+    if (deltas && deltas[this.field]) {
+        if (parseFloat(deltas[this.field]) > 0) {
+            return '<div class="setDeltaGood">' + deltas[this.field] + '</div>';
+        } else if (parseFloat(deltas[this.field]) < 0) {
+            return '<div class="setDeltaBad">' + deltas[this.field] + '</div>';
+        }
+    }
+
+    return '0';
+}
+
+function formatDeltaLabel() {
+    return '<strong>My Net Change:</strong>';
+}
+
+function setDeltaColors() {
+    setDeltaGood = $('.setDeltaGood')
+    setDeltaGood.each(function() {
+        $(this).closest('td').addClass('deltaGood');
+        $(this).removeClass('setDeltaGood');
+    });
+
+    setDeltaBad = $('.setDeltaBad')
+    setDeltaBad.each(function() {
+        $(this).closest('td').addClass('deltaBad');
+        $(this).removeClass('setDeltaBad');
+    });
 }

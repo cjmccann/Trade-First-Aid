@@ -6,7 +6,7 @@ class Team < ApplicationRecord
   serialize :player_metadata
 
   def self.from_yahoo_league_init(league, team_data)
-    where(league_id: league.id, manager_id: team_data['team_id']).first_or_create do |team|
+    where(league_id: league.id, manager_id: team_data['team_id'].to_i).first_or_create do |team|
       # team_data = league.user.api_client.get_team_metadata(league.game_id, league.league_id, league.manager_id)
 
       team.name = team_data['name']
