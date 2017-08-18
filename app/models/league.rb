@@ -70,7 +70,7 @@ class League < ApplicationRecord
     stats = { }
 
     data['stat_categories']['stats']['stat'].each do |stat_hash|
-      next if stat_hash['position_type'] == 'DT'
+      next if stat_hash['position_type'] == 'DT' || stat_hash['position_type'] == 'K'
 
       stats[stat_hash['display_name']] = {
         enabled: stat_hash['enabled'],
@@ -88,6 +88,11 @@ class League < ApplicationRecord
       stats.each do |key, value|
         if stat_mod['stat_id'] == value[:stat_id]
           value[:modifier] = stat_mod['value'].to_f
+
+          if value[:modifier] == 0
+            value[:is_display_stat] = true
+          end
+
           stat_mod['bonuses'].nil? ? value[:bonuses] = [] : value[:bonuses] = stat_mod['bonuses']['bonus']
         end
       end
@@ -123,14 +128,11 @@ class League < ApplicationRecord
           value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
           next if value == 0.0
 
-          if data[:modifier].nil?
-            modifier = 1
-          else
-            modifier = data[:modifier]
-            total_points += (value * modifier)
+          unless data[:modifier].nil? || data[:modifier] == 0
+            total_points += (value * data[:modifier])
           end
 
-          total += (value * modifier)
+          total += value 
         end
 
         team_stats[key] = total.round(2)
@@ -161,14 +163,11 @@ class League < ApplicationRecord
           value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
           next if value == 0.0
           
-          if data[:modifier].nil?
-            modifier = 1
-          else
-            modifier = data[:modifier]
-            total_value += (value * modifier)
+          unless data[:modifier].nil? || data[:modifier] == 0
+            total_value += (value * data[:modifier])
           end
 
-          player_stats[key] = (value * modifier).round(2)
+          player_stats[key] = value.round(2)
         end
 
         player_stats['total'] = total_value.round(2)

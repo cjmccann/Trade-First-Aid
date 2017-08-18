@@ -13,7 +13,7 @@
 div.team {
     float: left;
     width: 50%;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 div.team.right {
@@ -34,7 +34,7 @@ div#sidebar {
 }
 
 div.innerTeamContainer {
-    width: 80%;
+    width: 90%;
     margin: auto;
 }
 
@@ -48,11 +48,18 @@ div.innerStandingsContainer {
     margin: auto;
 }
 
+.projPts {
+    font-weight: 500;
+}
+
 .th-inner.sortable {
     padding-right: 18px !important;
 }
 
 .tradeteam {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #standingsTable {
@@ -63,7 +70,7 @@ div.innerStandingsContainer {
 
 
 .fa-check-square-o, .fa-square-o {
-    min-width: 16px;
+    min-width: 14px;
 }
 
 .playerToggle {
@@ -111,7 +118,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-plus {
     from {
-        background-color: #6091FB;
+        background-color: #AFC8FD;
     }
     to {
         background-color: white;
@@ -120,7 +127,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-plus {
     from {
-        background-color: #6091FB;
+        background-color: #AFC8FD;
     }
     to {
         background-color: white;
@@ -136,7 +143,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-minus{
     from {
-        background-color: #FF5C64;
+        background-color: #FFC2C5;
     }
     to {
         background-color: white;
@@ -145,7 +152,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-minus{
     from {
-        background-color: #FF5C64;
+        background-color: #FFC2C5;
     }
     to {
         background-color: white;
@@ -166,9 +173,11 @@ img.teamPhoto {
 }
 
 td.deltaGood {
-    background-color: #6091FB;
+    // background-color: #6091FB;
+    background-color: #AFC8FD;
 }
 
 td.deltaBad{
-    background-color: #FF5C64;
+    // background-color: #FF5C64;
+    background-color: #FFC2C5;
 }

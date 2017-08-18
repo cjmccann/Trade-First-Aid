@@ -46,14 +46,16 @@ class Team < ApplicationRecord
     yahoo_ids = []
 
     data.each do |player|
-      next if player['display_position'] == 'DEF'
+      next if player['position_type'] == 'DT' || player['position_type'] == 'K'
 
       yahoo_ids.push(player['player_id'])
     end
 
     RotoPlayer.where( 'YahooPlayerID' => yahoo_ids ).each do |rotoplayer|
       self.rotoplayer_arr.push(rotoplayer.PlayerID)
-      self.player_metadata[rotoplayer.PlayerID] = { 'photo' => rotoplayer.PhotoUrl }
+      self.player_metadata[rotoplayer.PlayerID] = { 'photo' => rotoplayer.PhotoUrl, 
+                                                    'team' => rotoplayer.Team,
+                                                    'bye_week' => rotoplayer.ByeWeek }
     end
   end
 end
