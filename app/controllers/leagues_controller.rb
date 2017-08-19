@@ -20,6 +20,14 @@ class LeaguesController < ApplicationController
     league.save
 
     my_team = league.teams.where( 'manager_id' => league.manager_id )[0]
+    
+    if (league.unsupported_categories.length > 0)
+      flash[:warning] = "#{league.name} uses the following categories which are not " +
+        "included in the projection systems used:" + "<ul><li>" + league.unsupported_categories.join(', ') +
+        '</lib></ul>' + "These categories will not be shown when projecting trade results."
+      flash[:html_safe] = true
+    end
+
     redirect_to my_team
   end
 end

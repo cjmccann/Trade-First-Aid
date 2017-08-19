@@ -17,3 +17,6 @@
  *= require jquery-ui
  *= require bootstrap-table
  */
+#flashContainer {
+    padding-top: 65px;
+}

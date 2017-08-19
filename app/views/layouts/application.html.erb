@@ -54,8 +54,12 @@
       <% end %>
     <% end %>
 
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <div class="container alert alert-error alert-block" id="flashContainer">
+      <% flash.each do |key, value| %>
+        <% next if key == "html_safe" %>
+        <div class="alert alert-<%= key %>"><%= value %></div>
+      <% end %>
+    </div>
 
     <%= yield %>
   </body>

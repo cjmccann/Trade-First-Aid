@@ -2,6 +2,7 @@ class League < ApplicationRecord
   serialize :stat_settings
   serialize :player_stats
   serialize :team_stats
+  serialize :unsupported_categories
 
   belongs_to :user
   has_many :teams
@@ -41,8 +42,6 @@ class League < ApplicationRecord
       end
     end
 
-    #self.leagues.create(valid_nfl_teams)
-
     valid_nfl_teams.each do |team|
       league_temp = where(league_id: team[:league_id].to_i, manager_id: team[:manager_id].to_i, user_id: user.id).first_or_create do |league|
         league.game_id = team[:game_id]
@@ -51,7 +50,8 @@ class League < ApplicationRecord
         league.manager_id = team[:manager_id]
         league.user_id = user.id
         league.name = user.api_client.get_league_name(team[:game_id], team[:league_id])
-        league.stat_settings = convert_stat_settings(user.api_client.get_league_settings(league.game_id, league.league_id))
+        league.unsupported_categories = [ ]
+        league.stat_settings = convert_stat_settings(league, user.api_client.get_league_settings(league.game_id, league.league_id))
       end
 
       teams = user.api_client.get_league_teams(league_temp.game_id, league_temp.league_id)
@@ -66,11 +66,16 @@ class League < ApplicationRecord
     end
   end
 
-  def self.convert_stat_settings(data)
+  def self.convert_stat_settings(league, data)
     stats = { }
 
     data['stat_categories']['stats']['stat'].each do |stat_hash|
       next if stat_hash['position_type'] == 'DT' || stat_hash['position_type'] == 'K'
+
+      if (@@yahoo_unsupported[stat_hash['name']])
+        league.unsupported_categories.push(stat_hash['name'])
+        next
+      end
 
       stats[stat_hash['display_name']] = {
         enabled: stat_hash['enabled'],
@@ -217,5 +222,24 @@ class League < ApplicationRecord
       'Point After Attempt Made' => ['ExtraPointsMade'],
       'Fumbles' => ['Fumbles'],
       'Fumbles Lost' => ['FumblesLost'],
+    }
+
+    @@yahoo_unsupported = {
+      'Incomplete Passes' => true,
+      'Pick Sixes Thrown' => true,
+      'Sacks' => true,
+      'Passing 1st Downs' => true,
+      '40+ Yard Completions' => true,
+      '40+ Yard Passing Touchdowns' => true,
+      'Rushing 1st Downs' => true,
+      '40+ Yard Run' => true,
+      '40+ Yard Rushing Touchdowns' => true,
+      'Return Yards' => true,
+      'Return Touchdowns' => true,
+      'Receiving 1st Downs' => true,
+      '40+ Yard Receptions' => true,
+      '40+ Yard Receiving Touchdowns' => true,
+      '2-Point Conversions' => true,
+      'Offensive Fumble Return TD' => true
     }
 end
