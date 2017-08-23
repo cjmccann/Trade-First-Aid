@@ -52,6 +52,7 @@ class League < ApplicationRecord
         league.name = user.api_client.get_league_name(team[:game_id], team[:league_id])
         league.unsupported_categories = [ ]
         league.stat_settings = convert_stat_settings(league, user.api_client.get_league_settings(league.game_id, league.league_id))
+        league.week_updated = get_current_week
       end
 
       teams = user.api_client.get_league_teams(league_temp.game_id, league_temp.league_id)
@@ -64,6 +65,12 @@ class League < ApplicationRecord
         Team.from_yahoo_league_init(league_temp, team_data)
       end
     end
+  end
+
+  def self.get_current_week
+    RotoTimeframe.where( 'SeasonType' => 1, 'Season' => 2017 )
+      .where("DATE(StartDate) >= ?", Time.now.utc.to_date)
+      .order('StartDate' => :asc).first['Week']
   end
 
   def self.convert_stat_settings(league, data)
@@ -116,11 +123,14 @@ class League < ApplicationRecord
     @@yahoo_mappings
   end
 
-  def calculate_team_stats
+  def calculate_team_stats(starting_week)
     stats = [ ]
 
     self.teams.each do |team|
-      players = RotoPlayerProjection.where( 'PlayerID' => team.rotoplayer_arr, 'Season' => 2017 )
+      players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
+                                               'Season' => 2017, 
+                                               'Week' => (starting_week - 1)..17)
+
       team_stats = { 'name' => team.name }
       total_points = 0.0
 
@@ -152,15 +162,23 @@ class League < ApplicationRecord
     self.team_stats = stats
   end
 
-  def calculate_player_stats
+  def calculate_player_stats(starting_week)
     stats = { }
 
     self.teams.each do |team|
-      players = RotoPlayerProjection.where( 'PlayerID' => team.rotoplayer_arr, 'Season' => 2017 )
+      players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
+                                               'Season' => 2017, 
+                                               'Week' => (starting_week - 1)..17)
       
       players.each do |player|
-        player_stats = { }
-        total_value = 0.0
+        if stats[player.PlayerID].nil?
+          player_stats = { }
+          total_value = 0.0
+        else
+          player_stats = stats[player.PlayerID]
+          total_value = player_stats['total']
+        end
+
 
         self.stat_settings.each do |key, data|
           next if data[:roto_names].nil?
@@ -172,7 +190,11 @@ class League < ApplicationRecord
             total_value += (value * data[:modifier])
           end
 
-          player_stats[key] = value.round(2)
+          if player_stats[key].nil?
+            player_stats[key] = value.round(2)
+          else
+            player_stats[key] = (player_stats[key] + value).round(2)
+          end
         end
 
         player_stats['total'] = total_value.round(2)

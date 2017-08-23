@@ -55,7 +55,10 @@ class Team < ApplicationRecord
       self.rotoplayer_arr.push(rotoplayer.PlayerID)
       self.player_metadata[rotoplayer.PlayerID] = { 'photo' => rotoplayer.PhotoUrl, 
                                                     'team' => rotoplayer.Team,
-                                                    'bye_week' => rotoplayer.ByeWeek }
+                                                    'bye_week' => rotoplayer.ByeWeek,
+                                                    'name' => rotoplayer.Name,
+                                                    'position' => rotoplayer.Position
+      }
     end
   end
 end

@@ -36,5 +36,7 @@
     </thead>
   </table>
 
-  <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>'></div>
+  <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>'
+                               data-team-stats='<%= @league.team_stats.to_json %>'>
+  </div>
 </div>

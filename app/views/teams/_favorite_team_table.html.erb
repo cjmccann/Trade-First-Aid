@@ -9,22 +9,20 @@
       <% stat_order_arr = [] %>
       <% @team.league.stat_settings.each do |key, val| %>
         <% next if val[:roto_names].nil? %>
-        <th data-field="<%= key %>" data-sortable="true"><%= val[:display_name] %></th>
-        <% stat_order_arr.push(val[:name]) %>
+        <th data-field="<%= key %>" data-sortable="true"><%= key %></th>
+        <% stat_order_arr.push(key) %>
       <% end %>
     </tr>
   </thead>
   <tbody>
-    <% rotoplayers = RotoPlayerSeason.where( 'PlayerID' => @team.rotoplayer_arr, 'Season' => 2016 ) %>
-    <% rotoplayers.each_with_index do |rotoplayer, i| %>
+    <% @team.rotoplayer_arr.each_with_index do |roto_id, i| %>
       <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
-        <td><img class='playerPhoto' src='<%= @team.player_metadata[rotoplayer.PlayerID]['photo'] %>'></td>
-        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= rotoplayer.Name %></td>
-        <td data-field="pos"><%= rotoplayer.Position %></td>
+        <td><img class='playerPhoto' src='<%= @team.player_metadata[roto_id]['photo'] %>'></td>
+        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= @team.player_metadata[roto_id]['name'] %></td>
+        <td data-field="pos"><%= @team.player_metadata[roto_id]['position'] %></td>
 
         <% stat_order_arr.each do |stat_id| %>
-          <% next if League.yahoo_mappings[stat_id].nil? %>
-          <td><%= League.yahoo_mappings[stat_id].reduce(0) { |base, roto_key| base += rotoplayer[roto_key] } %></td>
+          <td><%= @team.league.player_stats[roto_id][stat_id] || 0 %></td>
         <% end %>
       </tr>
     <% end %>

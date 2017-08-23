@@ -15,8 +15,8 @@ class LeaguesController < ApplicationController
       team.import(current_user)
     end
 
-    league.calculate_player_stats
-    league.calculate_team_stats
+    league.calculate_player_stats(league.week_updated)
+    league.calculate_team_stats(league.week_updated)
     league.save
 
     my_team = league.teams.where( 'manager_id' => league.manager_id )[0]

@@ -3,7 +3,7 @@ $(document).on('turbolinks:load', function() {
 
     if (ret.length) {
         $('#standingsTable').bootstrapTable({
-            data: $('#tradeData').data('team-stats')
+            data: $('#standingsTableData').data('team-stats')
         }).on('all.bs.table', function(name, data) { setDeltaColors(); });
 
         $('#standingsTable').parent().on('scroll', function () {
@@ -17,7 +17,7 @@ $(document).on('turbolinks:load', function() {
         tradeDataDiv = $('#tradeData')
 
         if (!tradeDataDiv.data('my-team-stats')) {
-            teamStatsArr = tradeDataDiv.data('team-stats')
+            teamStatsArr = $('#standingsTableData').data('team-stats')
 
             for (var i = 0; i < teamStatsArr.length; i++) {
                 if (teamStatsArr[i]['name'] == tradeDataDiv.data('my-team')) {
@@ -199,13 +199,15 @@ function setTransitions() {
 
     tr = $('#standingsTable').find('td:contains("' + $('#tradeData').data('my-team') + '")').parent();
 
+    statOrder = $('#standingsTableData').data('stat-order')
+
     for(var key in new_data) {
         if (key == 'name') { continue; }
 
         if (new_data[key] > old_data[key]) {
-            tr.find('td:contains("' + new_data[key] + '")').addClass('plus');
+            $(tr.children()[statOrder[key]]).addClass('plus');
         } else if (new_data[key] < old_data[key]) {
-            tr.find('td:contains("' + new_data[key] + '")').addClass('minus');
+            $(tr.children()[statOrder[key]]).addClass('minus');
         }
     }
 

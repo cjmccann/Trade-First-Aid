@@ -2,6 +2,7 @@ class TradesController < ApplicationController
   skip_before_action :authenticate_user!, :only => [:demo]
 
   def new
+    binding.pry
     @league = League.find(params['league_id'])
     @my_team = @league.teams.where( :user => current_user ).first
     @other_teams = @league.teams.where( :user => nil )
