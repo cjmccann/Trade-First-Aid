@@ -28,6 +28,18 @@ $(document).on('turbolinks:load', function() {
 
         tradeDataDiv.data('deltas', { });
     }
+
+    if ($('#tradeData').data('traded-players')) {
+        var playersTraded = $('#tradeData').data('traded-players');
+        var myTeam = $('#tradeData').data('my-team');
+        var otherTeam = $('#tradeData').data('other-team');
+
+        for (var i = 0; i < playersTraded.length; i++) {
+            debugger;
+            $('i.fa[data-player-id="' + playersTraded[i] + '"]').toggle();
+            givePlayer(playersTraded[i], myTeam, otherTeam);
+        }
+    }
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -51,6 +63,22 @@ $(document).on('click', '.playerToggle', function(e){
         } else {
             removeReceivedPlayer(playerId, myTeam, otherTeam);
         }
+    }
+});
+
+$(document).on('click', '.switchTeamLink', function(e) {
+    var href = e.target.getAttribute("href");
+
+    if(href) {
+        playersTraded = $('#playersTraded').bootstrapTable('getData', true)
+        playersString = '';
+
+        for (var i = 0; i < playersTraded.length; i++) {
+            playersString += ('players[]=' + playersTraded[i]['roto_id'] + '&');
+        }
+
+        location.href = href + "?otherTeam=" + $(e.target).data('team') + '&' + playersString;
+        e.preventDefault();
     }
 });
 
@@ -225,6 +253,7 @@ function addPlayerToTable(id, table_id) {
         row: { 
             name: getPlayerName(id), 
             pos: getPlayerPos(id),
+            roto_id: id,
         } 
     });
 }
@@ -283,3 +312,4 @@ function setDeltaColors() {
         $(this).removeClass('setDeltaBad');
     });
 }
+

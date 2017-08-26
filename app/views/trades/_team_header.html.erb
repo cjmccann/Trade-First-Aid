@@ -1,0 +1,23 @@
+<% my_team = @cur_team.league.manager_id %>
+
+<% if @cur_team.manager_id == my_team %>
+  <div class='text-center'>
+    <div class="dropdown teamHeader">
+      <button id="myTeamHeader" class="btn btn-default dropdown-toggle disabled teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %></button>
+    </div>
+  </div>
+<% else %>
+  <div class='text-center'>
+    <div class="dropdown btn-group teamHeader">
+      <button class="btn btn-success dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %>
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+      <% @cur_team.league.teams.each do |team| %>
+        <% if team.manager_id != my_team %>
+          <li><a href='<%= new_league_trade_path(@cur_team.league) %>' class="switchTeamLink" data-team="<%= team.manager_id %>"><%= team.name %></a></li>
+        <% end %>
+      <% end %>
+      </ul>
+    </div>
+  </div>
+<% end %>
