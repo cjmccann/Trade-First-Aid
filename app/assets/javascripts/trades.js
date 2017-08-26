@@ -34,8 +34,9 @@ $(document).on('turbolinks:load', function() {
         var myTeam = $('#tradeData').data('my-team');
         var otherTeam = $('#tradeData').data('other-team');
 
+        $('#playersTraded').bootstrapTable();
+
         for (var i = 0; i < playersTraded.length; i++) {
-            debugger;
             $('i.fa[data-player-id="' + playersTraded[i] + '"]').toggle();
             givePlayer(playersTraded[i], myTeam, otherTeam);
         }
