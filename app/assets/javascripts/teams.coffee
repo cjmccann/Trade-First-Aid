@@ -4,4 +4,5 @@
 #
 addEventListener 'turbolinks:load', ->
   $('[data-toggle="table"]').bootstrapTable()
+  $('div#favStandings').height($('#favTeamContainer').height());
   return

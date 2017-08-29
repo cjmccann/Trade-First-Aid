@@ -7,7 +7,8 @@
 }
 
 #buttonContainer {
-    text-align:center;
+    width: 80%;
+    margin: 20px auto;
 }
 
 #teamTable {
@@ -18,4 +19,54 @@
 
 img.playerPhoto {
     width: 16px;
+}
+
+#favOuter {
+    width: 100%;
+    margin: auto;
+}
+
+#favTeamContainer {
+    width: 70%; 
+    margin: auto;
+    float: left;
+}
+
+#innerFavContainer {
+    width: 92%;
+    margin: auto;
+}
+
+#favStandings {
+    width: 30%;
+    margin: auto;
+    float: right;
+    border-left: 2px solid #ddd;
+}
+
+#innerFavStandingsContainer {
+    width: 85%;
+    margin: auto;
+}
+
+#favToggle {
+}
+
+#headerContainer {
+    width: 100%;
+}
+
+#myHeader {
+    width: 93%;
+    float:left;
+}
+
+#favToggle {
+    width: 7%;
+    float: right;
+    margin-top: 25px;
+}
+
+h3.favHeader {
+    margin-top:10px;
 }

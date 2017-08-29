@@ -1,36 +1,36 @@
-<div style="width:90%; margin: auto;">
-<table id="teamTable" class="table table-striped table-condensed" data-toggle="table" data-sort-name="totalValue" data-sort-order="desc">
-  <thead>
-    <tr>
-      <th data-field="photo"></th>
-      <th data-field="name" data-sortable="true">Name</th>
-      <th data-field="pos" data-sortable="true">Pos</th>
-      <th data-field="team">Team</th>
-      <th data-field="totalValue" data-sortable="true">Proj Pts</th>
+<div id="innerFavContainer">
+  <table id="teamTable" class="table table-striped table-condensed" data-toggle="table" data-sort-name="totalValue" data-sort-order="desc">
+    <thead>
+      <tr>
+        <th data-field="photo"></th>
+        <th data-field="name" data-sortable="true">Name</th>
+        <th data-field="pos" data-sortable="true">Pos</th>
+        <th data-field="team">Team</th>
+        <th data-field="totalValue" data-sortable="true">Proj Pts</th>
 
-      <% stat_order_arr = [] %>
-      <% @team.league.stat_settings.each do |key, val| %>
-        <% next if val[:roto_names].nil? %>
-        <th data-field="<%= key %>" data-sortable="true"><%= key %></th>
-        <% stat_order_arr.push(key) %>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <% @team.rotoplayer_arr.each_with_index do |roto_id, i| %>
-      <% metadata = @team.player_metadata[roto_id] %>
-      <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
-        <td><img class='playerPhoto' src='<%= metadata['photo'] %>'></td>
-        <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= metadata['name'] %></td>
-        <td data-field="pos"><%= metadata['position'] %></td>
-        <td data-field="team"><%= metadata['team'] %></td>
-        <td class="projPts" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
-
-        <% stat_order_arr.each do |stat_id| %>
-          <td><%= @team.league.player_stats[roto_id][stat_id] || '' %></td>
+        <% stat_order_arr = [] %>
+        <% @team.league.stat_settings.each do |key, val| %>
+          <% next if val[:roto_names].nil? %>
+          <th data-field="<%= key %>" data-sortable="true"><%= key %></th>
+          <% stat_order_arr.push(key) %>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @team.rotoplayer_arr.each_with_index do |roto_id, i| %>
+        <% metadata = @team.player_metadata[roto_id] %>
+        <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
+          <td><img class='playerPhoto' src='<%= metadata['photo'] %>'></td>
+          <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= metadata['name'] %></td>
+          <td data-field="pos"><%= metadata['position'] %></td>
+          <td data-field="team"><%= metadata['team'] %></td>
+          <td class="projPts" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
+
+          <% stat_order_arr.each do |stat_id| %>
+            <td><%= @team.league.player_stats[roto_id][stat_id] || '' %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>

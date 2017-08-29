@@ -1,5 +1,29 @@
-<h2 class='centerheader'><%= @team.name %></h2>
-<h3 class='centerheader'><%= @team.league.name %></h3>
-<div id="buttonContainer"><%= button_to 'Create Trade', new_league_trade_path(@team.league), method: :get %><button class="centerButton">Set as favorite</button></div>
+<div id="favOuter">
+  <div id="favStandings">
+    <h3 class='centerheader favHeader'>Projected Standings ROS</h3>
+    <%= render 'teams/favorite_standings_table' %>
+    <div id="buttonContainer">
+      <%= button_to 'Analyze Trade', 
+        new_league_trade_path(@team.league), 
+        method: :get,
+        class: 'btn btn-danger btn-lg btn-block' %>
+    </div>
+  </div>
 
-<%= render 'teams/favorite_team_table' %>
+  <div id="favTeamContainer">
+    <div id="headerContainer">
+      <div id="myHeader">
+        <h3 class='centerheader favHeader'><%= @team.name %> | <%= @team.league.name %> </h3>
+      </div>
+      <div id="favToggle">
+        <% if @team.user.favorite_team == @team.id %>
+          <%= fa_icon 'star' %>
+        <% elsif false %>
+          <%= fa_icon 'star-o' %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= render 'teams/favorite_team_table' %>
+  </div>
+</div>

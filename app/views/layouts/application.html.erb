@@ -9,7 +9,7 @@
   </head>
 
   <body>
-    <%= nav_bar brand: 'Fantasy Football Trade Analyzer', brand_link: home_index_path, fixed: :top do %>
+    <%= nav_bar brand: 'Fantasy Football Trade Analyzer', brand_link: home_index_path, fixed: :top, responsive: true do %>
       <%= menu_group do %>
         <% menu_item 'Home', root_path %>
       <% end %>
@@ -54,13 +54,12 @@
       <% end %>
     <% end %>
 
-    <div class="container alert alert-error alert-block" id="flashContainer">
-      <% flash.each do |key, value| %>
-        <% next if key == "html_safe" %>
-        <div class="alert alert-<%= key %>"><%= value %></div>
-      <% end %>
-    </div>
+    <%= bootstrap_flash %>
 
+    <div class="busyIndicator bg-info">
+      <%= fa_icon 'cog', :class => "fa fa-cog fa-spin fa-2x fa-fw busyCog" %>
+      Updating rosters...
+    </div>
     <%= yield %>
   </body>
 </html>

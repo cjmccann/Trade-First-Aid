@@ -18,3 +18,16 @@
 //= require twitter/bootstrap
 //= require bootstrap-table
 //= require turbolinks
+
+function showBusyIndicator(text) {
+    if (text) {
+        $('.busyIndicator').html('<i class="fa fa-cog fa fa-cog fa-spin fa-2x fa-fw busyCog"></i>' + text);
+    }
+
+    $('.busyIndicator').show();
+}
+
+function hideBusyIndicator() {
+    $('.busyIndicator').hide();
+}
+

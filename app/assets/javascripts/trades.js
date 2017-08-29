@@ -249,9 +249,12 @@ function removeTransitions() {
 }
 
 function addPlayerToTable(id, table_id) {
+    var photo_url = $('tr[data-player-id="' + id + '"]').find('img').attr('src');
+
     $(table_id).bootstrapTable('insertRow', { 
         index: $(table_id + ' tr').length,
         row: { 
+            photo: "<img class='player' src='" + photo_url + "'>",
             name: getPlayerName(id), 
             pos: getPlayerPos(id),
             roto_id: id,
