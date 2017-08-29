@@ -30,4 +30,7 @@ class LeaguesController < ApplicationController
 
     redirect_to my_team
   end
+
+  def sync 
+  end
 end

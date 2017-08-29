@@ -26,4 +26,5 @@
 
     <%= render 'teams/favorite_team_table' %>
   </div>
+  <div id="syncManager" data-sync-team="<%= @team.league.sync_now? %>" data-league="<%= @team.league.id %>"></div>
 </div>

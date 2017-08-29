@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170822014022) do
+ActiveRecord::Schema.define(version: 20170829060807) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20170822014022) do
     t.text "team_stats"
     t.text "unsupported_categories"
     t.integer "week_updated"
+    t.datetime "synced_at"
     t.index ["user_id"], name: "index_leagues_on_user_id"
   end
 

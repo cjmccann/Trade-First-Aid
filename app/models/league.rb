@@ -53,6 +53,7 @@ class League < ApplicationRecord
         league.unsupported_categories = [ ]
         league.stat_settings = convert_stat_settings(league, user.api_client.get_league_settings(league.game_id, league.league_id))
         league.week_updated = get_current_week
+        league.synced_at = DateTime.now
       end
 
       teams = user.api_client.get_league_teams(league_temp.game_id, league_temp.league_id)
@@ -203,6 +204,10 @@ class League < ApplicationRecord
     end
 
     self.player_stats = stats
+  end
+
+  def sync_now?
+    self.synced_at.nil? || !self.synced_at.today?
   end
 
   def team_id_map
