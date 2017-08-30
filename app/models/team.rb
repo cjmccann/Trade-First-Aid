@@ -28,6 +28,64 @@ class Team < ApplicationRecord
     end
   end
 
+  def self.sync(league, team_data, tx_data)
+    team = Team.where( league_id: league.id, manager_id: team_data['team_id'].to_i).first
+    tx_data['players'] = { } if tx_data['players'].nil?
+    tx_data[team.id] = { }
+    
+    if team.name != team_data['name']
+      team.name = team_data['name']
+      tx_data[team.id]['name'] = team_data['name']
+    end
+
+    if team.icon_url != team_data['team_logos']['team_logo']['url']
+      team.icon_url = team_data['team_logos']['team_logo']['url']
+      tx_data[team.id]['icon'] = team_data['team_logos']['team_logo']['url']
+    end
+
+    player_data = league.user.api_client.get_all_players_from_team(league.game_id, league.league_id, team.manager_id)
+    yahoo_ids = []
+    players_to_remove = []
+    new_rotoplayer_set = Set.new
+
+    player_data.each do |player|
+      next if player['position_type'] == 'DT' || player['position_type'] == 'K'
+
+      yahoo_ids.push(player['player_id'])
+    end
+
+    RotoPlayer.where( 'YahooPlayerID' => yahoo_ids ).each do |rotoplayer|
+      new_rotoplayer_set.add(rotoplayer.PlayerID)
+      
+      if !team.player_metadata.has_key?(rotoplayer.PlayerID)
+        team.rotoplayer_arr.push(rotoplayer.PlayerID)
+        team.player_metadata[rotoplayer.PlayerID] = { 'photo' => rotoplayer.PhotoUrl, 
+                                                      'team' => rotoplayer.Team,
+                                                      'bye_week' => rotoplayer.ByeWeek,
+                                                      'name' => rotoplayer.Name,
+                                                      'position' => rotoplayer.Position
+        }
+        tx_data['players'][rotoplayer.PlayerID] = { } if tx_data['players'][rotoplayer.PlayerID].nil?
+        tx_data['players'][rotoplayer.PlayerID][:add] = team.id
+      end
+    end
+
+    team.rotoplayer_arr.each do |roto_id|
+      if !new_rotoplayer_set.include?(roto_id)
+        players_to_remove.push(roto_id)
+      end
+    end
+
+    players_to_remove.each do |roto_id|
+      team.rotoplayer_arr.delete(roto_id)
+      team.player_metadata.delete(roto_id)
+      tx_data['players'][roto_id] = { } if tx_data['players'][roto_id].nil?
+      tx_data['players'][roto_id][:drop] = team.id
+    end
+
+    team.save
+  end
+
   def import(user)
     self.imported = true
     

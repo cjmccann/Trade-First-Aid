@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170829060807) do
+ActiveRecord::Schema.define(version: 20170830050451) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -58,6 +58,15 @@ ActiveRecord::Schema.define(version: 20170829060807) do
     t.index ["league_id"], name: "index_trades_on_league_id"
     t.index ["team_id"], name: "index_trades_on_team_id"
     t.index ["user_id"], name: "index_trades_on_user_id"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.integer "league_id"
+    t.text "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "tx_type"
+    t.index ["league_id"], name: "index_transactions_on_league_id"
   end
 
   create_table "users", force: :cascade do |t|

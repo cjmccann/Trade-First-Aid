@@ -8,12 +8,13 @@
       <tr>
         <th data-formatter="rankFormatter"></th>
         <th data-formatter="teamPicFormatter"></th>
-        <th data-field="name" data-footer-formatter="formatDeltaLabel">Name</th>
-        <th data-field="total" data-sortable="false" data-footer-formatter="formatDeltas">Projected Pts</th>
+        <th data-formatter="favNameFormatter" data-field="name">Name</th>
+        <th data-field="total">Projected Pts</th>
       </tr>
     </thead>
   </table>
 
-  <div id='standingsTableData' data-team-stats='<%= @team.league.team_stats.to_json %>'>
+  <div id='standingsTableData' data-my-team='<%= @team.name %>'
+    data-team-stats='<%= @team.league.team_stats.to_json %>'>
   </div>
 </div>

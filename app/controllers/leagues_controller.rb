@@ -23,8 +23,8 @@ class LeaguesController < ApplicationController
     
     if (league.unsupported_categories.length > 0)
       flash[:warning] = "#{league.name} uses the following categories which are not " +
-        "included in the projection systems used:" + "<ul><li>" + league.unsupported_categories.join(', ') +
-        '</lib></ul>' + "These categories will not be shown when projecting trade results."
+        "included in the projection systems used. These categories will not be shown when projecting trade outcomes." + 
+        "<ul><li>" + league.unsupported_categories.join(', ') + '</li></ul>'
       flash[:html_safe] = true
     end
 
@@ -32,5 +32,12 @@ class LeaguesController < ApplicationController
   end
 
   def sync 
+    league = League.find(params[:id])
+
+    if league.sync
+      render :json => { :status => 'update' }
+    else
+      render :json => { :status => 'no-update' }
+    end
   end
 end

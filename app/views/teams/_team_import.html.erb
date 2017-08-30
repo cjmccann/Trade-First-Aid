@@ -9,12 +9,12 @@
 
   <% current_user.teams.each do |team| %>
     <tr>
-    <td><%= team.league.name =%></td>
+    <td><%= team.league.name %></td>
     <td><%= team.name %></td>
     <% if team.imported %>
       <td> <%= fa_icon 'check-square-o' %> </td>
     <% else %>
-      <td><%= button_to [:import, team.league] do%>Import Now<% end %></td>
+      <td><%= button_to [:import, team.league], class: "importButton" do%>Import Now<% end %></td>
     <% end %>
     </tr>
   <% end %>

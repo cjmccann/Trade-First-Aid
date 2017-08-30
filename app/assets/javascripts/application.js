@@ -21,7 +21,7 @@
 
 function showBusyIndicator(text) {
     if (text) {
-        $('.busyIndicator').html('<i class="fa fa-cog fa fa-cog fa-spin fa-2x fa-fw busyCog"></i>' + text);
+        $('.busyIndicator').html('<i class="fa fa-cog fa fa-cog fa-spin fa-2x fa-fw stateIcon"></i>' + text);
     }
 
     $('.busyIndicator').show();
@@ -31,3 +31,31 @@ function hideBusyIndicator() {
     $('.busyIndicator').hide();
 }
 
+function showDangerIndicator(text) {
+    if (text) {
+        $('.dangerIndicator').html('<i class="fa fa-warning fa-2x fa-fw stateIcon"></i>' + text);
+    }
+
+    $('.dangerIndicator').show();
+
+    setTimeout(function(){
+        $(".dangerIndicator").fadeOut("slow");
+    }, 5000)
+}
+
+function hideDangerIndicator() {
+    $('.dangerIndicator').hide();
+}
+
+
+function showSuccessIndicator(text) {
+    if (text) {
+        $('.successIndicator').html('<i class="fa fa-check-circle-o fa-2x fa-fw stateIcon"></i>' + text);
+    }
+
+    $('.successIndicator').show();
+
+    setTimeout(function(){
+        $(".successIndicator").fadeOut("slow");
+    }, 3500)
+}

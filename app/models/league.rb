@@ -7,6 +7,7 @@ class League < ApplicationRecord
   belongs_to :user
   has_many :teams
   has_many :trades
+  has_many :transactions
 
   validates :game_id, presence: true
   validates :code, presence: true
@@ -207,7 +208,33 @@ class League < ApplicationRecord
   end
 
   def sync_now?
-    self.synced_at.nil? || !self.synced_at.today?
+    !self.synced_at.today?
+  end
+
+  def sync
+    teams = self.user.api_client.get_league_teams(self.game_id, self.league_id)
+    tx_data = { }
+
+    if teams.is_a?(Hash)
+      teams = [ teams ]
+    end
+
+    teams.each do |team|
+      Team.sync(self, team, tx_data)
+    end
+
+    league_updated = Transaction.from_sync(self, tx_data)
+
+    # in the event the league has been updated, or we've passed into a new week,
+    # update player and team stats, and refresh appropriate datetimes
+    if league_updated || (self.week_updated != League.get_current_week)
+      self.week_updated = League.get_current_week
+      self.synced_at = DateTime.now
+
+      calculate_player_stats(self.week_updated)
+      calculate_team_stats(self.week_updated)
+      self.save
+    end
   end
 
   def team_id_map

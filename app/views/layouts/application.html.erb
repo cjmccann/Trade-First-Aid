@@ -56,10 +56,23 @@
 
     <%= bootstrap_flash %>
 
-    <div class="busyIndicator bg-info">
-      <%= fa_icon 'cog', :class => "fa fa-cog fa-spin fa-2x fa-fw busyCog" %>
-      Updating rosters...
+    <div class="stateIndicatorContainer">
+      <div class="stateIndicator busyIndicator bg-info">
+        <%= fa_icon 'cog', :class => "fa fa-cog fa-spin fa-2x fa-fw stateIcon" %>
+        Updating rosters...
+      </div>
+
+      <div class="stateIndicator successIndicator bg-success">
+        <%= fa_icon 'check-circle-o', :class => "fa fa-check-circle-o fa-2x fa-fw stateIcon" %>
+        Rosters updated!
+      </div>
+
+      <div class="stateIndicator dangerIndicator bg-danger">
+        <%= fa_icon 'warning', :class => "fa fa-warning fa-2x fa-fw stateIcon" %>
+        Failed to update rosters. Try again later.
+      </div>
     </div>
+
     <%= yield %>
   </body>
 </html>

@@ -198,6 +198,11 @@ function getAdditiveDelta(oldDelta, newDelta) {
     }
 
     totalDelta = (parseFloat(oldDelta) + newDelta).toFixed(1) / 1;
+    if (totalDelta > 0 && totalDelta <= 0.2) {
+        totalDelta = 0
+    } else if (totalDelta < 0 && totalDelta >= -0.2) {
+        totalDelta = 0
+    }
 
     return formatDeltaString(totalDelta);
 }
@@ -208,6 +213,12 @@ function getSubtractiveDelta(oldDelta, newDelta) {
     }
 
     totalDelta = (parseFloat(oldDelta) - newDelta).toFixed(1) / 1;
+
+    if (totalDelta > 0 && totalDelta <= 0.2) {
+        totalDelta = 0
+    } else if (totalDelta < 0 && totalDelta >= -0.2) {
+        totalDelta = 0
+    }
 
     return formatDeltaString(totalDelta);
 }
@@ -317,3 +328,11 @@ function setDeltaColors() {
     });
 }
 
+
+function standingsNameFormatter(value, row, index) {
+    if (value == $('#tradeData').data('my-team')) {
+        return '<strong>' + value + '</strong>'
+    } else {
+        return value
+    }
+}
