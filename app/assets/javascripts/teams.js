@@ -9,6 +9,7 @@ addEventListener('turbolinks:load', function() {
 
     if($('#syncManager').data('sync-team')) {
         showBusyIndicator('Syncing teams...')
+        disableTradeButton();
 
         $.ajax({
             type: 'GET',
@@ -28,6 +29,8 @@ $(document).on('click', '.importButton', function(e){
 
 function handleSyncSuccess(d) {
     hideBusyIndicator();
+    enableTradeButton();
+    
     if (d.status == 'update') {
         location.replace("?synced=true");
     } else if (d.status == 'no-update') {
@@ -37,6 +40,7 @@ function handleSyncSuccess(d) {
 
 function handleSyncFailure(d) {
     hideBusyIndicator();
+    enableTradeButton();
     showDangerIndicator();
 }
 
@@ -46,4 +50,12 @@ function favNameFormatter(value, row, index) {
     } else {
         return value
     }
+}
+
+function enableTradeButton() {
+    $('.tradeButton').removeClass('disabled')
+}
+
+function disableTradeButton() {
+    $('.tradeButton').addClass('disabled')
 }

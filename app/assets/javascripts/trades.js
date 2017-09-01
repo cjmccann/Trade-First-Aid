@@ -83,6 +83,14 @@ $(document).on('click', '.switchTeamLink', function(e) {
     }
 });
 
+$(document).on('click', '#tradeReset', function(e) {
+    resetTrade();
+});
+
+$(document).on('mouseup', '#tradeReset', function(e) {
+    $(this).blur();
+});
+
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
 
@@ -335,4 +343,22 @@ function standingsNameFormatter(value, row, index) {
     } else {
         return value
     }
+}
+
+function resetTrade() {
+    myTeam = $('#tradeData').data('my-team');
+    otherTeam = $('#tradeData').data('other-team');
+
+    $('.fa-check-square-o:visible').closest('tr').each(function() {
+        cur_team = $(this).data('team-name');
+        playerId = $(this).data('player-id');
+
+        if (cur_team == myTeam)  {
+            removeGivenPlayer(playerId, myTeam, otherTeam);
+            $('i.fa[data-player-id="' + playerId + '"]').toggle();
+        } else {
+            removeReceivedPlayer(playerId, myTeam, otherTeam);
+            $('i.fa[data-player-id="' + playerId + '"]').toggle();
+        }
+    });
 }

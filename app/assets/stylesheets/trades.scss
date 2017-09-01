@@ -98,14 +98,12 @@ div.innerStandingsContainer {
 }
 
 .sidebar.button {
-    width: 29%;
+    width: 50%;
     float: left;
 }
 
-.sidebar.save {
-    width: 40%;
-    float: left;
-    font-size: 16px;
+.sidebarButton {
+    font-size: 20px;
 }
 
 .plus {
@@ -198,3 +196,44 @@ td.deltaBad{
 
 .switchTeamLink {
 }
+
+.tradeButtons {
+
+}
+
+
+/*Bootstrap button outline override*/
+.btn-outline {
+    background-color: transparent;
+    color: inherit;
+    transition: all .2s;
+}
+
+.btn-primary.btn-outline {
+    color: #428bca;
+}
+
+.btn-success.btn-outline {
+    color: #5cb85c;
+}
+
+.btn-info.btn-outline {
+    color: #5bc0de;
+}
+
+.btn-warning.btn-outline {
+    color: #f0ad4e;
+}
+
+.btn-danger.btn-outline {
+    color: #d9534f;
+}
+
+.btn-primary.btn-outline:hover,
+.btn-success.btn-outline:hover,
+.btn-info.btn-outline:hover,
+.btn-warning.btn-outline:hover,
+.btn-danger.btn-outline:hover {
+    color: #fff;
+}
+

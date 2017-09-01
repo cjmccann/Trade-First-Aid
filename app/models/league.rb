@@ -229,12 +229,16 @@ class League < ApplicationRecord
     # update player and team stats, and refresh appropriate datetimes
     if league_updated || (self.week_updated != League.get_current_week)
       self.week_updated = League.get_current_week
-      self.synced_at = DateTime.now
 
       calculate_player_stats(self.week_updated)
       calculate_team_stats(self.week_updated)
-      self.save
     end
+
+    # Even if no updates, register that league has been synced today
+    self.synced_at = DateTime.now
+    self.save
+
+    league_updated
   end
 
   def team_id_map
