@@ -74,3 +74,5 @@ gem 'mysql2'
 
 gem 'tiny_tds'
 gem 'activerecord-sqlserver-adapter'
+
+gem 'high_voltage'

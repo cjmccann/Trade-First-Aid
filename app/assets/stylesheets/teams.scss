@@ -32,9 +32,17 @@ img.playerPhoto {
     float: left;
 }
 
-#innerFavContainer {
+.innerFavContainer {
     width: 92%;
     margin: auto;
+}
+
+.teamInner {
+    margin-bottom: 9px;
+}
+
+.inlineHeader {
+    display: inline;
 }
 
 #favStandings {
@@ -69,4 +77,17 @@ img.playerPhoto {
 
 h3.favHeader {
     margin-top:10px;
+}
+
+#statusButton {
+    cursor: default;
+}
+
+.unsupported {
+    text-align: left;
+}
+
+.favPhoto {
+    height: 1.35em;
+    margin: -.5em 4px;
 }

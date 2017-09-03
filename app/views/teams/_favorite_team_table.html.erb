@@ -1,8 +1,35 @@
-<div id="innerFavContainer">
-  <table id="teamTable" class="table table-striped table-condensed" data-toggle="table" data-sort-name="totalValue" data-sort-order="desc">
+<div class="page-header">
+  <div class="innerFavContainer teamInner">
+    <div id="btn-toolbar" class="btn-toolbar pull-right">
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-success" id="statusButton">
+          <%= fa_icon 'check' %> Ready 
+        </button>
+        <button type="button" class="btn btn-default" id="refreshButton">
+          <%= fa_icon 'refresh' %>
+        </button>
+        <button type="button" class="btn btn-default" id="setFavorite">
+          <% if @team.user.favorite_team == @team.id %>
+            <%= fa_icon 'heart' %>
+          <% else %>
+            <%= fa_icon 'heart-o' %>
+          <% end %>
+        </button>
+      </div>
+    </div>
+
+    <h3 class="inlineHeader">  <img class="favPhoto img-circle" src="<%= @team.icon_url %>"> <%= @team.name %> |</h3><h4 class="inlineHeader"> <%= @team.league.name %></h4>
+  </div>
+
+</div>
+
+<div class="innerFavContainer">
+  <table id="teamTable" class="table table-striped table-condensed" data-toggle="table" 
+                                                                    data-sort-name="totalValue" 
+                                                                    data-sort-order="desc">
     <thead>
       <tr>
-        <th data-field="photo"></th>
+        <th data-field="photo"><span style="display:none">Photo</span></th>
         <th data-field="name" data-sortable="true">Name</th>
         <th data-field="pos" data-sortable="true">Pos</th>
         <th data-field="team">Team</th>
@@ -20,7 +47,7 @@
       <% @team.rotoplayer_arr.each_with_index do |roto_id, i| %>
         <% metadata = @team.player_metadata[roto_id] %>
         <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
-          <td><img class='playerPhoto' src='<%= metadata['photo'] %>'></td>
+          <td><img class='playerPhoto img-circle' src='<%= metadata['photo'] %>'></td>
           <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= metadata['name'] %></td>
           <td data-field="pos"><%= metadata['position'] %></td>
           <td data-field="team"><%= metadata['team'] %></td>

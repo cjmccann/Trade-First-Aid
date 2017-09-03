@@ -24,7 +24,7 @@ class LeaguesController < ApplicationController
     if (league.unsupported_categories.length > 0)
       flash[:warning] = "#{league.name} uses the following categories which are not " +
         "included in the projection systems used. These categories will not be shown when projecting trade outcomes." + 
-        "<ul><li>" + league.unsupported_categories.join(', ') + '</li></ul>'
+        "<span class='unsupported'><ul><li>" + league.unsupported_categories.join(', ') + '</li></ul></span>'
       flash[:html_safe] = true
     end
 

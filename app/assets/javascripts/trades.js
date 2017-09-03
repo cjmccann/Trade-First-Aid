@@ -11,8 +11,6 @@ $(document).on('turbolinks:load', function() {
         });
     }
 
-    $('div#sidebar').height($('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
-
     if ($('#tradeData').length) {
         tradeDataDiv = $('#tradeData')
 
@@ -41,6 +39,14 @@ $(document).on('turbolinks:load', function() {
             givePlayer(playersTraded[i], myTeam, otherTeam);
         }
     }
+
+    $('.teamtable').bootstrapTable();
+    $('div#sidebar').height($('div.left').height() + $('#standings').height());        //$('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
+});
+
+$(window).resize(function () {
+    $('.teamtable').bootstrapTable('resetView');
+    $('#standingsTable').bootstrapTable('resetView');
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -273,7 +279,7 @@ function addPlayerToTable(id, table_id) {
     $(table_id).bootstrapTable('insertRow', { 
         index: $(table_id + ' tr').length,
         row: { 
-            photo: "<img class='player' src='" + photo_url + "'>",
+            photo: "<img class='player img-circle' src='" + photo_url + "'>",
             name: getPlayerName(id), 
             pos: getPlayerPos(id),
             roto_id: id,
@@ -301,7 +307,7 @@ function rankFormatter(value, row, index) {
 }
 
 function teamPicFormatter(value, row, index) {
-    return "<img class='teamPhoto' src='" + row['teamIcon'] + "'>"
+    return "<img class='teamPhoto img-circle' src='" + row['teamIcon'] + "'>"
 }
 
 function formatDeltas(data) {

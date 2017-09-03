@@ -46,3 +46,14 @@ div.alert {
     vertical-align:middle;
     margin: 5px;
 }
+
+.logo {
+    height: 1.8em;
+    display: inline-block !important;
+    margin: -0.8em 0px;
+    margin-right: 10px;
+}
+
+.about {
+    text-align: center;
+}

@@ -174,9 +174,15 @@ td.deltaGood {
     background-color: #AFC8FD;
 }
 
-td.deltaBad{
+td.deltaBad {
     // background-color: #FF5C64;
     background-color: #FFC2C5;
+}
+
+td[data-field="name"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .teamHeaderButton {

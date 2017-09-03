@@ -7,7 +7,7 @@
 <% else %>
   <div class='text-center'>
     <div class="dropdown btn-group teamHeader">
-      <button class="btn btn-success dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %>
+      <button class="btn btn-success btn-outline dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %>
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
       <% @cur_team.league.teams.each do |team| %>

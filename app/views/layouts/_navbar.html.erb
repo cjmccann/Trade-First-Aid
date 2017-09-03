@@ -1,0 +1,49 @@
+<%= nav_bar brand: render('layouts/brand'), brand_link: home_index_path, fixed: :top, responsive: true do %>
+  <%= menu_group do %>
+    <%= menu_item 'Home', root_path %>
+  <% end %>
+  <% if current_user && current_user.favorite_team %>
+    <%= menu_group do %>
+      <%= drop_down 'My Teams' do %>
+        <% current_user.teams.each do |team| %>
+          <% if team.imported %>
+            <li><a href="<%= team_path(team) %>"><%= team.name %>
+              <% if current_user.favorite_team == team.id %>
+                <%= fa_icon 'star' %>
+              <% end %>
+            </a></li>
+          <% end %>
+        <% end %>
+
+        <%= drop_down_divider %>
+        <%= menu_item 'Import another team', leagues_path %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if current_user %>
+    <%= menu_group pull: :right do %>
+      <% if current_user.email.nil? || current_user.email.empty? %>
+        <%= drop_down current_user.provider.capitalize do %>
+          <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
+          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+        <% end %>
+      <% else %>
+        <%= drop_down "#{current_user.email} | #{current_user.provider.capitalize}" do %>
+          <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
+          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= menu_group pull: :right do %>
+      <%= drop_down 'Log in with' do %>
+        <%= render 'devise/shared/links' %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= menu_group pull: :right do %>
+    <%= menu_item 'About', page_path('about') %>
+  <% end %>
+<% end %>

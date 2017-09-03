@@ -22,7 +22,7 @@ class League < ApplicationRecord
     end
 
     seasons.each do |season|
-      next unless (season['season'] == '2017' || season['season'] == '2016')
+      next unless season['season'] == '2017' 
 
       if season['code'] == 'nfl'
         if season['teams']['team'].kind_of?(Array)
@@ -208,7 +208,7 @@ class League < ApplicationRecord
   end
 
   def sync_now?
-    !self.synced_at.today?
+    !self.synced_at.today? || (self.week_updated != League.get_current_week)
   end
 
   def sync

@@ -1,6 +1,8 @@
 <div id="favOuter">
   <div id="favStandings">
-    <h3 class='centerheader favHeader'>Projected Standings ROS</h3>
+    <div class="page-header">
+      <h3 class='centerheader favHeader'>Projected Standings ROS</h3>
+    </div>
     <%= render 'teams/favorite_standings_table' %>
     <div id="buttonContainer">
       <%= button_to 'Analyze Trade', 
@@ -11,19 +13,6 @@
   </div>
 
   <div id="favTeamContainer">
-    <div id="headerContainer">
-      <div id="myHeader">
-        <h3 class='centerheader favHeader'><%= @team.name %> | <%= @team.league.name %> </h3>
-      </div>
-      <div id="favToggle">
-        <% if @team.user.favorite_team == @team.id %>
-          <%= fa_icon 'star' %>
-        <% elsif false %>
-          <%= fa_icon 'star-o' %>
-        <% end %>
-      </div>
-    </div>
-
     <%= render 'teams/favorite_team_table' %>
   </div>
   <div id="syncManager" data-sync-team="<%= @team.league.sync_now? %>" 
