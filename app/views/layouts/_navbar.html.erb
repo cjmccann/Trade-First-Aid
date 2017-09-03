@@ -23,21 +23,18 @@
 
   <% if current_user %>
     <%= menu_group pull: :right do %>
-      <% if current_user.email.nil? || current_user.email.empty? %>
-        <%= drop_down current_user.provider.capitalize do %>
-          <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
-          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
+      <%= drop_down fa_icon('user-circle') + " #{current_user.provider.capitalize}" do %>
+        <% if !(current_user.email.nil? || current_user.email.empty?) %>
+          <%= menu_item current_user.email %>
+          <%= drop_down_divider %>
         <% end %>
-      <% else %>
-        <%= drop_down "#{current_user.email} | #{current_user.provider.capitalize}" do %>
-          <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
-          <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
-        <% end %>
+        <%= menu_item 'Switch Fantasy Provider', destroy_user_session_path, method: :delete %>
+        <%= menu_item 'Log Out', destroy_user_session_path, method: :delete %>
       <% end %>
     <% end %>
   <% else %>
     <%= menu_group pull: :right do %>
-      <%= drop_down 'Log in with' do %>
+      <%= drop_down fa_icon('user-circle-o') + ' Log in with' do %>
         <%= render 'devise/shared/links' %>
       <% end %>
     <% end %>

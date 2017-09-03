@@ -1,9 +1,73 @@
-<div class="page-header">
-  <h2 class="centerheader">About</h2>
+<div class="page-header text-center">
+  <div class="container-fluid">
+    <div class="row">
+      <div class='col-sm-4'>
+        <%= image_tag 'about_img_sm.png', class: "aboutimg img-circle" %>
+      </div>
+      <div class='col-sm-4'>
+        <h2>Connor McCann</h2>
+        <h4>connor.j.mccann<%=fa_icon 'at'%>gmail</h4>
+        <h5><a href="https://github.com/cjmccann">github.com/cjmccann</a></h5>
+      </div>
+      <div class='col-sm-4 about container-fluid'>
+        <div class='row'>
+          <div class='col-sm-6'>
+            <h4 class='h4-small'>Source</h4>
+            <a href="https://github.com/cjmccann/fantasy-football-trade-analyzer">
+              <%= fa_stacked_icon "github inverse", base: "square", class: 'fa-lg' %>
+            </a>
+          </div>
+          <div class='col-sm-6'>
+            <h4 class='h4-small'>Baseball-On-Draft</h4>
+            <a href="http://baseball-on-draft.herokuapp.com/">
+              <%= fa_stacked_icon "baseball-on-draft", base: "square", class: 'fa-lg' %>
+            </a>
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col-sm-6'>
+            <h4 class='h4-small'>@The_McCannon</h4>
+            <a href="https://twitter.com/The_McCannon">
+              <%= fa_stacked_icon "twitter inverse", base: "square", class: 'fa-lg' %>
+            </a>
+          </div>
+          <div class='col-sm-6'>
+            <h4 class='h4-small'>Work Stuff</h4>
+            <a href="https://www.linkedin.com/in/connor-j-mccann">
+              <%= fa_stacked_icon "linkedin inverse", base: "square", class: 'fa-lg' %>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="about">
-  <h3>Connor McCann</h3>
-  <h3>connor.j.mccann<%=fa_icon 'at'%>gmail</h3>
-  <h3>@The_McCannon</h3>
+<div class="about container-fluid text-center">
+  <div class='row'>
+    <div class='col-sm-3'>
+      <a href="https://github.com/cjmccann/fantasy-football-trade-analyzer">
+        <%= fa_stacked_icon "github inverse", base: "square", class: 'fa-5x' %>
+      </a>
+      <h4>Source</h4>
+    </div>
+    <div class='col-sm-3'>
+      <a href="http://baseball-on-draft.herokuapp.com/">
+        <%= fa_stacked_icon "baseball-on-draft", base: "square", class: 'fa-5x' %>
+      </a>
+      <h4>Baseball-On-Draft</h4>
+    </div>
+    <div class='col-sm-3'>
+      <a href="https://twitter.com/The_McCannon">
+        <%= fa_stacked_icon "twitter inverse", base: "square", class: 'fa-5x' %>
+      </a>
+      <h4>@The_McCannon</h4>
+    </div>
+    <div class='col-sm-3'>
+      <a href="https://www.linkedin.com/in/connor-j-mccann">
+        <%= fa_stacked_icon "linkedin inverse", base: "square", class: 'fa-5x' %>
+      </a>
+      <h4>Work Stuff</h4>
+    </div>
+  </div>
 </div>

@@ -17,10 +17,11 @@ $(document).on('click', '.importButton', function(e){
 });
 
 $(document).on('click', '#refreshButton', forceSyncTeam);
+$(document).on('click', '#statusButton', forceSyncTeam);
 
 $(document).on('click', '#setFavorite', setFavorite);
 
-function syncTeam() {
+function syncTeam(force) {
     setStatusBusy();
     disableTradeButton();
 
@@ -28,6 +29,7 @@ function syncTeam() {
         type: 'GET',
         url: '/leagues/' + $('#syncManager').data('league') + '/sync',
         data: { 
+            force: force
         },
         success: handleSyncSuccess,
         error: handleSyncFailure,
@@ -36,7 +38,7 @@ function syncTeam() {
 
 function forceSyncTeam() {
     startRefreshIcon();
-    syncTeam();
+    syncTeam(true);
 }
 
 function handleSyncSuccess(d) {

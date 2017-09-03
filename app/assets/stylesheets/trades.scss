@@ -48,7 +48,7 @@ div.innerStandingsContainer {
 }
 
 .projPts {
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .th-inner.sortable {
@@ -243,3 +243,7 @@ td[data-field="name"] {
     color: #fff;
 }
 
+.team-header-img {
+    height: 1.35em;
+    margin: -.5em 4px;
+}

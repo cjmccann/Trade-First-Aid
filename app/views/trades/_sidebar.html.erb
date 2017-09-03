@@ -6,14 +6,16 @@
   <% @table_id = 'playersTraded' %>
   <%= render 'players_traded_table' %>
 
-  <% unless @demo %>
-    <div class='sidebarButtons'>
-      <div class='sidebar button'>
-        <button id="tradeReset" class="btn btn-default btn-primary btn-outline sidebarButton">Reset</button>
-      </div>
-      <div class='sidebar button'>
-        <%= link_to 'Back', team_path(@my_team), type: 'button', class: "btn btn-default btn-primary btn-outline sidebarButton" %>
-      </div>
+  <div class='sidebarButtons'>
+    <div class='sidebar button'>
+      <button id="tradeReset" class="btn btn-default btn-primary btn-outline sidebarButton">Reset</button>
     </div>
-  <% end %>
+    <div class='sidebar button'>
+      <% if @demo %>
+        <%= link_to 'Back', root_path, type: 'button', class: "btn btn-default btn-primary btn-outline sidebarButton" %>
+      <% else %>
+        <%= link_to 'Back', team_path(@my_team), type: 'button', class: "btn btn-default btn-primary btn-outline sidebarButton" %>
+      <% end %>
+    </div>
+  </div>
 </div>

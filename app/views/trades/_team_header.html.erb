@@ -1,18 +1,28 @@
-<% if @cur_team.manager_id == @cur_team.league.manager_id %>
+<% if (@cur_team.manager_id == @cur_team.league.manager_id) %>
   <div class='text-center'>
     <div class="dropdown teamHeader">
-      <button id="myTeamHeader" class="btn btn-default dropdown-toggle disabled teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %></button>
+      <button id="myTeamHeader" class="btn btn-default dropdown-toggle disabled teamHeaderButton" type="button" data-toggle="dropdown">
+        <img class="team-header-img img-circle" src="<%= @cur_team.icon_url %>">
+        <%= @cur_team.name %>
+      </button>
     </div>
   </div>
 <% else %>
   <div class='text-center'>
     <div class="dropdown btn-group teamHeader">
-      <button class="btn btn-success btn-outline dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown"><%= @cur_team.name %>
-      <span class="caret"></span></button>
+      <button class="btn btn-success btn-outline dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown">
+        <img class="team-header-img img-circle" src="<%= @cur_team.icon_url %>">
+        <%= @cur_team.name %>
+        <span class="caret"></span>
+      </button>
       <ul class="dropdown-menu">
       <% @cur_team.league.teams.each do |team| %>
         <% if team.manager_id != @cur_team.league.manager_id && team.manager_id != @cur_team.manager_id %>
-          <li><a href='<%= new_league_trade_path(@cur_team.league) %>' class="switchTeamLink" data-team="<%= team.manager_id %>"><%= team.name %></a></li>
+          <% if @demo %>
+            <li><a href='<%= trades_demo_path %>' class="switchTeamLink" data-team="<%= team.manager_id %>"><%= team.name %></a></li>
+          <% else %>
+            <li><a href='<%= new_league_trade_path(@cur_team.league) %>' class="switchTeamLink" data-team="<%= team.manager_id %>"><%= team.name %></a></li>
+          <% end %>
         <% end %>
       <% end %>
       </ul>

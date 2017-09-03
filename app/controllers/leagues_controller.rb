@@ -33,8 +33,9 @@ class LeaguesController < ApplicationController
 
   def sync 
     league = League.find(params[:id])
+    force = params['force'] == 'true'
 
-    if league.sync
+    if league.sync(force)
       render :json => { :status => 'update' }
     else
       render :json => { :status => 'no-update' }

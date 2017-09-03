@@ -18,7 +18,8 @@
  *= require bootstrap-table
  */
 body {
-  padding-top: 60px;
+    padding-top: 60px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 div.alert {
@@ -56,4 +57,54 @@ div.alert {
 
 .about {
     text-align: center;
+}
+
+.aboutimg {
+    width: 140px;
+    height: 140px;
+}
+
+.about-header {
+    display: inline-block;
+}
+
+.h4-small {
+    font-weight: 400;
+    font-size: 12px;
+    margin-bottom: 2px;
+    margin-top: 10px;
+}
+
+.fa-baseball-on-draft {
+    content: image-url('baseball-on-draft-inv6.png');
+}
+
+.logo-lg {
+    height: 200px;
+    width: auto;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.logo-text {
+    display: inline;
+}
+
+.logo-container {
+    display:flex; 
+    justify-content: center; 
+    align-items:center;
+}
+
+.logo-text-h {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    font-weight: 400;
+}
+
+th {
+    font-weight: 500;
+}
+
+strong {
 }

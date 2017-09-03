@@ -71,7 +71,7 @@ class League < ApplicationRecord
 
   def self.get_current_week
     RotoTimeframe.where( 'SeasonType' => 1, 'Season' => 2017 )
-      .where("DATE(StartDate) >= ?", Time.now.utc.to_date)
+      .where("DATE(EndDate) >= ?", Time.now.utc.to_date)
       .order('StartDate' => :asc).first['Week']
   end
 
@@ -131,7 +131,7 @@ class League < ApplicationRecord
     self.teams.each do |team|
       players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
                                                'Season' => 2017, 
-                                               'Week' => (starting_week - 1)..17)
+                                               'Week' => (starting_week)..17)
 
       team_stats = { 'name' => team.name }
       total_points = 0.0
@@ -170,7 +170,7 @@ class League < ApplicationRecord
     self.teams.each do |team|
       players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
                                                'Season' => 2017, 
-                                               'Week' => (starting_week - 1)..17)
+                                               'Week' => (starting_week )..17)
       
       players.each do |player|
         if stats[player.PlayerID].nil?
@@ -211,7 +211,7 @@ class League < ApplicationRecord
     !self.synced_at.today? || (self.week_updated != League.get_current_week)
   end
 
-  def sync
+  def sync(force)
     teams = self.user.api_client.get_league_teams(self.game_id, self.league_id)
     tx_data = { }
 
@@ -227,11 +227,12 @@ class League < ApplicationRecord
 
     # in the event the league has been updated, or we've passed into a new week,
     # update player and team stats, and refresh appropriate datetimes
-    if league_updated || (self.week_updated != League.get_current_week)
+    if force || league_updated || (self.week_updated != League.get_current_week)
       self.week_updated = League.get_current_week
 
       calculate_player_stats(self.week_updated)
       calculate_team_stats(self.week_updated)
+      league_updated = true
     end
 
     # Even if no updates, register that league has been synced today
