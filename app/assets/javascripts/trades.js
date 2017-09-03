@@ -368,3 +368,7 @@ function resetTrade() {
         }
     });
 }
+
+function teamProjPtsFormatter(value, row, index) {
+    return '<strong>' + value + '</strong>';
+}

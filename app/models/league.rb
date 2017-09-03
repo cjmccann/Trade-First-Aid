@@ -152,10 +152,10 @@ class League < ApplicationRecord
           total += value 
         end
 
-        team_stats[key] = total.round(2)
+        team_stats[key] = total.round(1)
       end
 
-      team_stats['total'] = total_points.round(2)
+      team_stats['total'] = total_points.round(1)
       team_stats['teamIcon'] = team.icon_url
 
       stats.push(team_stats)
@@ -193,13 +193,13 @@ class League < ApplicationRecord
           end
 
           if player_stats[key].nil?
-            player_stats[key] = value.round(2)
+            player_stats[key] = value.round(1)
           else
-            player_stats[key] = (player_stats[key] + value).round(2)
+            player_stats[key] = (player_stats[key] + value).round(1)
           end
         end
 
-        player_stats['total'] = total_value.round(2)
+        player_stats['total'] = total_value.round(1)
         stats[player.PlayerID] = player_stats
       end
     end
