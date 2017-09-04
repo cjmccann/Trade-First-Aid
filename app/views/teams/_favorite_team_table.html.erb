@@ -8,15 +8,21 @@
         <button type="button" class="btn btn-default" id="refreshButton">
           <%= fa_icon 'refresh' %>
         </button>
-        <button type="button" class="btn btn-default" id="setFavorite">
-          <% if @team.user.favorite_team == @team.id %>
+
+        <% if @team.user.favorite_team == @team.id %>
+          <button type="button" class="btn btn-default fav-tooltip" id="setFavorite" 
+            data-toggle='tooltip' data-placement='top' data-original-title='<%= @team.name %> is already your favorite team!'>
             <%= fa_icon 'heart' %>
-          <% else %>
+          </button>
+        <% else %>
+          <button type="button" class="btn btn-default" id="setFavorite">
             <%= fa_icon 'heart-o' %>
-          <% end %>
-        </button>
-        <button type="button" class="btn btn-default">
-          <%= fa_icon 'calendar' %> Wk <%= @team.league.week_updated %>-16
+          </button>
+        <% end %>
+
+        <button type="button" class="btn btn-default cal-tooltip fav-tooltip" data-toggle='tooltip'
+          data-placement='top' data-original-title='Your projections include weeks <%= @team.league.week_updated %> through 16.'>
+          <%= fa_icon 'calendar' %> Wk: <%= @team.league.week_updated %>-16
         </button>
       </div>
     </div>

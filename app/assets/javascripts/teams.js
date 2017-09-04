@@ -10,6 +10,8 @@ addEventListener('turbolinks:load', function() {
     if($('#syncManager').data('sync-team')) {
         syncTeam();
     }
+
+    $('.fav-tooltip').tooltip();
 });
 
 $(document).on('click', '.importButton', function(e){

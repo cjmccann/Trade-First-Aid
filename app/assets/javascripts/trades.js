@@ -27,6 +27,18 @@ $(document).on('turbolinks:load', function() {
         tradeDataDiv.data('deltas', { });
     }
 
+    $('#playersTraded').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No players selected.';
+        }
+    });
+
+    $('#playersReceived').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No players selected.';
+        }
+    });
+
     if ($('#tradeData').data('traded-players')) {
         var playersTraded = $('#tradeData').data('traded-players');
         var myTeam = $('#tradeData').data('my-team');
