@@ -3,21 +3,19 @@
     <%= render 'sidebar' %>
   </div>
   <div id='teamContainer'>
-    <div class='team left'>
-      <% @cur_team = @my_team %>
-      <%= render 'team_header' %>
-      <%= render 'team_table' %>
+    <div id='teams'>
+      <div class='team left'>
+        <% @cur_team = @my_team %>
+        <%= render 'team_header' %>
+        <%= render 'team_table' %>
+      </div>
+      <div class='team right'>
+        <% @cur_team = @other_team %>
+        <%= render 'team_header' %>
+        <%= render 'team_table' %>
+      </div>
     </div>
-    <div class='team right'>
-      <% @cur_team = @other_team %>
-      <%= render 'team_header' %>
-      <%= render 'team_table' %>
-    </div>
-    <div id='standings'>
-      <hr/>
-      <h3 class="centerheader">Projected Stats and Points (Rest of Season)</h3>
-      <%= render 'standings_table' %>
-    </div>
+    <%= render 'standings_table' %>
   </div>
 </div>
 

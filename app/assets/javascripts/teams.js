@@ -12,6 +12,8 @@ addEventListener('turbolinks:load', function() {
     }
 
     $('.fav-tooltip').tooltip();
+
+    $(document).on('click', '#setFavorite', setFavorite);
 });
 
 $(document).on('click', '.importButton', function(e){
@@ -20,8 +22,6 @@ $(document).on('click', '.importButton', function(e){
 
 $(document).on('click', '#refreshButton', forceSyncTeam);
 $(document).on('click', '#statusButton', forceSyncTeam);
-
-$(document).on('click', '#setFavorite', setFavorite);
 
 function syncTeam(force) {
     setStatusBusy();
@@ -97,6 +97,18 @@ function setStatusWarning() {
     setStatusButtonClass(elem, 'btn-warning');
 }
 
+function setStatusFavorited() {
+    elem = $('#statusButton');
+    elem.html('<i class="fa fa-check-circle-o"></i> Set as favorite.');
+    setStatusButtonClass(elem, 'btn-success');
+}
+
+function setStatusFavWarning() {
+    elem = $('#statusButton');
+    elem.html('<i class="fa fa-warning"></i> Setting as favorite failed. Try again later.');
+    setStatusButtonClass(elem, 'btn-warning');
+}
+
 function setStatusButtonClass(elem, aClass) {
     btn_classes = ['btn-info', 'btn-success', 'btn-warning']
 
@@ -123,11 +135,22 @@ function setFavorite() {
 
     $.ajax({
         type: 'GET',
-        url: '/leagues/' + $('#syncManager').data('league') + '/sync',
+        url: '/teams/' + $('#syncManager').data('team') + '/set_favorite',
         data: { 
         },
-        success: handleSyncSuccess,
-        error: handleSyncFailure,
+        success: handleSetFavoriteSuccess,
+        error: setStatusFavWarning,
     });
 }
 
+function handleSetFavoriteSuccess() {
+    setStatusFavorited();
+
+    team = $('#syncManager').data('team')
+    heart_i = $('a:has(i[class*="fa-heart"])').find('i').detach();
+
+    heart_i.appendTo($('a[href="/teams/' + team + '"]'))
+
+    $(document).off('click', '#setFavorite', setFavorite);
+    $('#setFavorite').tooltip();
+}

@@ -41,4 +41,5 @@ class LeaguesController < ApplicationController
       render :json => { :status => 'no-update' }
     end
   end
+
 end

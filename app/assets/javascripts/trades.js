@@ -1,15 +1,44 @@
 $(document).on('turbolinks:load', function() {
+    $('#playersTraded').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No players selected.';
+        }
+    });
+
+    $('#playersReceived').bootstrapTable({
+        formatNoMatches: function () {
+            return 'No players selected.';
+        }
+    });
+
+
+    $('#summary').bootstrapTable({
+        formatNoMatches: function() {
+            return 'No players selected.';
+        }
+    });
+
+    $('.teamtable').bootstrapTable();
+
+    setTeamContainerHeight();
+    setSidebarHeight();
+    setSpacerHeight();
+
     ret = $('#standingsTable')
 
     if (ret.length) {
         $('#standingsTable').bootstrapTable({
-            data: $('#standingsTableData').data('team-stats')
+            data: $('#standingsTableData').data('team-stats'),
         }).on('all.bs.table', function(name, data) { setDeltaColors(); });
 
         $('#standingsTable').parent().on('scroll', function () {
             $('.fixed-table-footer').scrollLeft($(this).scrollLeft());
         });
+
+        $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
     }
+
+
 
     if ($('#tradeData').length) {
         tradeDataDiv = $('#tradeData')
@@ -27,18 +56,6 @@ $(document).on('turbolinks:load', function() {
         tradeDataDiv.data('deltas', { });
     }
 
-    $('#playersTraded').bootstrapTable({
-        formatNoMatches: function () {
-            return 'No players selected.';
-        }
-    });
-
-    $('#playersReceived').bootstrapTable({
-        formatNoMatches: function () {
-            return 'No players selected.';
-        }
-    });
-
     if ($('#tradeData').data('traded-players')) {
         var playersTraded = $('#tradeData').data('traded-players');
         var myTeam = $('#tradeData').data('my-team');
@@ -52,13 +69,14 @@ $(document).on('turbolinks:load', function() {
         }
     }
 
-    $('.teamtable').bootstrapTable();
-    $('div#sidebar').height($('div.left').height() + $('#standings').height());        //$('#teamContainer').height() + $('div.team.left').height() + $('#standings').height());
 });
 
 $(window).resize(function () {
     $('.teamtable').bootstrapTable('resetView');
-    $('#standingsTable').bootstrapTable('resetView');
+    setTeamContainerHeight();
+    setSidebarHeight();
+    $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
+    setSpacerHeight();
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -115,6 +133,7 @@ function givePlayer(id, myTeam, otherTeam) {
     addPlayerStats(id, otherTeam, false);
     removePlayerStats(id, myTeam, true);
 
+    updateSummaryTable();
     setTransitions();
 }
 
@@ -124,6 +143,7 @@ function getPlayer(id, myTeam, otherTeam) {
     addPlayerStats(id, myTeam, false);
     removePlayerStats(id, otherTeam, true);
 
+    updateSummaryTable();
     setTransitions();
 }
 
@@ -133,6 +153,7 @@ function removeGivenPlayer(id, myTeam, otherTeam) {
     removePlayerStats(id, otherTeam, false);
     addPlayerStats(id, myTeam, true);
 
+    updateSummaryTable();
     setTransitions();
 }
 
@@ -142,6 +163,7 @@ function removeReceivedPlayer(id, myTeam, otherTeam) {
     removePlayerStats(id, myTeam, false);
     addPlayerStats(id, otherTeam, true);
 
+    updateSummaryTable();
     setTransitions();
 }
 
@@ -259,6 +281,26 @@ function formatDeltaString(totalDelta) {
     return totalDelta;
 }
 
+function updateSummaryTable() {
+    standingsData = $('#standingsTableData')
+    deltas = $('#tradeData').data('deltas')
+    summaryData = [ ];
+    summaryData.push( { stat: 'Rank', result: formatDeltaString(standingsData.data('start-rank') - standingsData.data('rank')) } )
+    summaryData.push( { stat: 'Proj Pts', result: deltas['total'] } )
+
+    for(var key in deltas) {
+        if (key == 'total' || deltas[key] == '0') { continue; }
+
+        summaryData.push( { stat: key, result: deltas[key] });
+    }
+
+    $('#summary').bootstrapTable('load', {
+        data: summaryData,
+    }).bootstrapTable('resetView', { height: getSummaryTableHeight() });
+
+    setSpacerHeight();
+}
+
 function setTransitions() {
     new_data = $('#standingsTable').bootstrapTable('getRowByUniqueId', $('#tradeData').data('my-team'))
     old_data = $('#tradeData').data('my-team-stats')
@@ -315,6 +357,16 @@ function getPlayerPos(id) {
 }
 
 function rankFormatter(value, row, index) {
+    if (row['name'] == $('#tradeData').data('my-team')) { 
+        data_elem = $('#standingsTableData')
+
+        if (!data_elem.data('rank')) {
+            data_elem.data('start-rank', index + 1);
+        }
+
+        data_elem.data('rank', index + 1); 
+    }
+
     return "<strong>" + (index + 1) + "</strong>";
 }
 
@@ -383,4 +435,71 @@ function resetTrade() {
 
 function teamProjPtsFormatter(value, row, index) {
     return '<strong>' + value + '</strong>';
+}
+
+function setSpacerHeight() {
+    $('.spacer').height($('#sidebar').height() - $('.innerSidebarContainer').outerHeight(true) - $('.summary-container').outerHeight(true));
+}
+
+function setSidebarHeight() {
+    $('div#sidebar').height(getWorkAreaHeight());
+}
+
+function setTeamContainerHeight(x) {
+    if (x) {
+        $('#teamContainer').height(x);
+    } else {
+        $('#teamContainer').height(getWorkAreaHeight());
+    }
+}
+
+function getStandingsTableHeight() {
+    upper_trade_height = $('#teams').height() + $('#standings-header').height()
+
+    max_height = $('#standingsTable').height() + $('#standingsTable').parent().siblings('div[class="fixed-table-footer"]').height() + 5;
+    min_height = 220
+    target_height = getWorkAreaHeight() - upper_trade_height;
+
+    if (target_height > max_height) {
+        return max_height
+    } else if (target_height < min_height) {
+        setTeamContainerHeight(upper_trade_height + max_height + 10);
+        return max_height
+    } else {
+        return target_height
+    }
+}
+
+function getSummaryTableHeight() {
+    available_height = $('#sidebar').height() - $('.innerSidebarContainer').outerHeight(true) - $('#summary-header').outerHeight(true);
+    min_height = 100;
+    full_height = $('#summary').height() + 5;
+
+    if (full_height < available_height) {
+        return full_height;
+    } else if (available_height < min_height) {
+        return full_height;
+    } else {
+        return available_height;
+    }
+}
+
+function getWorkAreaHeight() {
+    return $(window).height() - $('nav').outerHeight(true);
+}
+
+function statFormatter(value, row, index) {
+    if (value == 'Rank' || value == 'Proj Pts') {
+        return '<span class="heavy-cell">' + value + '</span>';
+    } else {
+        return value;
+    }
+}
+
+function resultFormatter(value, row, index) {
+    if (row['stat'] == 'Rank' || row['stat'] == 'Proj Pts') {
+        return '<span class="heavy-cell">' + value + '</span>';
+    } else {
+        return value;
+    }
 }

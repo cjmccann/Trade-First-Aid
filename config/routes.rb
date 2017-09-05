@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   get 'trades/demo' => 'trades#demo'
 
   resources :leagues, shallow: true do
-    resources :teams
+    resources :teams do
+      get 'set_favorite'
+    end
+
     resources :trades
 
     member do

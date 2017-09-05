@@ -10,18 +10,19 @@
         </button>
 
         <% if @team.user.favorite_team == @team.id %>
-          <button type="button" class="btn btn-default fav-tooltip" id="setFavorite" 
+          <button type="button" class="btn btn-default fav-tooltip" 
             data-toggle='tooltip' data-placement='top' data-original-title='<%= @team.name %> is already your favorite team!'>
             <%= fa_icon 'heart' %>
           </button>
         <% else %>
-          <button type="button" class="btn btn-default" id="setFavorite">
+          <button type="button" class="btn btn-default" id="setFavorite"
+            data-toggle='tooltip' data-placement='top' data-original-title='<%= @team.name %> is already your favorite team!'>
             <%= fa_icon 'heart-o' %>
           </button>
         <% end %>
 
-        <button type="button" class="btn btn-default cal-tooltip fav-tooltip" data-toggle='tooltip'
-          data-placement='top' data-original-title='Your projections include weeks <%= @team.league.week_updated %> through 16.'>
+        <button type="button" class="btn btn-default fav-tooltip" data-toggle='tooltip'
+          data-placement='top' data-original-title='Your projections include weeks <%= @team.league.week_updated %> - 16.'>
           <%= fa_icon 'calendar' %> Wk: <%= @team.league.week_updated %>-16
         </button>
       </div>
