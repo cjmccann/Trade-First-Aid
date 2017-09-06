@@ -77,6 +77,7 @@ $(window).resize(function () {
     setSidebarHeight();
     $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
     setSpacerHeight();
+    $('#summary').bootstrapTable('resetView', { height: getSummaryTableHeight() });
 });
 
 $(document).on('click', '.playerToggle', function(e){
@@ -132,6 +133,7 @@ function givePlayer(id, myTeam, otherTeam) {
 
     addPlayerStats(id, otherTeam, false);
     removePlayerStats(id, myTeam, true);
+    updatePlayerGiven(true, id);
 
     updateSummaryTable();
     setTransitions();
@@ -142,6 +144,7 @@ function getPlayer(id, myTeam, otherTeam) {
 
     addPlayerStats(id, myTeam, false);
     removePlayerStats(id, otherTeam, true);
+    updatePlayerReceived(true, id);
 
     updateSummaryTable();
     setTransitions();
@@ -152,6 +155,7 @@ function removeGivenPlayer(id, myTeam, otherTeam) {
 
     removePlayerStats(id, otherTeam, false);
     addPlayerStats(id, myTeam, true);
+    updatePlayerGiven(false, id);
 
     updateSummaryTable();
     setTransitions();
@@ -162,6 +166,7 @@ function removeReceivedPlayer(id, myTeam, otherTeam) {
 
     removePlayerStats(id, myTeam, false);
     addPlayerStats(id, otherTeam, true);
+    updatePlayerReceived(false, id);
 
     updateSummaryTable();
     setTransitions();
@@ -240,6 +245,29 @@ function removePlayerStats(id, team, refresh) {
     }
 }
 
+function updatePlayerGiven(isAdded, id) {
+    tradeDataDiv = $('#tradeData')
+    playerData = tradeDataDiv.data('player-stats')[id]
+
+    if (isAdded) {
+        tradeDataDiv.data('given-player-vals').push(playerData['total']);
+    } else {
+        tradeDataDiv.data('given-player-vals').splice(tradeDataDiv.data('given-player-vals').indexOf(playerData['total']), 1);
+    }
+}
+
+function updatePlayerReceived(isAdded, id) {
+    tradeDataDiv = $('#tradeData')
+    playerData = tradeDataDiv.data('player-stats')[id]
+
+    if (isAdded) {
+        tradeDataDiv.data('received-player-vals').push(playerData['total']);
+    } else {
+        tradeDataDiv.data('received-player-vals').splice(tradeDataDiv.data('received-player-vals').indexOf(playerData['total']), 1);
+    }
+
+}
+
 function getAdditiveDelta(oldDelta, newDelta) {
     if (typeof oldDelta === 'undefined') {
         oldDelta = 0
@@ -282,11 +310,17 @@ function formatDeltaString(totalDelta) {
 }
 
 function updateSummaryTable() {
-    standingsData = $('#standingsTableData')
-    deltas = $('#tradeData').data('deltas')
+    standingsData = $('#standingsTableData');
+    deltas = $('#tradeData').data('deltas');
+    receivedPlayers = $('#tradeData').data('received-player-vals');
+    givenPlayers = $('#tradeData').data('given-player-vals');
     summaryData = [ ];
     summaryData.push( { stat: 'Rank', result: formatDeltaString(standingsData.data('start-rank') - standingsData.data('rank')) } )
     summaryData.push( { stat: 'Proj Pts', result: deltas['total'] } )
+    summaryData.push( { stat: 'Avg Pts/Plyr Rec', result: (receivedPlayers.reduce( function(a, b) { return a + b; }, 0) 
+        / (receivedPlayers.length == 0 ?  1 : receivedPlayers.length)).toFixed(1) });
+    summaryData.push( { stat: 'Avg Pts/Plyr Given', result: (givenPlayers.reduce( function(a, b) { return a + b; }, 0) 
+        / (givenPlayers.length == 0 ? 1 : givenPlayers.length)).toFixed(1) });
 
     for(var key in deltas) {
         if (key == 'total' || deltas[key] == '0') { continue; }
@@ -312,10 +346,20 @@ function setTransitions() {
     for(var key in new_data) {
         if (key == 'name') { continue; }
 
-        if (new_data[key] > old_data[key]) {
-            $(tr.children()[statOrder[key]]).addClass('plus');
-        } else if (new_data[key] < old_data[key]) {
-            $(tr.children()[statOrder[key]]).addClass('minus');
+        neg_stats = $('#standingsTableData').data('negative-stats');
+
+        if (!neg_stats.includes(key)) {
+            if (new_data[key] > old_data[key]) {
+                $(tr.children()[statOrder[key]]).addClass('plus');
+            } else if (new_data[key] < old_data[key]) {
+                $(tr.children()[statOrder[key]]).addClass('minus');
+            }
+        } else {
+            if (new_data[key] > old_data[key]) {
+                $(tr.children()[statOrder[key]]).addClass('minus');
+            } else if (new_data[key] < old_data[key]) {
+                $(tr.children()[statOrder[key]]).addClass('plus');
+            }
         }
     }
 
@@ -378,10 +422,20 @@ function formatDeltas(data) {
     deltas = $('#tradeData').data('deltas');
 
     if (deltas && deltas[this.field]) {
-        if (parseFloat(deltas[this.field]) > 0) {
-            return '<div class="setDeltaGood">' + deltas[this.field] + '</div>';
-        } else if (parseFloat(deltas[this.field]) < 0) {
-            return '<div class="setDeltaBad">' + deltas[this.field] + '</div>';
+        neg_stats = $('#standingsTableData').data('negative-stats');
+
+        if (!neg_stats.includes(this.field)) {
+            if (parseFloat(deltas[this.field]) > 0) {
+                return '<div class="setDeltaGood">' + deltas[this.field] + '</div>';
+            } else if (parseFloat(deltas[this.field]) < 0) {
+                return '<div class="setDeltaBad">' + deltas[this.field] + '</div>';
+            }
+        } else {
+            if (parseFloat(deltas[this.field]) > 0) {
+                return '<div class="setDeltaBad">' + deltas[this.field] + '</div>';
+            } else if (parseFloat(deltas[this.field]) < 0) {
+                return '<div class="setDeltaGood">' + deltas[this.field] + '</div>';
+            }
         }
     }
 
@@ -489,7 +543,7 @@ function getWorkAreaHeight() {
 }
 
 function statFormatter(value, row, index) {
-    if (value == 'Rank' || value == 'Proj Pts') {
+    if (value == 'Rank' || value == 'Proj Pts' || value.includes('Avg Pts')) {
         return '<span class="heavy-cell">' + value + '</span>';
     } else {
         return value;
@@ -497,7 +551,7 @@ function statFormatter(value, row, index) {
 }
 
 function resultFormatter(value, row, index) {
-    if (row['stat'] == 'Rank' || row['stat'] == 'Proj Pts') {
+    if (row['stat'] == 'Rank' || row['stat'] == 'Proj Pts' || row['stat'].includes('Avg Pts')) {
         return '<span class="heavy-cell">' + value + '</span>';
     } else {
         return value;

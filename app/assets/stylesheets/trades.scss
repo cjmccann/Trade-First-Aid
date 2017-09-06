@@ -270,6 +270,9 @@ td[data-field="name"] {
 
 #summary {
     // font-size: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .heavy-cell {

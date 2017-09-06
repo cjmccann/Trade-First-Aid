@@ -24,7 +24,7 @@ module Yahoo
 
     def refresh!
       super({ 
-        :redirect_uri => 'http://lvh.me/users/auth/yahoo/callback',
+        :redirect_uri => Rails.application.secrets.YAHOO_CALLBACK_URL,
         :headers => { 'Authorization' => get_authorization_header }
       })
     end

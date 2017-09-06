@@ -251,6 +251,15 @@ class League < ApplicationRecord
     map
   end
 
+  def get_negative_stats
+    ['Int', 'Fum', 'Fum Lost']
+    #self.stat_settings.each do |k, v|
+    #  if !v[:modifier].nil? && v[:modifier] < 0
+    #    stats.push(k)
+    #  end
+    #end
+  end
+
   private
     # Yahoo unsupported settings: Incomplete Passes, Pick Sixes Thrown, Passing 1st downs, 40+ yd completions, 40+ yd passing touchdowns,
     # Rushing 1st downs, 40+ yard run, 40+ yard rushing touchdowns, 40+ Yard Receptions, 40+ Yard Receiving Touchdowns, Field Goals Missed 0-19 Yards...,

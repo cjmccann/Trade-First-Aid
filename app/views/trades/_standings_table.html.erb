@@ -13,7 +13,7 @@
       <thead>
         <tr>
           <th data-formatter="rankFormatter"></th>
-          <th data-formatter="teamPicFormatter"></th>
+          <th data-width="22" data-formatter="teamPicFormatter"></th>
           <th data-field="name" data-formatter="standingsNameFormatter" data-footer-formatter="formatDeltaLabel">Name</th>
           <th data-field="total" data-formatter="teamProjPtsFormatter" data-sortable="false" data-footer-formatter="formatDeltas">Proj Pts</th>
 
@@ -41,7 +41,7 @@
       </thead>
     </table>
 
-    <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>'
+    <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>' data-negative-stats='<%= @league.get_negative_stats %>'
                                  data-team-stats='<%= @league.team_stats.to_json %>'>
     </div>
   </div>
