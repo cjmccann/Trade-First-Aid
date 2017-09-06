@@ -152,16 +152,16 @@ class League < ApplicationRecord
           total += value 
         end
 
-        team_stats[key] = total.round(1)
+        team_stats[key] = total
       end
 
-      team_stats['total'] = total_points.round(1)
+      team_stats['total'] = total_points
       team_stats['teamIcon'] = team.icon_url
 
       stats.push(team_stats)
     end
 
-    self.team_stats = stats
+    self.team_stats = round_team_stats(stats)
   end
 
   def calculate_player_stats(starting_week)
@@ -170,7 +170,7 @@ class League < ApplicationRecord
     self.teams.each do |team|
       players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
                                                'Season' => 2017, 
-                                               'Week' => (starting_week )..17)
+                                               'Week' => (starting_week)..17)
       
       players.each do |player|
         if stats[player.PlayerID].nil?
@@ -193,18 +193,40 @@ class League < ApplicationRecord
           end
 
           if player_stats[key].nil?
-            player_stats[key] = value.round(1)
+            player_stats[key] = value
           else
-            player_stats[key] = (player_stats[key] + value).round(1)
+            player_stats[key] = (player_stats[key] + value)
           end
         end
 
-        player_stats['total'] = total_value.round(1)
+        player_stats['total'] = total_value
         stats[player.PlayerID] = player_stats
       end
     end
 
-    self.player_stats = stats
+    self.player_stats = round_player_stats(stats)
+  end
+
+  def round_team_stats(stats)
+    stats.each do |team|
+      team.each do |k, v|
+        if v.is_a?(Numeric)
+          digits = (k == 'total' ? 1 : 0)
+          team[k] = v.round(digits)
+        end
+      end
+    end
+  end
+
+  def round_player_stats(stats)
+    stats.each do |k, v|
+      v.each do |k2, v2|
+        if v2.is_a?(Numeric)
+          digits = (k2 == 'total' ? 1 : 0)
+          v[k2] = v2.round(digits)
+        end
+      end
+    end
   end
 
   def sync_now?

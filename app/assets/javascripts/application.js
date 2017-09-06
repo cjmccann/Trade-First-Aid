@@ -59,3 +59,4 @@ function showSuccessIndicator(text) {
         $(".successIndicator").fadeOut("slow");
     }, 3500)
 }
+

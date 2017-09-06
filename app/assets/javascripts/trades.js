@@ -201,7 +201,7 @@ function addPlayerStats(id, team, refresh) {
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: ((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1)) / 1,
+            value: parseFloat(((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1))),
             reinit: reinitTable
         });
 
@@ -237,7 +237,7 @@ function removePlayerStats(id, team, refresh) {
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: ((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1)) / 1,
+            value: parseFloat(((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1))),
             reinit: reinitTable
         });
 
@@ -273,14 +273,14 @@ function getAdditiveDelta(oldDelta, newDelta) {
         oldDelta = 0
     }
 
-    totalDelta = (parseFloat(oldDelta) + newDelta).toFixed(1) / 1;
+    totalDelta = (parseFloat(oldDelta) + newDelta).toFixed(1);
     if (totalDelta > 0 && totalDelta <= 0.2) {
         totalDelta = 0
     } else if (totalDelta < 0 && totalDelta >= -0.2) {
         totalDelta = 0
     }
 
-    return formatDeltaString(totalDelta);
+    return formatDeltaString(parseFloat(totalDelta));
 }
 
 function getSubtractiveDelta(oldDelta, newDelta) {
@@ -288,7 +288,7 @@ function getSubtractiveDelta(oldDelta, newDelta) {
         oldDelta = 0
     }
 
-    totalDelta = (parseFloat(oldDelta) - newDelta).toFixed(1) / 1;
+    totalDelta = (parseFloat(oldDelta) - newDelta).toFixed(1);
 
     if (totalDelta > 0 && totalDelta <= 0.2) {
         totalDelta = 0
@@ -296,12 +296,12 @@ function getSubtractiveDelta(oldDelta, newDelta) {
         totalDelta = 0
     }
 
-    return formatDeltaString(totalDelta);
+    return formatDeltaString(parseFloat(totalDelta));
 }
 
 function formatDeltaString(totalDelta) {
     if (totalDelta > 0) {
-        totalDelta = '+' + totalDelta
+        totalDelta = '+' + totalDelta.toString();
     } else {
         totalDelta = totalDelta.toString();
     }
@@ -314,10 +314,11 @@ function updateSummaryTable() {
     deltas = $('#tradeData').data('deltas');
     receivedPlayers = $('#tradeData').data('received-player-vals');
     givenPlayers = $('#tradeData').data('given-player-vals');
+
     summaryData = [ ];
     summaryData.push( { stat: 'Rank', result: formatDeltaString(standingsData.data('start-rank') - standingsData.data('rank')) } )
     summaryData.push( { stat: 'Proj Pts', result: deltas['total'] } )
-    summaryData.push( { stat: 'Avg Pts/Plyr Rec', result: (receivedPlayers.reduce( function(a, b) { return a + b; }, 0) 
+    summaryData.push( { stat: 'Avg Pts/Plyr Added', result: (receivedPlayers.reduce( function(a, b) { return a + b; }, 0) 
         / (receivedPlayers.length == 0 ?  1 : receivedPlayers.length)).toFixed(1) });
     summaryData.push( { stat: 'Avg Pts/Plyr Given', result: (givenPlayers.reduce( function(a, b) { return a + b; }, 0) 
         / (givenPlayers.length == 0 ? 1 : givenPlayers.length)).toFixed(1) });

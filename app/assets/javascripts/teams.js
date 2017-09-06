@@ -1,5 +1,6 @@
 addEventListener('turbolinks:load', function() {
-    $('[data-toggle="table"]').bootstrapTable();
+    $('#teamTable').bootstrapTable();
+    $('#standingsTable').bootstrapTable();
     $('div#favStandings').height($('#favTeamContainer').height());
 
     if ($('#syncManager').data('sync-success')) {
@@ -14,6 +15,8 @@ addEventListener('turbolinks:load', function() {
     $('.fav-tooltip').tooltip();
 
     $(document).on('click', '#setFavorite', setFavorite);
+
+
 });
 
 $(document).on('click', '.importButton', function(e){
@@ -153,4 +156,22 @@ function handleSetFavoriteSuccess() {
 
     $(document).off('click', '#setFavorite', setFavorite);
     $('#setFavorite').tooltip();
+}
+
+function rankFormatter(value, row, index) {
+    if (row['name'] == $('#tradeData').data('my-team')) { 
+        data_elem = $('#standingsTableData')
+
+        if (!data_elem.data('rank')) {
+            data_elem.data('start-rank', index + 1);
+        }
+
+        data_elem.data('rank', index + 1); 
+    }
+
+    return "<strong>" + (index + 1) + "</strong>";
+}
+
+function teamPicFormatter(value, row, index) {
+    return "<img class='teamPhoto img-circle' src='" + row['teamIcon'] + "'>"
 }
