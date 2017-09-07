@@ -47,7 +47,7 @@ div.innerTeamContainer {
     width: 92%;
     margin: auto;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .outerSidebarContainer {
@@ -278,4 +278,8 @@ td[data-field="name"] {
 .heavy-cell {
     font-weight: 600;
     font-size: 16px;
+}
+
+.rank-cell {
+    text-align: center;
 }

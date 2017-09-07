@@ -121,5 +121,29 @@ strong {
 }
 
 .delimiter-right {
-    // border-left: 2px solid #b0b0b0;
+    border-right: 2px solid #b0b0b0;
+}
+
+th.delimiter-right {
+    padding-right: 1px !important;
+}
+
+table > tbody > tr:not([data-index]) > td.delimiter-right {
+     padding-right: 1px !important;
+}
+
+.delimiter-left {
+    border-left: 2px solid #b0b0b0 !important;
+}
+
+th.delimiter-left {
+    padding-left: 1px !important;
+}
+
+tr[data-index] > td.delimiter-left {
+    border-right: 1px solid transparent;
+}
+
+table > tbody > tr:not([data-index]) > td.delimiter-left {
+     padding-left: 1px !important;
 }

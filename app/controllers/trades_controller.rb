@@ -4,6 +4,7 @@ class TradesController < ApplicationController
   def new
     @league = League.find(params['league_id'])
     @my_team = @league.teams.where( :user => current_user ).first
+    @stat_metadata = @league.stat_metadata
 
     if params['otherTeam'].nil?
       @other_team = @league.teams.where( :user => nil ).first

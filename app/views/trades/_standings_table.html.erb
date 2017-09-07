@@ -12,20 +12,25 @@
                                data-show-footer='true'>
       <thead>
         <tr>
-          <th data-formatter="rankFormatter"></th>
+          <th data-colspan='4' data-class='delimiter-right'></th>
+          <th data-colspan='<%= @stat_metadata['cols'][:rec]  %>' data-class='delimiter-right'>Receiving</th>
+          <th data-colspan='<%= @stat_metadata['cols'][:rush] %>' data-class='delimiter-right'>Rushing</th>
+          <th data-colspan='<%= @stat_metadata['cols'][:pass] %>' data-class='delimiter-right'>Passing</th>
+          <th data-colspan='<%= @stat_metadata['cols'][:misc] %>' data-class='delimiter-right'>Misc</th>
+        </tr>
+        <tr>
+          <th data-class='rank-cell' data-formatter="rankFormatter"></th>
           <th data-width="22" data-formatter="teamPicFormatter"></th>
           <th data-field="name" data-formatter="standingsNameFormatter" data-footer-formatter="formatDeltaLabel">Name</th>
-          <th data-class='delimiter-right' data-field="total" data-formatter="teamProjPtsFormatter" data-sortable="false" data-footer-formatter="formatDeltas">Proj Pts</th>
+          <th data-field="total" data-class='delimiter-right' data-formatter="teamProjPtsFormatter" data-sortable="false" data-footer-formatter="formatDeltas">Proj Pts</th>
 
-          <% read_only_stats = [] %>
           <% index = 4 %>
           <% stat_order_map = { 'total' => index - 1 } %>
 
-          <% League.stat_order.each do |stat_obj| %>
-            <% stat_obj.each do |stat_id, stat_meta| %>
-              <% next if @league.stat_settings[stat_id].nil? %>
+          <% @stat_metadata['order'].each do |stat_obj| %>
+            <% stat_obj.each do |stat_id, delimiter_right| %>
 
-              <th data-field="<%= stat_id %>" data-class='<%= 'delimiter-right' if stat_meta['delimiter_right'] %>' data-footer-formatter="formatDeltas">
+              <th data-field="<%= stat_id %>" data-class='<%= 'delimiter-right' if delimiter_right %>' data-footer-formatter="formatDeltas">
                 <%= stat_id %>
               </th>
 

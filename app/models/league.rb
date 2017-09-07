@@ -129,6 +129,32 @@ class League < ApplicationRecord
     @@stat_order
   end
 
+  def stat_metadata
+    metadata = { 'cols' => { :rec => 0, :rush => 0, :pass => 0, :misc => 0 } }
+    stat_order = [ ]
+    tmp_type = :rec
+
+    @@stat_order.each_with_index do |stat_obj, i|
+      stat_obj.each do |stat_id, type|
+        next if self.stat_settings[stat_id].nil?
+        metadata['cols'][type] += 1
+
+        next_stat = @@stat_order[i + 1]
+        if next_stat && tmp_type != next_stat[next_stat.keys.first]
+          delimiter_right = true
+          tmp_type = next_stat[next_stat.keys.first]
+        else
+          delimiter_right = false
+        end
+
+        stat_order.push( { stat_id => delimiter_right })
+      end
+    end
+
+    metadata['order'] = stat_order
+    metadata
+  end
+
   def calculate_team_stats(starting_week)
     stats = [ ]
 
@@ -339,18 +365,18 @@ class League < ApplicationRecord
     }
 
     @@stat_order = [
-      { 'Targets' => { 'delimiter_right' => false } },
-      { 'Rec' => { 'delimiter_right' => false } },
-      { 'Rec Yds' => { 'delimiter_right' => false } },
-      { 'Rec TD' => { 'delimiter_right' => true } },
-      { 'Rush Att' => { 'delimiter_right' => false } },
-      { 'Rush Yds' => { 'delimiter_right' => false } },
-      { 'Rush TD' => { 'delimiter_right' => true } },
-      { 'Pass Att' => { 'delimiter_right' => false } },
-      { 'Comp' => { 'delimiter_right' => false } },
-      { 'Pass Yds' => { 'delimiter_right' => false } },
-      { 'Pass TD' => { 'delimiter_right' => true } },
-      { 'Int' => { 'delimiter_right' => false } },
-      { 'Fum Lost' => { 'delimiter_right' => false } },
+      { 'Targets' => :rec },
+      { 'Rec' => :rec },
+      { 'Rec Yds' => :rec },
+      { 'Rec TD' => :rec },
+      { 'Rush Att' => :rush },
+      { 'Rush Yds' => :rush },
+      { 'Rush TD' => :rush },
+      { 'Pass Att' => :pass },
+      { 'Comp' => :pass },
+      { 'Pass Yds' => :pass },
+      { 'Pass TD' => :pass },
+      { 'Int' => :misc },
+      { 'Fum Lost' => :misc },
     ]
 end

@@ -38,7 +38,17 @@
   <table id="teamTable" class="table table-striped table-condensed" data-toggle="table" 
                                                                     data-sort-name="totalValue" 
                                                                     data-sort-order="desc">
+    <% @stat_metadata = @team.league.stat_metadata %>
+
     <thead>
+      <tr>
+        <th data-colspan='5' data-class='delimiter-right'></th>
+        <th data-colspan='<%= @stat_metadata['cols'][:rec]  %>' data-class='delimiter-right'>Receiving</th>
+        <th data-colspan='<%= @stat_metadata['cols'][:rush] %>' data-class='delimiter-right'>Rushing</th>
+        <th data-colspan='<%= @stat_metadata['cols'][:pass] %>' data-class='delimiter-right'>Passing</th>
+        <th data-colspan='<%= @stat_metadata['cols'][:misc] %>' data-class='delimiter-right'>Misc</th>
+      </tr>
+
       <tr>
         <th data-field="photo"><span style="display:none">Photo</span></th>
         <th data-field="name" data-sortable="true">Name</th>
@@ -47,12 +57,12 @@
         <th data-field="totalValue" data-sortable="true" class='delimiter-right'>Proj Pts</th>
 
         <% stat_order_arr = [] %>
-        <% League.stat_order.each do |stat_obj| %>
-          <% stat_obj.each do |stat_id, stat_meta| %>
+        <% @stat_metadata['order'].each do |stat_obj| %>
+          <% stat_obj.each do |stat_id, delimiter_right| %>
             <% next if @team.league.stat_settings[stat_id].nil? %>
 
-            <th data-field="<%= stat_id %>" data-sortable="true" class='<%= 'delimiter-right' if stat_meta['delimiter_right'] %>' ><%= stat_id %></th>
-              <% stat_order_arr.push({ stat_id => stat_meta['delimiter_right'] } ) %>
+            <th data-field="<%= stat_id %>" data-sortable="true" class='<%= 'delimiter-right' if delimiter_right %>' ><%= stat_id %></th>
+              <% stat_order_arr.push({ stat_id => delimiter_right } ) %>
             <% end %>
         <% end %>
       </tr>
