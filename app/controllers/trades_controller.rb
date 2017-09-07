@@ -24,6 +24,7 @@ class TradesController < ApplicationController
   def demo
     @league = League.where('league_id' => '995273').first
     @my_team = @league.teams.where.not(:user => nil).first
+    @stat_metadata = @league.stat_metadata
 
     if params['otherTeam'].nil?
       @other_team = @league.teams.where( :user => nil ).first

@@ -133,21 +133,22 @@ class League < ApplicationRecord
     metadata = { 'cols' => { :rec => 0, :rush => 0, :pass => 0, :misc => 0 } }
     stat_order = [ ]
     tmp_type = :rec
+    prev = nil
 
     @@stat_order.each_with_index do |stat_obj, i|
       stat_obj.each do |stat_id, type|
         next if self.stat_settings[stat_id].nil?
         metadata['cols'][type] += 1
 
-        next_stat = @@stat_order[i + 1]
-        if next_stat && tmp_type != next_stat[next_stat.keys.first]
-          delimiter_right = true
-          tmp_type = next_stat[next_stat.keys.first]
-        else
-          delimiter_right = false
+        if tmp_type != type
+          stat_order.pop
+          stat_order.push( { prev => true } )
+
+          tmp_type = type
         end
 
-        stat_order.push( { stat_id => delimiter_right })
+        stat_order.push( { stat_id => false })
+        prev = stat_id
       end
     end
 
