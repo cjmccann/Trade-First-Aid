@@ -1,4 +1,4 @@
-<div class="page-header">
+<div class="page-header fav-header">
   <div class="innerFavContainer teamInner">
     <div id="btn-toolbar" class="btn-toolbar pull-right">
       <div class="btn-group">
@@ -44,13 +44,16 @@
         <th data-field="name" data-sortable="true">Name</th>
         <th data-field="pos" data-sortable="true">Pos</th>
         <th data-field="team">Team</th>
-        <th data-field="totalValue" data-sortable="true">Proj Pts</th>
+        <th data-field="totalValue" data-sortable="true" class='delimiter-right'>Proj Pts</th>
 
         <% stat_order_arr = [] %>
-        <% @team.league.stat_settings.each do |key, val| %>
-          <% next if val[:roto_names].nil? %>
-          <th data-field="<%= key %>" data-sortable="true"><%= key %></th>
-          <% stat_order_arr.push(key) %>
+        <% League.stat_order.each do |stat_obj| %>
+          <% stat_obj.each do |stat_id, stat_meta| %>
+            <% next if @team.league.stat_settings[stat_id].nil? %>
+
+            <th data-field="<%= stat_id %>" data-sortable="true" class='<%= 'delimiter-right' if stat_meta['delimiter_right'] %>' ><%= stat_id %></th>
+              <% stat_order_arr.push({ stat_id => stat_meta['delimiter_right'] } ) %>
+            <% end %>
         <% end %>
       </tr>
     </thead>
@@ -62,10 +65,12 @@
           <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= metadata['name'] %></td>
           <td data-field="pos"><%= metadata['position'] %></td>
           <td data-field="team"><%= metadata['team'] %></td>
-          <td class="projPts" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
+          <td class="projPts delimiter-right" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
 
-          <% stat_order_arr.each do |stat_id| %>
-            <td><%= @team.league.player_stats[roto_id][stat_id] || '' %></td>
+          <% stat_order_arr.each do |stat_obj| %>
+            <% stat_obj.each do |stat_id, delimiter_right| %>
+              <td class='<%= 'delimiter-right' if delimiter_right %>'><%= @team.league.player_stats[roto_id][stat_id] || '' %></td>
+            <% end %>
           <% end %>
         </tr>
       <% end %>

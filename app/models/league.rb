@@ -125,6 +125,10 @@ class League < ApplicationRecord
     @@yahoo_mappings
   end
 
+  def self.stat_order
+    @@stat_order
+  end
+
   def calculate_team_stats(starting_week)
     stats = [ ]
 
@@ -330,6 +334,23 @@ class League < ApplicationRecord
       '40+ Yard Receptions' => true,
       '40+ Yard Receiving Touchdowns' => true,
       '2-Point Conversions' => true,
-      'Offensive Fumble Return TD' => true
+      'Offensive Fumble Return TD' => true,
+      'Fumbles' => true
     }
+
+    @@stat_order = [
+      { 'Targets' => { 'delimiter_right' => false } },
+      { 'Rec' => { 'delimiter_right' => false } },
+      { 'Rec Yds' => { 'delimiter_right' => false } },
+      { 'Rec TD' => { 'delimiter_right' => true } },
+      { 'Rush Att' => { 'delimiter_right' => false } },
+      { 'Rush Yds' => { 'delimiter_right' => false } },
+      { 'Rush TD' => { 'delimiter_right' => true } },
+      { 'Pass Att' => { 'delimiter_right' => false } },
+      { 'Comp' => { 'delimiter_right' => false } },
+      { 'Pass Yds' => { 'delimiter_right' => false } },
+      { 'Pass TD' => { 'delimiter_right' => true } },
+      { 'Int' => { 'delimiter_right' => false } },
+      { 'Fum Lost' => { 'delimiter_right' => false } },
+    ]
 end

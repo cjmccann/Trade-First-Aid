@@ -558,3 +558,7 @@ function resultFormatter(value, row, index) {
         return value;
     }
 }
+
+function rightDelimiterFormatter(value, row, index) {
+
+}

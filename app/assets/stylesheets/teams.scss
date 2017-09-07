@@ -8,7 +8,8 @@
 
 #buttonContainer {
     width: 80%;
-    margin: 20px auto;
+    margin: 0px auto;
+    margin-top: -10px;
 }
 
 #teamTable {
@@ -94,4 +95,8 @@ h3.favHeader {
 
 .team-header {
     font-weight: 400 !important;
+}
+
+.fav-header {
+    margin-top: 20px;
 }
