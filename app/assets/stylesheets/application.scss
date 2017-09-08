@@ -64,6 +64,10 @@ div.alert {
     height: 140px;
 }
 
+.aboutimg-2 {
+    height: 140px;
+}
+
 .about-header {
     margin-bottom: 40px;
 }
@@ -146,4 +150,32 @@ tr[data-index] > td.delimiter-left {
 
 table > tbody > tr:not([data-index]) > td.delimiter-left {
      padding-left: 1px !important;
+}
+
+.tint-a {
+    //background-color: #f4f8e8;
+    background: repeating-linear-gradient(-45deg, #f4f8e8, #f4f8e8 5px, white 5px, white 10px);
+    // background-color: #f5fffa;
+}
+
+.tint-b {
+    //background-color: #e6f1f6;
+    background: repeating-linear-gradient(-45deg, #e6f1f7, #e6f1f6 5px, white 5px, white 10px);
+    // background-color: #f0f8ff;
+}
+
+.tint-c {
+    // background-color: #f3eaf0;
+    background: repeating-linear-gradient(-45deg, #f3eaf0, #f3eaf0 5px, white 5px, white 10px);
+    // background-color: #f4f0ec;
+}
+
+.tint-d {
+    // background-color: #f2fcfb;
+    background: repeating-linear-gradient(-45deg, #D5F5F2, #D5F5F2 5px, white 5px, white 10px);
+    // background-color: #f4f0ec;
+}
+
+.tint {
+    // background-color: #f9f9f9;
 }

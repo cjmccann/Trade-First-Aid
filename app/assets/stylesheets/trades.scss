@@ -128,7 +128,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-plus {
     from {
-        background-color: #AFC8FD;
+        background-color: #c7d8fd;
     }
     to {
         background-color: white;
@@ -137,7 +137,7 @@ div.innerStandingsContainer {
 
 @-webkit-keyframes fading-plus {
     from {
-        background-color: #AFC8FD;
+        background-color: #c7d8fd;
     }
     to {
         background-color: white;
@@ -184,12 +184,19 @@ img.teamPhoto {
 
 td.deltaGood {
     // background-color: #6091FB;
-    background-color: #AFC8FD;
+    
+    // PREV
+    // background-color: #AFC8FD;
+    background-color: #c7d8fd;
+    // background-color: #e6f1f6;
 }
 
 td.deltaBad {
     // background-color: #FF5C64;
+
+    // PREV
     background-color: #FFC2C5;
+    // background-color: #f3eaf0;
 }
 
 td[data-field="name"] {

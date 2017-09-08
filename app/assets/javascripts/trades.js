@@ -365,6 +365,13 @@ function setTransitions() {
     }
 
     $('#tradeData').data('my-team-stats',  jQuery.extend({}, new_data));
+    //$('tr[data-uniqueid="' + $('#tradeData').data('my-team') + '"]')[0].scrollIntoView(true);
+    var row = $('tr[data-uniqueid="' + $('#tradeData').data('my-team') + '"]')
+    var topPos = row[0].offsetTop;
+    var headerHeight = row.parent().siblings('thead').height();
+    console.log('topPos: ' + topPos);
+    console.log('headerHeight: ' + headerHeight);
+    row.closest('div.fixed-table-body')[0].scrollTop = (topPos - headerHeight);
 }
 
 function removeTransitions() {
@@ -512,7 +519,7 @@ function getStandingsTableHeight() {
     upper_trade_height = $('#teams').height() + $('#standings-header').height()
 
     max_height = $('#standingsTable').height() + $('#standingsTable').parent().siblings('div[class="fixed-table-footer"]').height() + 5;
-    min_height = 220
+    min_height = 215
     target_height = getWorkAreaHeight() - upper_trade_height;
 
     if (target_height > max_height) {
@@ -557,8 +564,4 @@ function resultFormatter(value, row, index) {
     } else {
         return value;
     }
-}
-
-function rightDelimiterFormatter(value, row, index) {
-
 }
