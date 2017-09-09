@@ -14,12 +14,12 @@ module OmniAuth
       option :authorize_params, {
         scope: 'openid,fspt-r',
         response_type: 'code',
-        redirect_uri: Rails.application.secrets.YAHOO_CALLBACK_URL,
+        redirect_uri: Rails.configuration.sekrets.YAHOO_CALLBACK_URL,
         nonce: (rand(10 ** 30).to_s.rjust(30,'0')),
       }
 
       option :token_params, {
-        redirect_uri: Rails.application.secrets.YAHOO_CALLBACK_URL,
+        redirect_uri: Rails.configuration.sekrets.YAHOO_CALLBACK_URL,
       }
 
       uid {

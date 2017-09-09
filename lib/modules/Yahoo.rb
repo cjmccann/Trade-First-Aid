@@ -2,8 +2,8 @@ module Yahoo
   class Client < OAuth2::Client
     def initialize
       super(
-        Rails.application.secrets.YAHOO_APP_ID,
-        Rails.application.secrets.YAHOO_APP_SECRET,
+        Rails.configuration.sekrets.YAHOO_APP_ID,
+        Rails.configuration.sekrets.YAHOO_APP_SECRET,
         :site => 'https://fantasysports.yahooapis.com',
         :parse_json => true,
         :authorize_url => '/oauth2/request_auth',
@@ -24,7 +24,7 @@ module Yahoo
 
     def refresh!
       super({ 
-        :redirect_uri => Rails.application.secrets.YAHOO_CALLBACK_URL,
+        :redirect_uri => Rails.configuration.sekrets.YAHOO_CALLBACK_URL,
         :headers => { 'Authorization' => get_authorization_header }
       })
     end

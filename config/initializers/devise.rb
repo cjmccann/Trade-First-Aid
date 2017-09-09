@@ -251,7 +251,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
-  config.omniauth :yahoo_oauth2, Rails.application.secrets.YAHOO_APP_ID, Rails.application.secrets.YAHOO_APP_SECRET
+  config.omniauth :yahoo_oauth2, Rails.configuration.sekrets.YAHOO_APP_ID, Rails.configuration.sekrets.YAHOO_APP_SECRET
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
