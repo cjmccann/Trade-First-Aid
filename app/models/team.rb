@@ -87,20 +87,29 @@ class Team < ApplicationRecord
   end
 
   def import(user)
-    self.imported = true
-    
-    if (self.manager_id == self.league.manager_id) && user.favorite_team.nil?
-      user.favorite_team = self.id
-      user.save
+    if add_all_players(user)
+      self.imported = true
+
+      if (self.manager_id == self.league.manager_id) && user.favorite_team.nil?
+        user.favorite_team = self.id
+        user.save
+      end
+      
+      self.save
+
+      true
+    else
+      false
     end
-
-    add_all_players(user)
-
-    self.save
   end
 
   def add_all_players(user)
     data = user.api_client.get_all_players_from_team(self.league.game_id, self.league.league_id, self.manager_id)
+
+    if data == []
+      return false
+    end
+
     yahoo_ids = []
 
     data.each do |player|
@@ -118,6 +127,7 @@ class Team < ApplicationRecord
                                                     'position' => rotoplayer.Position
       }
     end
-  end
 
+    true
+  end
 end

@@ -93,7 +93,7 @@ module Yahoo
     def get_league_settings(game_id, league_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")['fantasy_content']['league']['settings']
+      get_hash_response("fantasy/v2/league/#{game_id}.l.#{league_id}/settings")['fantasy_content']['league']['settings']
     end
 
     def get_league_teams(game_id, league_id)
@@ -114,26 +114,31 @@ module Yahoo
     def get_team_name(game_id, league_id, manager_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
+      get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}")
     end
 
     def get_team_stats(game_id, league_id, manager_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/stats;type=week;week=2")
+      get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/stats;type=week;week=2")
     end
 
     def get_all_players_from_team(game_id, league_id, manager_id)
       refresh_token_if_expired
 
       data = get_hash_response("fantasy/v2/team/#{game_id}.l.#{league_id}.t.#{manager_id}/players")
+
+      if data['fantasy_content']['team']['players'].nil?
+        return []
+      end
+
       data['fantasy_content']['team']['players']['player']
     end
 
     def get_player_stats(player_id)
       refresh_token_if_expired
 
-      data = get_hash_response("fantasy/v2/player/#{player_id}/stats")['fantasy_content']['player']['player_stats']['stats']['stat']
+      get_hash_response("fantasy/v2/player/#{player_id}/stats")['fantasy_content']['player']['player_stats']['stats']['stat']
     end
 
     def get_hash_response(url)

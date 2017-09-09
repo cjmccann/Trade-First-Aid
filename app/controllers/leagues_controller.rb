@@ -6,13 +6,20 @@ class LeaguesController < ApplicationController
   end
 
   def index
+      current_user.initialize_leagues
   end
 
   def import
     league = League.find(params[:id])
 
     league.teams.each do |team|
-      team.import(current_user)
+      success = team.import(current_user)
+
+      if !success
+        flash[:warning] = "Team #{team.name} has no players. Import failed. Ensure #{league.name} has drafted and try again."
+        redirect_to leagues_path
+        return
+      end
     end
 
     league.calculate_player_stats(league.week_updated)

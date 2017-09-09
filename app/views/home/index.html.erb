@@ -5,18 +5,5 @@
     <%= render 'teams/favorite_team' %> 
   <% end %>
 <% else %>
-  <div class="page-header logo-container">
-    <%= image_tag "logo_01.png", class: 'logo-lg' %>
-    <div class='logo-text'>
-      <h1 class='logo-text-h'>Trade First Aid</h1>
-      <h3 class='logo-text-h middle'>League-customized trade analysis tool</h3>
-    </div>
-  </div>
-
-  <div class="text-center">
-    <%= button_to 'Try it out!', 
-      trades_demo_path,
-      method: :get,
-      class: 'btn btn-info btn-lg' %>
-  </div>
+  <%= render 'title_page' %>
 <% end %>

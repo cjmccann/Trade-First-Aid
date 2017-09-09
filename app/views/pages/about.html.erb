@@ -1,28 +1,19 @@
 <div class="page-header text-center">
   <div class="container-fluid">
     <div class="row about-header">
-      <div class='col-sm-2'>
+      <div class='col-sm-6 about-border-right'>
         <%= image_tag 'about_img_sm.png', class: "aboutimg img-circle" %>
-      </div>
-      <div class='col-sm-3'>
-        <br/>
         <h2>Connor McCann</h2>
         <h4>connor.j.mccann<%=fa_icon 'at'%>gmail</h4>
         <h5><a href="https://github.com/cjmccann">github.com/cjmccann</a></h5>
       </div>
-      <div class='col-sm-2'>
-        <br/>
-        <br/>
-        <h2><%= fa_icon 'plus' %></h2>
-      </div>
-      <div class='col-sm-2'>
-        <%= image_tag 'roto-sm-01.png', class: "aboutimg-2" %>
-      </div>
-      <div class='col-sm-3'>
-        <br/>
-        <h2>RotoBaller</h2>
-        <h4>Fantasy analysis, sports news & live advice.</h4>
-        <h5><a href="https://www.rotoballer.com">rotoballer.com</a></h5>
+      <div class='col-sm-6 colab-vert'>
+          <p class='colab'>In collaboration with:</p>
+          <%= image_tag 'roto-lg.png', class: "aboutimg-2" %>
+          <br/>
+          <h4>Fantasy analysis, sports news & live advice.</h4>
+          <h5><a href="https://www.rotoballer.com">rotoballer.com</a></h5>
+        </div>
       </div>
     </div>
   </div>
@@ -35,13 +26,13 @@
     <div class='col-sm-4'>
       <div class='text-center feedback-container'>
         <h4>What am I?</br></br></h4>
-        Trade First Aid is an open-source collaboration between Connor McCann and RotoBaller.com to provide Fantasy Football 
-        users an in-depth trade analysis tool customized to their league and settings.
+        <p class='about-p'>Trade First Aid is an open-source tool to provide Fantasy Football 
+        users in-depth trade analysis customized to their league and settings.</p>
+        <p class='about-p'>Developed by Connor McCann, in collaboration with Rotoballer.</p>
       </div>
     </div>
-    <div class='col-sm-2'>
-    </div>
-    <div class='col-sm-4'>
+    <div class='col-sm-1'></div>
+    <div class='col-sm-6 about-border-left'>
       <div class='text-center feedback-container'>
         <h4>Bugs? Suggestions? Feedback?</br></br></h4>
         Contact me: <br/>
@@ -49,7 +40,6 @@
         <strong>Twitter:</strong> <a href="https://twitter.com/The_McCannon">@the_mccannon</a> <br/>
       </div>
     </div>
-    <div class='col-sm-1'></div>
   </div>
 </div>
 
@@ -65,25 +55,25 @@
     <a href="https://github.com/cjmccann/fantasy-football-trade-analyzer">
     <%= fa_stacked_icon "github inverse", base: "square", class: 'fa-3x' %>
     </a>
-    <h4>Source</h4>
+    <h5><a href="https://github.com/cjmccann/fantasy-football-trade-analyzer">Source</a></h5>
     </div>
     <div class='col-sm-2'>
     <a href="http://baseball-on-draft.herokuapp.com/">
     <%= fa_stacked_icon "baseball-on-draft", base: "square", class: 'fa-3x' %>
     </a>
-    <h4>Baseball-On-Draft</h4>
+    <h5><a href="http://baseball-on-draft.herokuapp.com/">Baseball-On-Draft</a></h5>
     </div>
     <div class='col-sm-2'>
     <a href="https://twitter.com/The_McCannon">
     <%= fa_stacked_icon "twitter inverse", base: "square", class: 'fa-3x' %>
     </a>
-    <h4>@the_mccannon</h4>
+    <h5><a href="https://twitter.com/The_McCannon">@the_mccannon</a></h5>
     </div>
     <div class='col-sm-2'>
     <a href="https://www.linkedin.com/in/connor-j-mccann">
     <%= fa_stacked_icon "linkedin inverse", base: "square", class: 'fa-3x' %>
     </a>
-    <h4>Work Stuff</h4>
+    <h5><a href="https://www.linkedin.com/in/connor-j-mccann">Work Stuff</a></h5>
     </div>
     <div class='col-sm-2'></div>
   </div>

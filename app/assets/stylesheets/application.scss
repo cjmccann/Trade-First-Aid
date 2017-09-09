@@ -33,6 +33,10 @@ div.alert {
     transform: translateX(-50%);
 }
 
+.app-title {
+    margin-right: 3px;
+}
+
 .stateIndicator {
     position: fixed;
     z-index: 9999;
@@ -55,6 +59,10 @@ div.alert {
     margin-right: 10px;
 }
 
+.fa-text-danger {
+    color: #a94442;
+}
+
 .about {
     margin: 40px auto;
 }
@@ -65,11 +73,11 @@ div.alert {
 }
 
 .aboutimg-2 {
-    height: 140px;
+    height: 55px;
 }
 
 .about-header {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .h4-small {
@@ -96,6 +104,7 @@ div.alert {
 .logo-lg {
     height: 80px;
     width: auto;
+    margin-top: 40px;
     margin-bottom: 20px;
     margin-right: 20px;
 }
@@ -173,9 +182,41 @@ table > tbody > tr:not([data-index]) > td.delimiter-left {
 .tint-d {
     // background-color: #f2fcfb;
     background: repeating-linear-gradient(-45deg, #D5F5F2, #D5F5F2 5px, white 5px, white 10px);
+    //background-color: #D5F5F2;
     // background-color: #f4f0ec;
 }
 
 .tint {
     // background-color: #f9f9f9;
+}
+
+.colab {
+    margin-bottom: 15px;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.about-border-left {
+    border-left: 1px solid #eeeeee
+}
+
+.about-border-right {
+    border-right: 1px solid #eeeeee
+}
+
+.about-inline {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.colab-vert {
+    margin-top: 60px;
+}
+
+.about-p {
+    font-size: 14px;
+}
+
+.fa-margin-left {
+    margin-left: 5px;
 }

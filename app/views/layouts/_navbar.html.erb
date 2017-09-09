@@ -9,7 +9,7 @@
           <% if team.imported %>
             <li><a href="<%= team_path(team) %>"><%= team.name %>
               <% if current_user.favorite_team == team.id %>
-                <%= fa_icon 'heart' %>
+                <%= fa_icon 'heart', class: 'fa-margin-left'  %>
               <% end %>
             </a></li>
           <% end %>

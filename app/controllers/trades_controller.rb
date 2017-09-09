@@ -23,6 +23,13 @@ class TradesController < ApplicationController
 
   def demo
     @league = League.where('league_id' => '995273').first
+
+    if @league.nil?
+      redirect_to root_path
+      flash[:warning] = 'Demo league has not yet been loaded! Try again later.'
+      return
+    end
+
     @my_team = @league.teams.where.not(:user => nil).first
     @stat_metadata = @league.stat_metadata
 
