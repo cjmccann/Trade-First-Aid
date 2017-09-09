@@ -75,3 +75,5 @@ gem 'mysql2'
 gem 'high_voltage'
 
 gem 'google-analytics-rails', '1.1.1'
+
+gem 'sekrets'
