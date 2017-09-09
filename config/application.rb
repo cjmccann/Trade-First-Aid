@@ -11,8 +11,6 @@ module TradeAnalyzer
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
-    config.autoload_paths << "#{Rails.root}/lib/modules"
-
     sekrets = File.join(Rails.root, 'config', 'sekrets.yml.enc')
     config.sekrets = Sekrets.settings_for(sekrets)[Rails.env] || {}
 
