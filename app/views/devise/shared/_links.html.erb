@@ -1,5 +1,5 @@
 <%- if devise_mapping.omniauthable? %>
   <%- resource_class.omniauth_providers.each do |provider| %>
-    <%= menu_item "#{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider), :class => "popup", :"data-width" => 500, :"data-height" => 600 %>
+    <%= menu_item "#{OmniAuth::Utils.camelize(provider)}", omniauth_authorize_path(resource_name, provider) %>
   <% end -%>
 <% end -%>
