@@ -369,8 +369,6 @@ function setTransitions() {
     var row = $('tr[data-uniqueid="' + $('#tradeData').data('my-team') + '"]')
     var topPos = row[0].offsetTop;
     var headerHeight = row.parent().siblings('thead').height();
-    console.log('topPos: ' + topPos);
-    console.log('headerHeight: ' + headerHeight);
     row.closest('div.fixed-table-body')[0].scrollTop = (topPos - headerHeight);
 }
 
