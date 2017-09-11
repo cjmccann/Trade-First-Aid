@@ -366,6 +366,10 @@ class League < ApplicationRecord
     }
 
     @@stat_order = [
+      { 'Pass Att' => :pass },
+      { 'Comp' => :pass },
+      { 'Pass Yds' => :pass },
+      { 'Pass TD' => :pass },
       { 'Targets' => :rec },
       { 'Rec' => :rec },
       { 'Rec Yds' => :rec },
@@ -373,10 +377,6 @@ class League < ApplicationRecord
       { 'Rush Att' => :rush },
       { 'Rush Yds' => :rush },
       { 'Rush TD' => :rush },
-      { 'Pass Att' => :pass },
-      { 'Comp' => :pass },
-      { 'Pass Yds' => :pass },
-      { 'Pass TD' => :pass },
       { 'Int' => :misc },
       { 'Fum Lost' => :misc },
     ]
