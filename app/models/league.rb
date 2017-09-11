@@ -132,7 +132,7 @@ class League < ApplicationRecord
   def stat_metadata
     metadata = { 'cols' => { :rec => 0, :rush => 0, :pass => 0, :misc => 0 } }
     stat_order = [ ]
-    tmp_type = :rec
+    tmp_type = :pass
     prev = nil
 
     @@stat_order.each_with_index do |stat_obj, i|
