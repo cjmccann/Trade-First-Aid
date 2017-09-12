@@ -290,3 +290,7 @@ td[data-field="name"] {
 .rank-cell {
     text-align: center;
 }
+
+th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
+    padding-right: 25px !important;
+}

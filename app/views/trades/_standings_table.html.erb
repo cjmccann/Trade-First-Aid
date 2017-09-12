@@ -16,7 +16,7 @@
           <th data-colspan='<%= @stat_metadata['cols'][:pass] %>' data-class='delimiter-right'>Passing</th>
           <th data-colspan='<%= @stat_metadata['cols'][:rec]  %>' data-class='delimiter-right'>Receiving</th>
           <th data-colspan='<%= @stat_metadata['cols'][:rush] %>' data-class='delimiter-right'>Rushing</th>
-          <th data-colspan='<%= @stat_metadata['cols'][:misc] %>' data-class=''>Misc</th>
+          <th data-colspan='<%= @stat_metadata['cols'][:misc] %>' data-class='th-final'>Misc</th>
         </tr>
         <tr>
           <th data-class='rank-cell' data-formatter="rankFormatter"></th>
@@ -30,7 +30,9 @@
           <% @stat_metadata['order'].each do |stat_obj| %>
             <% stat_obj.each do |stat_id, delimiter_right| %>
 
-              <th data-field="<%= stat_id %>" data-class='<%= 'delimiter-right' if delimiter_right %>' data-footer-formatter="formatDeltas">
+              <th data-field="<%= stat_id %>" 
+                  data-class='<%= 'delimiter-right' if delimiter_right %> <%= 'th-final' if stat_obj == @stat_metadata['order'].last %>'
+                  data-footer-formatter='formatDeltas'>
                 <%= stat_id %>
               </th>
 
