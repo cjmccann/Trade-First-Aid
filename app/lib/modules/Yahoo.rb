@@ -79,7 +79,12 @@ module Yahoo
       refresh_token_if_expired
 
       data = get_hash_response(SEASONS_URL)
-      data['fantasy_content']['users']['user']['games']['game']
+
+      if data['fantasy_content']['users']['user']['games']
+        data['fantasy_content']['users']['user']['games']['game']
+      else
+        []
+      end
     end
 
     def get_league_name(game_id, league_id)

@@ -7,15 +7,19 @@
     <th>Imported?</th>
   </tr>
 
-  <% current_user.teams.each do |team| %>
-    <tr>
-    <td><%= team.league.name %></td>
-    <td><%= team.name %></td>
-    <% if team.imported %>
-      <td> <%= fa_icon 'check-square-o' %> </td>
-    <% else %>
-      <td><%= button_to [:import, team.league], class: "importButton" do%>Import Now<% end %></td>
+  <% if current_user.teams.empty? %>
+    <tr><td colspan='3'>No fantasy teams found for the 2017 season!</td></tr>
+  <% else %>
+    <% current_user.teams.each do |team| %>
+      <tr>
+        <td><%= team.league.name %></td>
+        <td><%= team.name %></td>
+        <% if team.imported %>
+          <td> <%= fa_icon 'check-square-o' %> </td>
+        <% else %>
+          <td><%= button_to [:import, team.league], class: "importButton" do%>Import Now<% end %></td>
+        <% end %>
+      </tr>
     <% end %>
-    </tr>
   <% end %>
 <table>

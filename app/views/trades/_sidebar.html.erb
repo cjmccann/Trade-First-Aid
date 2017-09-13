@@ -1,4 +1,17 @@
+<div class='outerSidebarContainer'>
+  <div class='summary-container'>
+    <div class='sidebarHeader' id='summary-header'>
+      Trade Summary
+    </div>
+    <%= render 'trade_summary_table' %>
+  </div>
+
+  <div class='spacer'></div>
+</div>
+
+
 <div class='innerSidebarContainer'>
+  <hr/>
   <div class='sidebarHeader'>Players to receive:</div>
   <% @table_id = 'playersReceived' %>
   <%= render 'players_traded_table' %>
@@ -17,17 +30,5 @@
         <%= link_to 'Back', team_path(@my_team), type: 'button', class: "btn btn-default btn-primary btn-outline sidebarButton" %>
       <% end %>
     </div>
-  </div>
-</div>
-
-<div class='outerSidebarContainer'>
-  <div class='spacer'></div>
-
-  <div class='summary-container'>
-    <div class='sidebarHeader' id='summary-header'>
-      <hr/>
-      Trade Summary
-    </div>
-    <%= render 'trade_summary_table' %>
   </div>
 </div>
