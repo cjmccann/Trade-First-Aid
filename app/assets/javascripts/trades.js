@@ -571,11 +571,21 @@ function getTeamTableHeight() {
 }
 
 function addExtraTeamTableHeight() {
-    var standingsHeight  = 0;
+    standings_height  = 0;
     $('.standings').each(function() {
-          standingsHeight += $(this).height();
+          standings_height += $(this).height();
     });
 
-    extraTeamH = ($('#teamContainer').height() - $('#teams').height() - standingsHeight);
-    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() + extraTeamH });
+    max_height = $('.teamtable[data-toggle="table"]').height();
+    extra_team_h = ($('#teamContainer').height() - $('#teams').height() - standings_height);
+    target_height = getTeamTableHeight() + extra_team_h
+
+    console.log('max height ' + max_height);
+    console.log('target height ' + target_height);
+
+    if (target_height > max_height) {
+        $('.teamtable').bootstrapTable( 'resetView', { height: max_height });
+    } else {
+        $('.teamtable').bootstrapTable( 'resetView', { height: target_height });
+    }
 }
