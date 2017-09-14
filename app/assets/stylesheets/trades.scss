@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 #tradeContainer {
     width: 100%;
-    font-size:14px;
+    font-size:12px;
 }
 
 #teamContainer {
@@ -283,8 +283,8 @@ td[data-field="name"] {
 }
 
 .heavy-cell {
-    font-weight: 600;
-    font-size: 16px;
+    font-weight: 700;
+    font-size: 15px;
 }
 
 .rank-cell {
@@ -292,5 +292,5 @@ td[data-field="name"] {
 }
 
 th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
-    padding-right: 25px !important;
+    // padding-right: 25px !important;
 }

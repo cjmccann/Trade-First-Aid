@@ -18,12 +18,14 @@ $(document).on('turbolinks:load', function() {
         }
     });
 
-    $('.teamtable').bootstrapTable();
 
     setTeamContainerHeight();
     setSidebarHeight();
     setSpacerHeight();
 
+    $('.teamtable').bootstrapTable();
+    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() });
+    
     ret = $('#standingsTable')
 
     if (ret.length) {
@@ -36,9 +38,8 @@ $(document).on('turbolinks:load', function() {
         });
 
         $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
+        addExtraTeamTableHeight();
     }
-
-
 
     if ($('#tradeData').length) {
         tradeDataDiv = $('#tradeData')
@@ -72,10 +73,11 @@ $(document).on('turbolinks:load', function() {
 });
 
 $(window).resize(function () {
-    $('.teamtable').bootstrapTable('resetView');
+    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() });
     setTeamContainerHeight();
     setSidebarHeight();
     $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
+    addExtraTeamTableHeight();
     setSpacerHeight();
     $('#summary').bootstrapTable('resetView', { height: getSummaryTableHeight() });
 });
@@ -562,4 +564,18 @@ function resultFormatter(value, row, index) {
     } else {
         return value;
     }
+}
+
+function getTeamTableHeight() {
+    return (getWorkAreaHeight() * 0.35) - $('.teamHeader').outerHeight()
+}
+
+function addExtraTeamTableHeight() {
+    var standingsHeight  = 0;
+    $('.standings').each(function() {
+          standingsHeight += $(this).height();
+    });
+
+    extraTeamH = ($('#teamContainer').height() - $('#teams').height() - standingsHeight);
+    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() + extraTeamH });
 }
