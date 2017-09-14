@@ -1,0 +1,21 @@
+<div id='transactions-container'>
+  <table id='standingsTable' class="table table-striped table-condensed" 
+                             data-toggle="table" 
+                             data-sort-order='desc'
+                             data-show-pagination-switch="true"
+                             data-pagination="true"
+                             data-page-list='[10, 25, 50, 100, ALL]'>
+    <thead>
+      <tr>
+        <th data-field="name">Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @team.league.teams.each do |team| %>
+        <tr>
+          <td> <%= team.name %> </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
