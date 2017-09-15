@@ -1,4 +1,5 @@
 $(document).on('turbolinks:load', function() {
+    console.log('turbolinks load');
     $('#playersTraded').bootstrapTable({
         formatNoMatches: function () {
             return 'No players selected.';
@@ -18,13 +19,11 @@ $(document).on('turbolinks:load', function() {
         }
     });
 
-
-    setTeamContainerHeight();
-    setSidebarHeight();
-    setSpacerHeight();
+    //$('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() });
+    //setTeamContainerHeight();
+    //setSidebarHeight();
 
     $('.teamtable').bootstrapTable();
-    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() });
     
     ret = $('#standingsTable')
 
@@ -37,8 +36,8 @@ $(document).on('turbolinks:load', function() {
             $('.fixed-table-footer').scrollLeft($(this).scrollLeft());
         });
 
-        $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
-        addExtraTeamTableHeight();
+        //$('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
+        //addExtraTeamTableHeight();
     }
 
     if ($('#tradeData').length) {
@@ -70,17 +69,15 @@ $(document).on('turbolinks:load', function() {
         }
     }
 
+    //setSpacerHeight();
+    resizeTables();
+
+    setTimeout(function () {
+        $('#standingsTable').bootstrapTable('resetWidth')
+    }, 300);
 });
 
-$(window).resize(function () {
-    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() });
-    setTeamContainerHeight();
-    setSidebarHeight();
-    $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
-    addExtraTeamTableHeight();
-    setSpacerHeight();
-    $('#summary').bootstrapTable('resetView', { height: getSummaryTableHeight() });
-});
+$(window).resize(resizeTables);
 
 $(document).on('click', '.playerToggle', function(e){
     var tr = $(e.target).closest('tr');
@@ -451,7 +448,7 @@ function formatDeltas(data) {
 }
 
 function formatDeltaLabel() {
-    return '<strong>My Net Change:</strong>';
+    return 'My Net Change:';
 }
 
 function setDeltaColors() {
@@ -580,12 +577,26 @@ function addExtraTeamTableHeight() {
     extra_team_h = ($('#teamContainer').height() - $('#teams').height() - standings_height);
     target_height = getTeamTableHeight() + extra_team_h
 
-    console.log('max height ' + max_height);
-    console.log('target height ' + target_height);
-
     if (target_height > max_height) {
         $('.teamtable').bootstrapTable( 'resetView', { height: max_height });
     } else {
         $('.teamtable').bootstrapTable( 'resetView', { height: target_height });
     }
+}
+
+function resizeTables () {
+    $('.teamtable').bootstrapTable( 'resetView', { height: getTeamTableHeight() })
+    setTeamContainerHeight();
+    setSidebarHeight();
+    $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
+    
+    addExtraTeamTableHeight();
+    setSpacerHeight();
+    $('#summary').bootstrapTable('resetView', { height: getSummaryTableHeight() })
+}
+
+function footerStyle(value, row, index) {
+    return {
+        css: { "font-weight": "700" }
+    };
 }

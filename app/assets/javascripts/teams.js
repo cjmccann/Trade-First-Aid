@@ -1,6 +1,6 @@
 addEventListener('turbolinks:load', function() {
     $('#teamTable').bootstrapTable();
-    $('#standingsTable').bootstrapTable();
+    $('#favStandingsTable').bootstrapTable();
     $('div#favStandings').height($('#favTeamContainer').height());
 
     if ($('#syncManager').data('sync-success')) {
@@ -16,6 +16,9 @@ addEventListener('turbolinks:load', function() {
 
     $(document).on('click', '#setFavorite', setFavorite);
 
+    $('#favStandingsTable').bootstrapTable({
+        data: $('#favStandingsTableData').data('team-stats'),
+    });
 
 });
 
@@ -65,7 +68,7 @@ function handleSyncFailure(d) {
 }
 
 function favNameFormatter(value, row, index) {
-    if (value == $('#standingsTableData').data('my-team')) {
+    if (value == $('#favStandingsTableData').data('my-team')) {
         return '<strong>' + value + '</strong>'
     } else {
         return value
@@ -160,7 +163,7 @@ function handleSetFavoriteSuccess() {
 
 function rankFormatter(value, row, index) {
     if (row['name'] == $('#tradeData').data('my-team')) { 
-        data_elem = $('#standingsTableData')
+        data_elem = $('#favStandingsTableData')
 
         if (!data_elem.data('rank')) {
             data_elem.data('start-rank', index + 1);

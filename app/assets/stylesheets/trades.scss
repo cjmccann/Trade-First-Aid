@@ -284,7 +284,7 @@ td[data-field="name"] {
 
 .heavy-cell {
     font-weight: 700;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .rank-cell {
@@ -292,5 +292,5 @@ td[data-field="name"] {
 }
 
 th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
-    // padding-right: 25px !important;
+    padding-right: 30px !important;
 }
