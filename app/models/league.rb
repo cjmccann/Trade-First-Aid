@@ -298,7 +298,7 @@ class League < ApplicationRecord
   def team_id_map
     map = { }
     self.teams.each do |team|
-      map[team.name] = team.id
+      map[team.id] = team.name
     end
     
     map
@@ -311,6 +311,25 @@ class League < ApplicationRecord
     #    stats.push(k)
     #  end
     #end
+  end
+
+  def get_players_by_team
+    players = []
+
+    self.teams.each do |team|
+      next if self.manager_id == team.manager_id
+
+      team.player_metadata.each do |k, v|
+        players.push({
+          'label': v['name'],
+          'value': k,
+          't': team.name,
+          'tid': team.manager_id,
+        })
+      end
+    end
+
+    players
   end
 
   private

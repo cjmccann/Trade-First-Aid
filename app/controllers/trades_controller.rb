@@ -19,6 +19,10 @@ class TradesController < ApplicationController
     if params['players']
       @traded_players = params['players'].map(&:to_i)
     end
+    
+    if params['targetPlayer']
+      @added_player = params['targetPlayer'].to_i
+    end
   end
 
   def demo
@@ -41,6 +45,10 @@ class TradesController < ApplicationController
 
     if params['players']
       @traded_players = params['players'].map(&:to_i)
+    end
+
+    if params['targetPlayer']
+      @added_player = params['targetPlayer'].to_i
     end
 
     @demo = true

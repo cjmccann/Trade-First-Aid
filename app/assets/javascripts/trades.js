@@ -1,5 +1,4 @@
 $(document).on('turbolinks:load', function() {
-    console.log('turbolinks load');
     $('#playersTraded').bootstrapTable({
         formatNoMatches: function () {
             return 'No players selected.';
@@ -69,12 +68,23 @@ $(document).on('turbolinks:load', function() {
         }
     }
 
-    //setSpacerHeight();
+    if ($('#tradeData').data('added-player')) {
+        var playerAdded = $('#tradeData').data('added-player');
+        var myTeam = $('#tradeData').data('my-team');
+        var otherTeam = $('#tradeData').data('other-team');
+
+        $('#playersReceived').bootstrapTable();
+
+        $('i.fa[data-player-id="' + playerAdded + '"]').toggle();
+        getPlayer(playerAdded, myTeam, otherTeam);
+    }
+
     resizeTables();
 
     setTimeout(function () {
         $('#standingsTable').bootstrapTable('resetWidth')
     }, 300);
+
 });
 
 $(window).resize(resizeTables);
@@ -126,6 +136,12 @@ $(document).on('click', '#tradeReset', function(e) {
 $(document).on('mouseup', '#tradeReset', function(e) {
     $(this).blur();
 });
+
+$(document).on('click', '.search-icon', toggleSearch);
+
+$(document).on('blur', '#search', toggleSearch);
+
+$(document).on('click', '.search-close', toggleSearch);
 
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
@@ -573,7 +589,7 @@ function addExtraTeamTableHeight() {
           standings_height += $(this).height();
     });
 
-    max_height = $('.teamtable[data-toggle="table"]').height();
+    max_height = $('.teamtable[data-toggle="table"]').height() + 3;
     extra_team_h = ($('#teamContainer').height() - $('#teams').height() - standings_height);
     target_height = getTeamTableHeight() + extra_team_h
 
@@ -591,12 +607,54 @@ function resizeTables () {
     $('#standingsTable').bootstrapTable('resetView', { height: getStandingsTableHeight() });
     
     addExtraTeamTableHeight();
-    setSpacerHeight();
     $('#summary').bootstrapTable('resetView', { height: getSummaryTableHeight() })
+    setSpacerHeight();
 }
 
 function footerStyle(value, row, index) {
     return {
         css: { "font-weight": "700" }
     };
+}
+
+function toggleSearch(e) {
+    $('.overlay').toggle();
+    $('.search-close').toggle();
+    search = $('#search')
+    search.toggle();
+    if (search.is(":visible")) {
+        search.focus();
+        $('#search').autocomplete({
+                minLength: 2,
+                source: $('#tradeData').data('search'),
+                focus: function(event, ui) {
+                    $('#search').val(ui.item.label);
+                    return false;
+                },
+                // Once a value in the drop down list is selected, do the following:
+                select: function(event, ui) {
+                    switchToTargetPlayer(ui['item']);
+                    return false;
+                }
+        }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+                .append( "<div class='search-result'><span class='search-name'>" + item.label + "</span></br><span class='search-team'>" + item.t + "</span></div>" )
+                .appendTo( ul );
+        };
+    }
+}
+
+
+function switchToTargetPlayer(data) {
+    var href = location.protocol + '//' + location.host + location.pathname
+
+    playersTraded = $('#playersTraded').bootstrapTable('getData', true)
+    playersString = '';
+
+    for (var i = 0; i < playersTraded.length; i++) {
+        playersString += ('players[]=' + playersTraded[i]['roto_id'] + '&');
+    }
+
+    location.href = href + "?otherTeam=" + data.tid + '&' + playersString + '&targetPlayer=' + data.value
+    e.preventDefault();
 }
