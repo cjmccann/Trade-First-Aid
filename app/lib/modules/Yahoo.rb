@@ -80,6 +80,9 @@ module Yahoo
 
       data = get_hash_response(SEASONS_URL)
 
+      puts '---- GET_USER_SEASONS LOGGING : 9/18/17 ----'
+      puts data.to_json
+
       if data['fantasy_content']['users']['user']['games']
         data['fantasy_content']['users']['user']['games']['game']
       else
