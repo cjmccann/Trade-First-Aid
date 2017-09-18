@@ -19,9 +19,20 @@ class Team < ApplicationRecord
 
       if (team_data['team_id'].to_i == league.manager_id)
         team.user = league.user
+        my_manager = nil
 
-        if (team.user.email.empty? || team.user.email.nil?) && !team_data['managers']['manager']['email'].nil?
-          team.user.email = team_data['managers']['manager']['email']
+        if team_data['managers']['manager'].is_a?(Array)
+          team_data['managers']['manager'].each do |manager|
+            if manager['is_current_login'] == '1' 
+              my_manager = manager
+            end
+          end
+        else
+          my_manager = team_data['managers']['manager']
+        end
+        
+        if (team.user.email.empty? || team.user.email.nil?) && !my_manager['email'].nil?
+          team.user.email = my_manager['email']
           team.user.save
         end
       end
