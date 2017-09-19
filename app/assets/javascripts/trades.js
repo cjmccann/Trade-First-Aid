@@ -683,6 +683,8 @@ function toggleSearch(e) {
                 .append( "<div class='search-result'><span class='search-name'>" + item.label + "</span></br><span class='search-team'>" + item.t + "</span></div>" )
                 .appendTo( ul );
         };
+    } else { 
+        $('#search').val('');
     }
 }
 
