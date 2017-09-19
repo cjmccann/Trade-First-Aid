@@ -137,6 +137,10 @@ $(document).on('mouseup', '#tradeReset', function(e) {
     $(this).blur();
 });
 
+$(document).on('mouseup', '#myTeamHeader', function(e) {
+    $(this).blur();
+});
+
 $(document).on('click', '.search-icon', toggleSearch);
 
 $(document).on('blur', '#search', toggleSearch);
@@ -432,7 +436,26 @@ function rankFormatter(value, row, index) {
         data_elem.data('rank', index + 1); 
     }
 
-    return "<strong>" + (index + 1) + "</strong>";
+    return (index + 1);
+}
+
+function rankStyle(value, row, index, field) {
+    tradeData = $('#tradeData')
+
+    if (row['name'] == tradeData.data('my-team') || row['name'] == tradeData.data('other-team')) { 
+        return {
+            classes: 'btn-success',
+            css: { 
+                'font-weight': 'bolder', 
+                'color': 'black',
+                'opacity': 0.9
+            }
+        }
+    } else {
+        return {
+            css: { 'font-weight': 'bolder' }
+        }
+    }
 }
 
 function teamPicFormatter(value, row, index) {
@@ -483,10 +506,24 @@ function setDeltaColors() {
 
 
 function standingsNameFormatter(value, row, index) {
+    /**
     if (value == $('#tradeData').data('my-team')) {
         return '<strong>' + value + '</strong>'
     } else {
         return value
+    }
+     **/
+
+    return value;
+}
+
+function standingsNameStyle(value, row, index) {
+    if (value == $('#tradeData').data('my-team')) {
+        return {
+            css: { 'font-weight': 'bolder' }
+        }
+    } else {
+        return { };
     }
 }
 
@@ -627,6 +664,11 @@ function toggleSearch(e) {
         $('#search').autocomplete({
                 minLength: 2,
                 source: $('#tradeData').data('search'),
+                response: function(event, ui) {
+                    if (ui.content.length === 0) {
+                        ui['content'].push({ 'label': 'No players found!', 'value': -1, 't': ''  })
+                    }
+                },
                 focus: function(event, ui) {
                     $('#search').val(ui.item.label);
                     return false;
@@ -646,6 +688,12 @@ function toggleSearch(e) {
 
 
 function switchToTargetPlayer(data) {
+    if (data.value == -1) {
+        $('#search').val('').blur();
+        $('#myTeamHeader').focus();
+        return;
+    }
+
     var href = location.protocol + '//' + location.host + location.pathname
 
     playersTraded = $('#playersTraded').bootstrapTable('getData', true)
@@ -656,5 +704,4 @@ function switchToTargetPlayer(data) {
     }
 
     location.href = href + "?otherTeam=" + data.tid + '&' + playersString + '&targetPlayer=' + data.value
-    e.preventDefault();
 }

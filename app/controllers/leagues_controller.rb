@@ -10,7 +10,7 @@ class LeaguesController < ApplicationController
   end
 
   def import
-    league = League.find(params[:id])
+    league = League.find(league_params[:id])
 
     league.teams.each do |team|
       success = team.import(current_user)
@@ -31,7 +31,7 @@ class LeaguesController < ApplicationController
     if (league.unsupported_categories.length > 0)
       flash[:warning] = "#{league.name} uses the following categories which are not " +
         "included in the projection systems used. These categories will not be shown when projecting trade outcomes." + 
-        "<span class='unsupported'><ul><li>" + league.unsupported_categories.join(', ') + '</li></ul></span>'
+        "<span class='unsupported'><ul class='text-center unsupported-list'><li>" + league.unsupported_categories.join(', ') + '</li></ul></span>'
       flash[:html_safe] = true
     end
 
@@ -39,8 +39,8 @@ class LeaguesController < ApplicationController
   end
 
   def sync 
-    league = League.find(params[:id])
-    force = params['force'] == 'true'
+    league = League.find(league_params[:id])
+    force = league_params['force'] == 'true'
 
     if league.sync(force)
       render :json => { :status => 'update' }
@@ -49,4 +49,8 @@ class LeaguesController < ApplicationController
     end
   end
 
+  private
+    def league_params
+      params.permit(:force, :id)
+    end
 end

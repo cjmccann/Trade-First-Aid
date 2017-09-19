@@ -2,26 +2,26 @@ class TradesController < ApplicationController
   skip_before_action :authenticate_user!, :only => [:demo]
 
   def new
-    @league = League.find(params['league_id'])
+    @league = League.find(trade_params['league_id'])
     @my_team = @league.teams.where( :user => current_user ).first
     @stat_metadata = @league.stat_metadata
     
-    if params['otherTeam'].nil?
+    if trade_params['otherTeam'].nil?
       @other_team = @league.teams.where( :user => nil ).first
 
       if !@other_team.imported
         @other_team.import(current_user)
       end
     else
-      @other_team = @league.teams.where( 'manager_id' => params['otherTeam'] ).first
+      @other_team = @league.teams.where( 'manager_id' => trade_params['otherTeam'] ).first
     end
 
-    if params['players']
-      @traded_players = params['players'].map(&:to_i)
+    if trade_params['players']
+      @traded_players = trade_params['players'].map(&:to_i)
     end
     
-    if params['targetPlayer']
-      @added_player = params['targetPlayer'].to_i
+    if trade_params['targetPlayer']
+      @added_player = trade_params['targetPlayer'].to_i
     end
   end
 
@@ -37,20 +37,25 @@ class TradesController < ApplicationController
     @my_team = @league.teams.where.not(:user => nil).first
     @stat_metadata = @league.stat_metadata
 
-    if params['otherTeam'].nil?
+    if trade_params['otherTeam'].nil?
       @other_team = @league.teams.where( :user => nil ).first
     else
-      @other_team = @league.teams.where( 'manager_id' => params['otherTeam'] ).first
+      @other_team = @league.teams.where( 'manager_id' => trade_params['otherTeam'] ).first
     end
 
-    if params['players']
-      @traded_players = params['players'].map(&:to_i)
+    if trade_params['players']
+      @traded_players = trade_params['players'].map(&:to_i)
     end
 
-    if params['targetPlayer']
-      @added_player = params['targetPlayer'].to_i
+    if trade_params['targetPlayer']
+      @added_player = trade_params['targetPlayer'].to_i
     end
 
     @demo = true
   end
+
+  private
+    def trade_params
+      params.permit(:league_id, :otherTeam, :players, :targetPlayer)
+    end
 end

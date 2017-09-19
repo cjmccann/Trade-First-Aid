@@ -88,6 +88,10 @@ h3.favHeader {
     text-align: left;
 }
 
+.unsupported-list {
+    list-style: none;
+}
+
 .favPhoto {
     height: 1.35em;
     margin: -.5em 4px;
@@ -99,4 +103,8 @@ h3.favHeader {
 
 .fav-header {
     margin-top: 20px;
+}
+
+.standings-header {
+    margin-top: 21px;
 }
