@@ -32,7 +32,7 @@
             data-player-stats='<%= @league.player_stats.to_json %>'
             data-search='<%= @league.get_players_by_team.to_json %>'
             data-traded-players='<%= @traded_players %>'
-            data-added-player='<%= @added_player %>'>
-
+            data-added-player='<%= @added_player %>'
+            data-my-bench-players='<%= @my_team.get_benched_players.to_json %>'>
   </div>
 </div>

@@ -23,6 +23,7 @@ class LeaguesController < ApplicationController
     end
 
     league.calculate_player_stats(league.week_updated)
+    set_benched_players(league.player_stats)
     league.calculate_team_stats(league.week_updated)
     league.save
 

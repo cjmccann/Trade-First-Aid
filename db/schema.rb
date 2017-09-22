@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170830050451) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20170922184122) do
 
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
@@ -30,6 +27,7 @@ ActiveRecord::Schema.define(version: 20170830050451) do
     t.text "unsupported_categories"
     t.integer "week_updated"
     t.datetime "synced_at"
+    t.text "position_settings"
     t.index ["user_id"], name: "index_leagues_on_user_id"
   end
 
@@ -98,10 +96,4 @@ ActiveRecord::Schema.define(version: 20170830050451) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "leagues", "users"
-  add_foreign_key "teams", "leagues"
-  add_foreign_key "trades", "leagues"
-  add_foreign_key "trades", "teams"
-  add_foreign_key "trades", "users"
-  add_foreign_key "transactions", "leagues"
 end

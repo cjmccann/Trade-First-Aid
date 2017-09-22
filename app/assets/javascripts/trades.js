@@ -147,6 +147,8 @@ $(document).on('blur', '#search', toggleSearch);
 
 $(document).on('click', '.search-close', toggleSearch);
 
+$(document).on('click', 'span.use-bench', toggleBenchCb);
+
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
 
@@ -706,4 +708,13 @@ function switchToTargetPlayer(data) {
     }
 
     location.href = href + "?otherTeam=" + data.tid + '&' + playersString + '&targetPlayer=' + data.value
+}
+
+function toggleBenchCb(e) {
+    if ($('input.use-bench').is(':checked')) {
+        $('input.use-bench').prop('checked', false);
+    } else {
+        $('input.use-bench').prop('checked', true);
+    }
+    e.stopPropagation();
 }

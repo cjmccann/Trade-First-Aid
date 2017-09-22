@@ -1,5 +1,6 @@
 class League < ApplicationRecord
   serialize :stat_settings
+  serialize :position_settings
   serialize :player_stats
   serialize :team_stats
   serialize :unsupported_categories
@@ -52,7 +53,9 @@ class League < ApplicationRecord
         league.user_id = user.id
         league.name = user.api_client.get_league_name(team[:game_id], team[:league_id])
         league.unsupported_categories = [ ]
-        league.stat_settings = convert_stat_settings(league, user.api_client.get_league_settings(league.game_id, league.league_id))
+        settings = user.api_client.get_league_settings(league.game_id, league.league_id)
+        league.stat_settings = convert_stat_settings(league, settings)
+        league.position_settings = convert_position_settings(settings)
         league.week_updated = get_current_week
         league.synced_at = DateTime.now
       end
@@ -115,6 +118,18 @@ class League < ApplicationRecord
     stats
   end
 
+  def self.convert_position_settings(data)
+    positions = { }
+
+    data['roster_positions']['roster_position'].each do |obj|
+      next if obj['position_type'] == 'K' || obj['position_type'] == 'DT'
+
+      positions[obj['position']] = obj['count'].to_i
+    end
+
+    positions
+  end
+
   def self.data_from_team_key(team_key)
     split_key = team_key.split('.')
 
@@ -173,6 +188,8 @@ class League < ApplicationRecord
         total = 0.0
 
         players.each do |player|
+          next if team.player_metadata[player['PlayerID']]['benched']
+
           value = data[:roto_names].reduce(0.0) { |base, roto_key| base += player[roto_key] }
           next if value == 0.0
 
@@ -238,6 +255,12 @@ class League < ApplicationRecord
     self.player_stats = round_player_stats(stats)
   end
 
+  def set_benched_players(stats)
+    self.teams.each do |team|
+      team.set_benched_players(stats)
+    end
+  end
+
   def round_team_stats(stats)
     stats.each do |team|
       team.each do |k, v|
@@ -284,6 +307,7 @@ class League < ApplicationRecord
       self.week_updated = League.get_current_week
 
       calculate_player_stats(self.week_updated)
+      set_benched_players(self.player_stats)
       calculate_team_stats(self.week_updated)
       league_updated = true
     end

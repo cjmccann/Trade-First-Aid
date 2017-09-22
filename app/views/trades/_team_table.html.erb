@@ -24,14 +24,14 @@
     </thead>
     <tbody>
       <% @cur_team.player_metadata.each do |roto_id, metadata| %>
-        <tr data-player-id='<%= roto_id %>' data-team-name='<%= @cur_team.name %>'>
+        <tr data-player-id='<%= roto_id %>' data-team-name='<%= @cur_team.name %>' class='<%= 'benched' if metadata['benched'] %>'>
           <td class='playerToggle'>
             <%= fa_icon 'square-o', { 'data-player-id' => roto_id } %>
             <%= fa_icon 'check-square-o', { 'data-player-id' => roto_id, 'style' => 'display:none;' } %>
           </td>
           <td class="photo"><img class="player img-circle" src="<%= metadata['photo'] %>" ></td>
           <td data-field="name"><%= metadata['name'] %></td>
-          <td data-field="pos"><%= metadata['position'] %></td>
+          <td data-field="pos"><%= metadata['benched'] ? metadata['position'] + '/BN' : metadata['position'] %></td>
           <td data-field="team"><%= metadata['team'] %></td>
           <td class="projPts" data-field="totalValue"><%= @cur_team.league.player_stats[roto_id]['total'] %></td>
           <td data-field="bye"><%= metadata['bye_week'] %></td>

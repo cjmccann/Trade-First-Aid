@@ -135,10 +135,44 @@ class Team < ApplicationRecord
                                                     'team' => rotoplayer.Team,
                                                     'bye_week' => rotoplayer.ByeWeek,
                                                     'name' => rotoplayer.Name,
-                                                    'position' => rotoplayer.Position
+                                                    'position' => rotoplayer.Position,
+                                                    'benched' => false
       }
     end
 
     true
+  end
+
+  def set_benched_players(stats)
+    point_order = []
+    position_settings = self.league.position_settings.clone
+
+    self.rotoplayer_arr.each do |id|
+      point_order.push({ id: id, val: stats[id]['total'] })
+    end
+    
+    point_order.sort! { |a, b|  -(a[:val] <=> b[:val]) }
+
+
+    point_order.each do |obj|
+      cur_pos = self.player_metadata[obj[:id]]['position']
+      if position_settings[cur_pos] > 0
+        position_settings[cur_pos] -= 1
+      else
+        self.player_metadata[obj[:id]]['benched'] = true
+      end
+    end
+
+    self.save
+  end
+
+  def get_benched_players
+    players = []
+
+    self.player_metadata.each do |k, v|
+      players.push(k) if v['benched']
+    end
+
+    players
   end
 end

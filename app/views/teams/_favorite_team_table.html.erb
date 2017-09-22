@@ -73,7 +73,7 @@
         <tr id="tr-id-<%= i %>" class="tr-class-<%= i % 2 %>">
           <td><img class='playerPhoto img-circle' src='<%= metadata['photo'] %>'></td>
           <td id="td-id-<%= i %>" class="td-class-<%= i %>"><%= metadata['name'] %></td>
-          <td data-field="pos"><%= metadata['position'] %></td>
+          <td data-field="pos" class='<%= 'benched' if metadata['benched'] %>'><%= metadata['benched'] ? metadata['position'] + '/BN' : metadata['position'] %></td>
           <td data-field="team"><%= metadata['team'] %></td>
           <td class="projPts delimiter-right" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
 

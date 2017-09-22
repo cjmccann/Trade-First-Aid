@@ -4,6 +4,10 @@
       <button id="myTeamHeader" class="btn btn-default dropdown-toggle disabled teamHeaderButton" type="button" data-toggle="dropdown">
         <img class="team-header-img img-circle" src="<%= @cur_team.icon_url %>">
         <%= @cur_team.name %>
+        <div class='bench-cb'>
+          <input type='checkbox' name='use-bench' class='use-bench'>
+          <span class='use-bench'>Include bench</span>
+        </div>
       </button>
     </div>
   </div>

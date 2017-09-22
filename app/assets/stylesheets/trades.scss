@@ -219,6 +219,7 @@ td[data-field="name"] {
 #myTeamHeader {
     opacity: 1;
     cursor: initial;
+    position: relative;
 }
 
 .switchTeamLink {
@@ -343,4 +344,11 @@ th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
 }
 
 .search-result {
+}
+
+.bench-cb {
+    position: absolute;
+    right: -95px;
+    bottom:0;
+    font-size:12px;
 }
