@@ -19,8 +19,9 @@
 //= require bootstrap-table
 //= require turbolinks
 $(document).on('turbolinks:load', function() {
-    $("a.popup").click(function(e) {
-        popupCenter($(this).attr("href"), $(this).attr("data-width"), $(this).attr("data-height"), "authPopup");
+    $(".popup").click(function(e) {
+        popupCenter($(this).attr("href"), 500, 650, "authPopup");
+        $(this).blur();
         e.stopPropagation(); return false;
     });
 });

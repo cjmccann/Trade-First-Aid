@@ -56,6 +56,6 @@ class TradesController < ApplicationController
 
   private
     def trade_params
-      params.permit(:league_id, :otherTeam, :players, :targetPlayer)
+      params.permit(:league_id, :otherTeam, :targetPlayer, :players => [])
     end
 end

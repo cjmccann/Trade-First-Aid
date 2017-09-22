@@ -10,5 +10,13 @@
   <%= button_to 'Try it out!', 
     trades_demo_path,
     method: :get,
-    class: 'btn btn-info btn-lg' %>
+    class: 'btn btn-primary btn-outline btn-lg' ,
+    form_class: 'title-button'
+  %>
+  <%= link_to omniauth_authorize_path(:user, :yahoo),
+    method: :get,
+    class: 'btn btn-primary btn-lg btn-outline popup title-button' do %>
+    <%= fa_icon 'yahoo inverse' %>
+    Log in with Yahoo
+  <% end %>
 </div>
