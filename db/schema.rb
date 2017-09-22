@@ -12,12 +12,15 @@
 
 ActiveRecord::Schema.define(version: 20170830050451) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "leagues", force: :cascade do |t|
     t.string "game_id"
     t.string "code"
     t.string "league_id"
     t.integer "manager_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
@@ -34,11 +37,11 @@ ActiveRecord::Schema.define(version: 20170830050451) do
     t.string "name"
     t.integer "manager_id"
     t.boolean "imported"
-    t.integer "league_id"
+    t.bigint "league_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "icon_url"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.text "rotoplayer_arr"
     t.text "player_metadata"
     t.index ["league_id"], name: "index_teams_on_league_id"
@@ -48,9 +51,9 @@ ActiveRecord::Schema.define(version: 20170830050451) do
   create_table "trades", force: :cascade do |t|
     t.text "players_in"
     t.text "players_out"
-    t.integer "league_id"
-    t.integer "user_id"
-    t.integer "team_id"
+    t.bigint "league_id"
+    t.bigint "user_id"
+    t.bigint "team_id"
     t.integer "partner"
     t.text "results"
     t.datetime "created_at", null: false
@@ -61,7 +64,7 @@ ActiveRecord::Schema.define(version: 20170830050451) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.integer "league_id"
+    t.bigint "league_id"
     t.text "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -95,4 +98,10 @@ ActiveRecord::Schema.define(version: 20170830050451) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "leagues", "users"
+  add_foreign_key "teams", "leagues"
+  add_foreign_key "trades", "leagues"
+  add_foreign_key "trades", "teams"
+  add_foreign_key "trades", "users"
+  add_foreign_key "transactions", "leagues"
 end

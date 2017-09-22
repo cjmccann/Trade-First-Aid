@@ -77,3 +77,5 @@ gem 'high_voltage'
 gem 'google-analytics-rails', '1.1.1'
 
 gem 'sekrets'
+
+gem 'pg'
