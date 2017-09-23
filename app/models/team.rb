@@ -150,7 +150,11 @@ class Team < ApplicationRecord
     position_settings = self.league.position_settings.clone
 
     self.rotoplayer_arr.each do |id|
-      point_order.push({ id: id, val: stats[id]['total'] })
+      if stats[id].nil?
+        point_order.push({ id: id, val: 0 })
+      else
+        point_order.push({ id: id, val: stats[id]['total'] })
+      end
     end
     
     point_order.sort! { |a, b|  -(a[:val] <=> b[:val]) }
@@ -159,7 +163,7 @@ class Team < ApplicationRecord
     point_order.each do |obj|
       cur_pos = self.player_metadata[obj[:id]]['position']
 
-      if position_settings[cur_pos] > 0
+      if position_settings[cur_pos] && position_settings[cur_pos] > 0
         position_settings[cur_pos] -= 1
 
       elsif available_flex?(position_settings, cur_pos)
