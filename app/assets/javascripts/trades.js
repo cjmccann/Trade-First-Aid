@@ -81,6 +81,16 @@ $(document).on('turbolinks:load', function() {
 
     resizeTables();
 
+    $('.teamheader-dropdown').on("show.bs.dropdown", function () {
+        var dropdownToggle = $(this).find("#teamHeaderButton");
+        var dropdownMenu = $(this).find(".teams-dropdown-menu");
+
+        dropdownMenu.css({
+            "top": (dropdownToggle.position().top + dropdownToggle.outerHeight()) + "px",
+            "left": dropdownToggle.position().left + "px"
+        });
+    });
+
     setTimeout(function () {
         $('#standingsTable').bootstrapTable('resetWidth')
     }, 300);
@@ -161,7 +171,7 @@ $(document).on('blur', '#search', toggleSearch);
 
 $(document).on('click', '.search-close', toggleSearch);
 
-$(document).on('click', 'span.use-bench', toggleBenchCb);
+$(document).on('click', '#teamHeaderButton', function(e) { $(this).blur(); });
 
 function givePlayer(id, myTeam, otherTeam) {
     tradeDataDiv = $('#tradeData')
