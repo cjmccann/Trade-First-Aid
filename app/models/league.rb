@@ -255,7 +255,14 @@ class League < ApplicationRecord
         player_stats['total'] = total_value
         stats[player.PlayerID] = player_stats
       end
+
+      team.rotoplayer_arr.each do |roto_id|
+        if stats[roto_id].nil?
+          stats[roto_id] = { 'total' => 0.0 }
+        end
+      end
     end
+
 
     self.player_stats = round_player_stats(stats)
   end

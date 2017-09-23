@@ -41,7 +41,7 @@
             <% end %>
           </td>
           <td data-field="team"><%= metadata['team'] %></td>
-          <td class="projPts" data-field="totalValue"><%= @cur_team.league.player_stats[roto_id]['total'] %></td>
+          <td class="projPts" data-field="totalValue"><%= @cur_team.league.player_stats[roto_id] && @cur_team.league.player_stats[roto_id]['total'] ? @cur_team.league.player_stats[roto_id]['total'] : 0.0  %></td>
           <td data-field="bye"><%= metadata['bye_week'] %></td>
         </tr>
       <% end %>
