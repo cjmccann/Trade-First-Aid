@@ -109,26 +109,12 @@ $(document).on('click', '.playerToggle', function(e){
     var otherTeam = $('#tradeData').data('other-team');
 
     if (ret.filter('.fa-check-square-o').is(':visible')) {
-        tr.closest('table').bootstrapTable('updateCell', { 
-            index: tr.data('index'),
-            field: 'cb',
-            value: checkedFaIcon(playerId),
-            reinit: false
-        });
-        
         if (tr.data('team-name') == myTeam) {
             givePlayer(playerId, myTeam, otherTeam);
         } else {
             getPlayer(playerId, myTeam, otherTeam);
         }
     } else {
-        tr.closest('table').bootstrapTable('updateCell', { 
-            index: tr.data('index'),
-            field: 'cb',
-            value: uncheckedFaIcon(playerId),
-            reinit: false
-        });
-
         if (tr.data('team-name') == myTeam) {
             removeGivenPlayer(playerId, myTeam, otherTeam);
         } else {
@@ -174,6 +160,7 @@ $(document).on('click', '.search-close', toggleSearch);
 $(document).on('click', '#teamHeaderButton', function(e) { $(this).blur(); });
 
 function givePlayer(id, myTeam, otherTeam) {
+    selectPlayerCheckbox(id);
     tradeDataDiv = $('#tradeData')
     myTeamId = tradeDataDiv.data('my-team-id');
     otherTeamId = tradeDataDiv.data('other-team-id');
@@ -190,6 +177,7 @@ function givePlayer(id, myTeam, otherTeam) {
 }
 
 function getPlayer(id, myTeam, otherTeam) {
+    selectPlayerCheckbox(id);
     tradeDataDiv = $('#tradeData')
     myTeamId = tradeDataDiv.data('my-team-id');
     otherTeamId = tradeDataDiv.data('other-team-id');
@@ -206,6 +194,7 @@ function getPlayer(id, myTeam, otherTeam) {
 }
 
 function removeGivenPlayer(id, myTeam, otherTeam) {
+    deselectPlayerCheckbox(id);
     tradeDataDiv = $('#tradeData')
     myTeamId = tradeDataDiv.data('my-team-id');
     otherTeamId = tradeDataDiv.data('other-team-id');
@@ -222,6 +211,7 @@ function removeGivenPlayer(id, myTeam, otherTeam) {
 }
 
 function removeReceivedPlayer(id, myTeam, otherTeam) {
+    deselectPlayerCheckbox(id);
     tradeDataDiv = $('#tradeData')
     myTeamId = tradeDataDiv.data('my-team-id');
     otherTeamId = tradeDataDiv.data('other-team-id');
@@ -235,6 +225,28 @@ function removeReceivedPlayer(id, myTeam, otherTeam) {
 
     updateSummaryTable();
     setTransitions();
+}
+
+function selectPlayerCheckbox(playerId) {
+    tr = $('tr[data-player-id="' + playerId + '"]')
+
+    tr.closest('table').bootstrapTable('updateCell', { 
+        index: tr.data('index'),
+        field: 'cb',
+        value: checkedFaIcon(playerId),
+        reinit: false
+    });
+}
+
+function deselectPlayerCheckbox(playerId) {
+    tr = $('tr[data-player-id="' + playerId + '"]')
+
+    tr.closest('table').bootstrapTable('updateCell', { 
+        index: tr.data('index'),
+        field: 'cb',
+        value: uncheckedFaIcon(playerId),
+        reinit: false
+    });
 }
 
 function updateTeamStats(teamName, teamId, refresh) {
@@ -535,13 +547,6 @@ function resetTrade() {
     $('table#my-team').find('.fa-check-square-o:visible').closest('tr').each(function() {
         playerId = $(this).data('player-id');
 
-        $('table#my-team').bootstrapTable('updateCell', { 
-            index: $(this).data('index'),
-            field: 'cb',
-            value: uncheckedFaIcon(playerId),
-            reinit: false
-        });
-
         removeGivenPlayer(playerId, myTeam, otherTeam);
     });
 
@@ -550,14 +555,7 @@ function resetTrade() {
     $('table#other-team').find('.fa-check-square-o:visible').closest('tr').each(function() {
         playerId = $(this).data('player-id');
 
-        $('table#other-team').bootstrapTable('updateCell', { 
-            index: $(this).data('index'),
-            field: 'cb',
-            value: uncheckedFaIcon(playerId),
-            reinit: false
-        });
-
-            removeReceivedPlayer(playerId, myTeam, otherTeam);
+        removeReceivedPlayer(playerId, myTeam, otherTeam);
     });
 
     refreshTeamTables();
