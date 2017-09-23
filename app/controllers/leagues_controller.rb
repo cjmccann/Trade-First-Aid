@@ -6,7 +6,7 @@ class LeaguesController < ApplicationController
   end
 
   def index
-      current_user.initialize_leagues
+    current_user.initialize_leagues
   end
 
   def import

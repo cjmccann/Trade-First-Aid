@@ -98,6 +98,8 @@ class Team < ApplicationRecord
   end
 
   def import(user)
+    return true if self.imported
+
     if add_all_players(user)
       self.imported = true
 
