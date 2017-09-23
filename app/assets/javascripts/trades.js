@@ -157,6 +157,8 @@ $(document).on('blur', '#search', toggleSearch);
 
 $(document).on('click', '.search-close', toggleSearch);
 
+$(document).on('click', '#teamHeaderButton', function(e) { $(this).blur(); });
+
 function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
 
