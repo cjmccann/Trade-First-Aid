@@ -344,3 +344,12 @@ th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
 
 .search-result {
 }
+
+.dropdown-menu {
+    position: absolute;
+    z-index: 10;
+}
+
+.teamheader-dropdown {
+    position: inherit;
+}

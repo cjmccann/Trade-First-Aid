@@ -81,6 +81,16 @@ $(document).on('turbolinks:load', function() {
 
     resizeTables();
 
+    $('.teamheader-dropdown').on("show.bs.dropdown", function () {
+        var dropdownToggle = $(this).find("#teamHeaderButton");
+        var dropdownMenu = $(this).find(".teams-dropdown-menu");
+
+        dropdownMenu.css({
+            "top": (dropdownToggle.position().top + dropdownToggle.outerHeight()) + "px",
+            "left": dropdownToggle.position().left + "px"
+        });
+    });
+
     setTimeout(function () {
         $('#standingsTable').bootstrapTable('resetWidth')
     }, 300);
