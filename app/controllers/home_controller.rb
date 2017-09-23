@@ -8,6 +8,11 @@ class HomeController < ApplicationController
       end
 
       @team = Team.find(current_user.favorite_team) if !current_user.favorite_team.nil?
+
+      if @team && @team.league && @team.league.player_stats.nil?
+        @team.league.sync(true)
+      end
+
       @sync_success = true if home_params['synced'] == 'true'
     else
       @demo_league = League.where( league_id: '995273').first

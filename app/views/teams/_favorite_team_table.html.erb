@@ -83,11 +83,11 @@
             <% end %>
           </td>
           <td data-field="team"><%= metadata['team'] %></td>
-          <td class="projPts delimiter-right" data-field="totalValue"><%= @team.league.player_stats[roto_id]['total'] %></td>
+          <td class="projPts delimiter-right" data-field="totalValue"><%= @team.league.player_stats[roto_id] && @team.league.player_stats[roto_id]['total'] ? @team.league.player_stats[roto_id]['total'] : ''  %></td>
 
           <% stat_order_arr.each do |stat_obj| %>
             <% stat_obj.each do |stat_id, delimiter_right| %>
-              <td class='<%= 'delimiter-right' if delimiter_right %>'><%= @team.league.player_stats[roto_id][stat_id] ? @team.league.player_stats[roto_id][stat_id].round() : '' %></td>
+              <td class='<%= 'delimiter-right' if delimiter_right %>'><%= @team.league.player_stats[roto_id] && @team.league.player_stats[roto_id][stat_id] ? @team.league.player_stats[roto_id][stat_id].round() : '' %></td>
             <% end %>
           <% end %>
         </tr>
