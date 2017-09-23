@@ -81,16 +81,6 @@ $(document).on('turbolinks:load', function() {
 
     resizeTables();
 
-    $('.teamheader-dropdown').on("show.bs.dropdown", function () {
-        var dropdownToggle = $(this).find("#teamHeaderButton");
-        var dropdownMenu = $(this).find(".teams-dropdown-menu");
-        dropdownMenu.css({
-        "top": (dropdownToggle.position().top + dropdownToggle.outerHeight()) + "px",
-        "left": dropdownToggle.position().left + "px"
-        });
-    });
-
-
     setTimeout(function () {
         $('#standingsTable').bootstrapTable('resetWidth')
     }, 300);
@@ -109,12 +99,26 @@ $(document).on('click', '.playerToggle', function(e){
     var otherTeam = $('#tradeData').data('other-team');
 
     if (ret.filter('.fa-check-square-o').is(':visible')) {
+        tr.closest('table').bootstrapTable('updateCell', { 
+            index: tr.data('index'),
+            field: 'cb',
+            value: checkedFaIcon(playerId),
+            reinit: false
+        });
+        
         if (tr.data('team-name') == myTeam) {
             givePlayer(playerId, myTeam, otherTeam);
         } else {
             getPlayer(playerId, myTeam, otherTeam);
         }
     } else {
+        tr.closest('table').bootstrapTable('updateCell', { 
+            index: tr.data('index'),
+            field: 'cb',
+            value: uncheckedFaIcon(playerId),
+            reinit: false
+        });
+
         if (tr.data('team-name') == myTeam) {
             removeGivenPlayer(playerId, myTeam, otherTeam);
         } else {
@@ -151,7 +155,7 @@ $(document).on('mouseup', '#myTeamHeader', function(e) {
     $(this).blur();
 });
 
-$(document).on('click', '.search-icon', toggleSearch);
+$(document).on('click', 'th.search-icon', toggleSearch);
 
 $(document).on('blur', '#search', toggleSearch);
 
@@ -167,8 +171,8 @@ function givePlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersTraded');
 
     givePlayerReallocPos(id, myTeamId, otherTeamId);
-    addPlayerStats(id, otherTeam, false);
-    removePlayerStats(id, myTeam, true);
+    updateTeamStats(myTeam, myTeamId, false);
+    updateTeamStats(otherTeam, otherTeamId, true);
     updatePlayerGiven(true, id);
 
     updateSummaryTable();
@@ -183,8 +187,8 @@ function getPlayer(id, myTeam, otherTeam) {
     addPlayerToTable(id, '#playersReceived');
 
     getPlayerReallocPos(id, myTeamId, otherTeamId);
-    addPlayerStats(id, myTeam, false);
-    removePlayerStats(id, otherTeam, true);
+    updateTeamStats(myTeam, myTeamId, false);
+    updateTeamStats(otherTeam, otherTeamId, true);
     updatePlayerReceived(true, id);
 
     updateSummaryTable();
@@ -199,8 +203,8 @@ function removeGivenPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersTraded');
 
     removeGivenPlayerReallocPos(id, myTeamId, otherTeamId);
-    removePlayerStats(id, otherTeam, false);
-    addPlayerStats(id, myTeam, true);
+    updateTeamStats(myTeam, myTeamId, false);
+    updateTeamStats(otherTeam, otherTeamId, true);
     updatePlayerGiven(false, id);
 
     updateSummaryTable();
@@ -215,80 +219,66 @@ function removeReceivedPlayer(id, myTeam, otherTeam) {
     removePlayerFromTable(id, '#playersReceived');
 
     removeReceivedPlayerReallocPos(id, myTeamId, otherTeamId);
-    removePlayerStats(id, myTeam, false);
-    addPlayerStats(id, otherTeam, true);
+    updateTeamStats(myTeam, myTeamId, false);
+    updateTeamStats(otherTeam, otherTeamId, true);
     updatePlayerReceived(false, id);
 
     updateSummaryTable();
     setTransitions();
 }
 
-
-function addPlayerStats(id, team, refresh) {
+function updateTeamStats(teamName, teamId, refresh) {
     tradeDataDiv = $('#tradeData')
-    playerData = tradeDataDiv.data('player-stats')[id]
-    myTeam = tradeDataDiv.data('my-team')
-    deltas = tradeDataDiv.data('deltas')
-    statOrder = $('#standingsTableData').data('stat-order')
+    stats = $('#standingsTableData');
+    teamOrder = stats.data(teamId + '-sorted');
+    initStats = stats.data(teamId + '-init-stats');
+    newStats = { }
 
-    tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
+    for (var i = 0; i < teamOrder.length; i++) { 
+        if (teamOrder[i].benched) { continue; }
 
-    i = 0;
-    len = Object.keys(playerData).length - 1;
+        playerData = tradeDataDiv.data('player-stats')[teamOrder[i].id]
 
-    for (var stat_key in playerData) {
-        reinitTable = false;
-
-        if (refresh && i >= len) {
-            reinitTable = true;
+        for (var stat_key in playerData) {
+            if (!newStats[stat_key]) { newStats[stat_key] = 0 }
+            newStats[stat_key] += playerData[stat_key]
         }
-
-        elem = tr.children()[statOrder[stat_key]]
-
-        if (team == myTeam) {
-            deltas[stat_key] = getAdditiveDelta(deltas[stat_key], playerData[stat_key]);
-        }
-
-        $('#standingsTable').bootstrapTable('updateCell', { 
-            index: $(tr).data('index'),
-            field: stat_key,
-            value: parseFloat(((parseFloat(elem.innerText) + playerData[stat_key]).toFixed(1))),
-            reinit: reinitTable
-        });
-
-        i++;
     }
+
+    setTeamDeltas(teamName, initStats, newStats, refresh);
 }
 
-function removePlayerStats(id, team, refresh) {
-    tradeDataDiv = $('#tradeData')
-    playerData = tradeDataDiv.data('player-stats')[id]
+function setTeamDeltas(team, initStats, newStats, refresh) {
     myTeam = tradeDataDiv.data('my-team')
     deltas = tradeDataDiv.data('deltas')
-    statOrder = $('#standingsTableData').data('stat-order')
-
     tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
-    
-    i = 0;
-    len = Object.keys(playerData).length - 1;
 
-    for (var stat_key in playerData) {
+    i = 0;
+    len = Object.keys(newStats).length - 1;
+
+    for (var stat_key in newStats) {
         reinitTable = false;
 
         if (refresh && i >= len) {
             reinitTable = true;
         }
 
-        elem = tr.children()[statOrder[stat_key]]
+        delta = (newStats[stat_key] - initStats[stat_key]).toFixed(1);
+
+        if (delta > 0 && delta <= 0.2) {
+            delta = 0
+        } else if (delta < 0 && delta >= -0.2) {
+            delta = 0
+        }
 
         if (team == myTeam) {
-            deltas[stat_key] = getSubtractiveDelta(deltas[stat_key], playerData[stat_key]);
+            deltas[stat_key] = formatDeltaString(parseFloat(delta))
         }
 
         $('#standingsTable').bootstrapTable('updateCell', { 
             index: $(tr).data('index'),
             field: stat_key,
-            value: parseFloat(((parseFloat(elem.innerText) - playerData[stat_key]).toFixed(1))),
+            value: parseFloat(newStats[stat_key].toFixed(1)),
             reinit: reinitTable
         });
 
@@ -317,37 +307,6 @@ function updatePlayerReceived(isAdded, id) {
         tradeDataDiv.data('received-player-vals').splice(tradeDataDiv.data('received-player-vals').indexOf(playerData['total']), 1);
     }
 
-}
-
-function getAdditiveDelta(oldDelta, newDelta) {
-    if (typeof oldDelta === 'undefined') {
-        oldDelta = 0
-    }
-
-    totalDelta = (parseFloat(oldDelta) + newDelta).toFixed(1);
-    if (totalDelta > 0 && totalDelta <= 0.2) {
-        totalDelta = 0
-    } else if (totalDelta < 0 && totalDelta >= -0.2) {
-        totalDelta = 0
-    }
-
-    return formatDeltaString(parseFloat(totalDelta));
-}
-
-function getSubtractiveDelta(oldDelta, newDelta) {
-    if (typeof oldDelta === 'undefined') {
-        oldDelta = 0
-    }
-
-    totalDelta = (parseFloat(oldDelta) - newDelta).toFixed(1);
-
-    if (totalDelta > 0 && totalDelta <= 0.2) {
-        totalDelta = 0
-    } else if (totalDelta < 0 && totalDelta >= -0.2) {
-        totalDelta = 0
-    }
-
-    return formatDeltaString(parseFloat(totalDelta));
 }
 
 function formatDeltaString(totalDelta) {
@@ -563,18 +522,35 @@ function resetTrade() {
     myTeam = $('#tradeData').data('my-team');
     otherTeam = $('#tradeData').data('other-team');
 
-    $('.fa-check-square-o:visible').closest('tr').each(function() {
-        cur_team = $(this).data('team-name');
+    $('table#my-team').find('.fa-check-square-o:visible').closest('tr').each(function() {
         playerId = $(this).data('player-id');
 
-        if (cur_team == myTeam)  {
-            removeGivenPlayer(playerId, myTeam, otherTeam);
-            $('i.fa[data-player-id="' + playerId + '"]').toggle();
-        } else {
-            removeReceivedPlayer(playerId, myTeam, otherTeam);
-            $('i.fa[data-player-id="' + playerId + '"]').toggle();
-        }
+        $('table#my-team').bootstrapTable('updateCell', { 
+            index: $(this).data('index'),
+            field: 'cb',
+            value: uncheckedFaIcon(playerId),
+            reinit: false
+        });
+
+        removeGivenPlayer(playerId, myTeam, otherTeam);
     });
+
+    refreshTeamTables();
+
+    $('table#other-team').find('.fa-check-square-o:visible').closest('tr').each(function() {
+        playerId = $(this).data('player-id');
+
+        $('table#other-team').bootstrapTable('updateCell', { 
+            index: $(this).data('index'),
+            field: 'cb',
+            value: uncheckedFaIcon(playerId),
+            reinit: false
+        });
+
+            removeReceivedPlayer(playerId, myTeam, otherTeam);
+    });
+
+    refreshTeamTables();
 }
 
 function teamProjPtsFormatter(value, row, index) {
@@ -773,16 +749,18 @@ function givePlayerReallocPos(id, myTeam, otherTeam) {
         cur = myTeamOrder[i]
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos);
-                
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, false);
+            myTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)');
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, false);
+                myTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, flexPos);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, false);
+                myTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
@@ -795,19 +773,24 @@ function givePlayerReallocPos(id, myTeam, otherTeam) {
         cur.id == id ? setTraded = true : setTraded = false;
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos, setTraded);
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, setTraded, false);
+            otherTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', setTraded);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', setTraded, false);
+                otherTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, flexPos, setTraded);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, setTraded, false);
+                otherTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
     }
+
+    refreshTeamTables();
 }
 
 function getPlayerReallocPos(id, myTeam, otherTeam) {
@@ -832,24 +815,23 @@ function getPlayerReallocPos(id, myTeam, otherTeam) {
 
     for (var i = 0; i < myTeamOrder.length; i++) { 
         cur = myTeamOrder[i]
+        cur.id == id ? setTraded = true : setTraded = false;
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos);
-                
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, setTraded, false);
+            myTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)');
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', setTraded, false);
+                myTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, flexPos);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, setTraded, false);
+                myTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
-        }
-
-        if (cur.id == id) {
-            setChangedPosColor(id)
         }
     }
 
@@ -859,19 +841,24 @@ function getPlayerReallocPos(id, myTeam, otherTeam) {
         cur = otherTeamOrder[i];
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos, false);
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, false);
+            otherTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, false);
+                otherTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, flexPos, false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, false);
+                otherTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
     }
+
+    refreshTeamTables();
 }
 
 function removeGivenPlayerReallocPos(id, myTeam, otherTeam) {
@@ -896,18 +883,21 @@ function removeGivenPlayerReallocPos(id, myTeam, otherTeam) {
 
     for (var i = 0; i < myTeamOrder.length; i++) { 
         cur = myTeamOrder[i]
+        cur.id == id ? removeTraded = true : removeTraded = false;
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos);
-                
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, removeTraded);
+            myTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)');
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, removeTraded);
+                myTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, flexPos);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, removeTraded);
+                myTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
@@ -919,20 +909,24 @@ function removeGivenPlayerReallocPos(id, myTeam, otherTeam) {
         cur = otherTeamOrder[i];
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos, false);
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, false);
+            otherTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, false);
+                otherTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, flexPos, false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, false);
+                otherTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
     }
 
+    refreshTeamTables();
 }
 
 function removeReceivedPlayerReallocPos(id, myTeam, otherTeam) {
@@ -959,16 +953,18 @@ function removeReceivedPlayerReallocPos(id, myTeam, otherTeam) {
         cur = myTeamOrder[i]
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos);
-                
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, false);
+            myTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)');
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, false);
+                myTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosMyTeam(cur.id, initPos[cur.id], prevPos, flexPos);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, false);
+                myTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
@@ -978,201 +974,106 @@ function removeReceivedPlayerReallocPos(id, myTeam, otherTeam) {
 
     for (var i = 0; i < otherTeamOrder.length; i++) { 
         cur = otherTeamOrder[i];
+        cur.id == id ? removeTraded = true : removeTraded = false;
 
         if(positionSettings[cur.pos] > 0) {
-            setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos, false);
+            setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos, false, removeTraded);
+            otherTeamOrder[i]['benched'] = false;
             positionSettings[cur.pos]--
         } else {
             flexPos = getFlexPos(positionSettings, cur.pos);
 
             if (flexPos == null) {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, cur.pos + ' (BN)', false, removeTraded);
+                otherTeamOrder[i]['benched'] = true;
             } else {
-                setChangedPosOtherTeam(cur.id, initPos[cur.id], prevPos, flexPos, false);
+                setChangedPos(cur.id, initPos[cur.id], prevPos, flexPos, false, removeTraded);
+                otherTeamOrder[i]['benched'] = false;
                 positionSettings[flexPos]--
             }
         }
-
-        if (cur.id == id) {
-            setChangedPosColor(id)
-        }
     }
 
+    refreshTeamTables();
 }
 
-function setChangedPosMyTeam(id, initPos, prevPos, curPos) {
-    td = $('td[data-player-pos="pos-' + id);
+function setChangedPos(id, initPos, prevPos, curPos, setTraded, removeTraded) {
+    td = $('td[data-player-pos="pos-' + id + '"]');
 
-    if (td.text() == 'TRADED') {
-        td.text(curPos);
-        if (!curPos.includes('(BN)')) {
-            td.parent().removeClass('benched');
-        }
+    if (removeTraded && td.text() == 'TRADED') {
+        parent_table = td.closest('table')
+        
+        parent_table.bootstrapTable('updateCell', { 
+            index: td.parent().data('index'),
+            field: 'pos',
+            value: curPos,
+            reinit: false
+        });
+
+        parent_table.attr('id') == 'my-team' ? remove_table = 'other-team' : remove_table = 'my-team'
+
+        removePlayerRow(id, remove_table);
     }
 
-    if (prevPos[id] != curPos) {
-        tr = $('td[data-player-pos="pos-' + id).parent();
-        td.text(curPos);
-
-        if (curPos.includes('(BN)')) {
-            if (!tr.hasClass('benched')) {
-                tr.addClass('benched');
-            }
-        } else {
-            if (tr.hasClass('benched')) {
-                tr.removeClass('benched');
-            }
-        }
-
-        prevPos[id] = curPos;
-    }
-}
-
-function setChangedPosColor(id) {
-    td = $('td[data-player-pos="pos-' + id)
-
-    if (td.hasClass('deltaGood')) {
-        td.removeClass('deltaGood');
-        td.text(td.text().replace('+', ''));
-    } else {
-        td.addClass('deltaGood');
-        td.text(td.text() + '+');
-    }
-}
-
-function setChangedPosOtherTeam(id, initPos, prevPos, curPos, setTraded) {
     if (setTraded) {
-        td = $('td[data-player-pos="pos-' + id);
-        td.text('TRADED');
-        td.parent().addClass('benched');
+        parent_table = td.closest('table')
+
+        parent_table.bootstrapTable('updateCell', { 
+            index: td.parent().data('index'),
+            field: 'pos',
+            value: 'TRADED',
+            reinit: false
+        });
+
+        parent_table.attr('id') == 'my-team' ? insert_table = 'other-team' : insert_table = 'my-team'
+
+        insertPlayerRow(id, parent_table.attr('id'), insert_table, curPos);
+
+        prevPos[id] = curPos;
+
     } else if (prevPos[id] != curPos) {
-        td = $('td[data-player-pos="pos-' + id);
-        tr = td.parent();
-        if (td.text() != 'TRADED') { td.text(curPos); }
-
-        if (curPos.includes('(BN)')) {
-            if (!tr.hasClass('benched')) {
-                tr.addClass('benched');
-            }
-        } else {
-            if (tr.hasClass('benched')) {
-                tr.removeClass('benched');
-            }
+        if (td.text() != 'TRADED') {
+            td.closest('table').bootstrapTable('updateCell', { 
+                index: td.parent().data('index'),
+                field: 'pos',
+                value: curPos,
+                reinit: false
+            });
         }
 
         prevPos[id] = curPos;
     }
 }
 
-function reallocPosAndCalcDeltas(id, givingTeam, receivingTeam) {
-    stats = $('#standingsTableData');
-    initPos = stats.data('init-pos');
-    prevPos = stats.data('prev-pos');
-    givingOrder = stats.data(givingTeam + '-sorted');
-    receivingOrder = stats.data(receivingTeam + '-sorted');
+function insertPlayerRow(id, sourceTable, targetTable, curPos) {
+    data = getRowData(id, sourceTable)
+    data['pos'] = curPos;
 
-    if ($('#tradeData').data('other-team-id') == givingTeam) {
-        myPlayerReceived = true;
-        myPlayerGiven = false;
-    } else {
-        myPlayerReceived = false;
-        myPlayerGiven = true;
-    }
-
-    indexRemove = -1
-
-    for (var i = 0; i < givingOrder.length; i++) { 
-        if (givingOrder[i].id == id) {
-            indexRemove = i;
-        }
-    }
-
-    receivingOrder.push(givingOrder.splice(indexRemove, 1)[0]);
-    receivingOrder.sort(compareVals);
-
-    positionSettings = jQuery.extend({}, stats.data('position-settings'));
-    
-    for (var i = 0; i < givingOrder.length; i++) { 
-        cur = givingOrder[i]
-
-        if(positionSettings[cur.pos] > 0) {
-            setPos(cur.id, initPos[cur.id], cur.pos, false, myPlayerGiven, prevPos);
-            positionSettings[cur.pos]--
-        } else {
-            flexPos = getFlexPos(positionSettings, cur.pos);
-
-            if (flexPos == null) {
-                setPos(cur.id, initPos[cur.id], cur.pos + ' (BN)', false, myPlayerGiven, prevPos);
-            } else {
-                setPos(cur.id, initPos[cur.id], flexPos, false, myPlayerGiven, prevPos);
-                positionSettings[flexPos]--
-            }
-        }
-    }
-
-    positionSettings = jQuery.extend({}, stats.data('position-settings'));
-
-    for (var i = 0; i < receivingOrder.length; i++) { 
-        cur = receivingOrder[i];
-        myPlayerGiven && cur.id == id ? setTraded = true : setTraded = false;
-        myPlayerReceived && cur.id == id ? myPlayer = true : myPlayer = false;
-
-        if(positionSettings[cur.pos] > 0) {
-            setPos(cur.id, initPos[cur.id], cur.pos, setTraded, myPlayer, prevPos);
-            positionSettings[cur.pos]--
-        } else {
-            flexPos = getFlexPos(positionSettings, cur.pos);
-
-            if (flexPos == null) {
-                setPos(cur.id, initPos[cur.id], cur.pos + ' (BN)', setTraded, myPlayer, prevPos);
-            } else {
-                setPos(cur.id, initPos[cur.id], flexPos, setTraded, myPlayer, prevPos);
-                positionSettings[flexPos]--
-            }
-        }
-    }
+    $('table#' + targetTable).bootstrapTable('insertRow', { 
+        index: $('table#' + targetTable + ' tr').length,
+        row: data
+    });
 }
 
-function setPos(id, initPos, curPos, setTraded, myPlayer, prevPos) {
-    ($('td[data-player-pos="pos-' + id).closest('table').attr('id') == 'my-team') ? myTeam = true : myTeam = false;
+function removePlayerRow(id, targetTable) {
+    $('table#' + targetTable).bootstrapTable('remove', { 
+        field: 'name',
+        values: [ getPlayerName(id) ]
+    });
+}
 
-    if (myTeam)  {
-        if (setTraded) {
-            td = $('td[data-player-pos="pos-' + id);
-            td.text('TRADED');
-            td.addClass('benched');
-        } else if ($('td[data-player-pos="pos-' + id).text() == 'TRADED') {
-            td = $('td[data-player-pos="pos-' + id)
-            td.text(curPos);
-            if (!curPos.includes('(BN)')) {
-                td.parent().removeClass('benched');
-            }
-        }
-    } else if (myPlayer) {
-        td = $('td[data-player-pos="pos-' + id).addClass('deltaGood');
-    }
-    
-    if (prevPos[id] != curPos) {
-        td = $('td[data-player-pos="pos-' + id);
-        tr = $('td[data-player-pos="pos-' + id).parent();
-        td.text(curPos);
+function getRowData(id, table) {
+    data = { }
 
-        if (curPos.includes('(BN)')) {
-            if (!tr.hasClass('benched')) {
-                tr.addClass('benched');
-            }
+    $('tr[data-player-id="' + id + '"]').find('td').each(function(index) {
+        if ($(this).data('field') == 'cb') { 
+            data['cb'] = ''
         } else {
-            if (tr.hasClass('benched')) {
-                tr.removeClass('benched');
-            }
+            data[$(this).data('field')] = $(this).html().trim();
         }
+    });
 
-        if (myTeam && initPos == prevPos[id]) {
-            td.addClass('deltaGood');
-        }
-
-        prevPos[id] = curPos;
-    }
+    return data;
 }
 
 function getFlexPos(settings, curPos) {
@@ -1226,4 +1127,44 @@ function compareVals(a,b) {
       if (a.val > b.val)
             return -1;
       return 0;
+}
+
+function checkedFaIcon(id) {
+    return '<i data-player-id="' + id + '" style="display:none;" class="fa fa-square-o"></i><i data-player-id="' + id + '" class="fa fa-check-square-o"></i>'
+}
+
+function uncheckedFaIcon(id) {
+    return '<i data-player-id="' + id + '" class="fa fa-square-o"></i><i data-player-id="' + id + '" style="display:none;" class="fa fa-check-square-o"></i>'
+}
+
+function benchStyle(row, index) {
+    if (row.pos.includes('BN')) {
+        return {
+            classes: 'benched'
+        };
+    } else if (row.pos.includes('TRADED')) {
+        return {
+            classes: 'traded'
+        };
+    }
+
+    return {};
+}
+
+function refreshTeamTables() {
+    $('table#my-team').bootstrapTable('updateCell', { 
+        index: 0,
+        field: 'name',
+        value: $($('table#my-team').find('tr[data-index="0"]').find('td')[2]).text().trim(),
+        reinit: true,
+    });
+
+    $('table#other-team').bootstrapTable('updateCell', { 
+        index: 0,
+        field: 'name',
+        value: $($('table#other-team').find('tr[data-index="0"]').find('td')[2]).text().trim(),
+        reinit: true,
+    });
+
+    //$('.teamtable').bootstrapTable( 'resetView', { });
 }

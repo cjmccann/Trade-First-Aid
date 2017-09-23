@@ -1,17 +1,17 @@
 <div class='innerTeamContainer'>
-  <table class="table table-striped table-condensed teamtable" id="<%= @cur_team == @my_team ? 'my-team' : 'other-team'%>" data-toggle="table" data-sort-name="totalValue" data-sort-order="desc">
+  <table class="table table-striped table-condensed teamtable" id="<%= @cur_team == @my_team ? 'my-team' : 'other-team'%>" data-toggle="table" data-sort-name="totalValue" data-sort-order="desc" data-row-style='benchStyle'>
     <thead>
       <tr>
         <% if @cur_team != @my_team %>
-          <th class='search-icon'>
+          <th class='search-icon' data-field='cb'>
             <%= fa_icon 'search' %>
             <input type="text" id="search" placeholder='Search for players'>
             <%= fa_icon 'close', class: 'search-close' %>
           </th>
         <% else %>
-          <th></th>
+          <th data-field='cb'></th>
         <% end %>
-        <th>
+        <th data-field='pic'>
         </th>
         <th data-field="name" class='name-cell'>
           Name
@@ -24,12 +24,12 @@
     </thead>
     <tbody>
       <% @cur_team.player_metadata.each do |roto_id, metadata| %>
-        <tr data-player-id='<%= roto_id %>' data-team-name='<%= @cur_team.name %>' class='<%= 'benched' if metadata['benched'] %>'>
-          <td class='playerToggle'>
+        <tr data-player-id='<%= roto_id %>' data-team-name='<%= @cur_team.name %>' class=''>
+          <td class='playerToggle' data-field='cb'>
             <%= fa_icon 'square-o', { 'data-player-id' => roto_id } %>
             <%= fa_icon 'check-square-o', { 'data-player-id' => roto_id, 'style' => 'display:none;' } %>
           </td>
-          <td class="photo"><img class="player img-circle" src="<%= metadata['photo'] %>" ></td>
+          <td class="photo" data-field="pic"><img class="player img-circle" src="<%= metadata['photo'] %>" ></td>
           <td data-field="name"><%= metadata['name'] %></td>
           <td data-field="pos" data-player-pos='<%= "pos-#{roto_id}"%>'>
             <% if metadata['benched'] %>

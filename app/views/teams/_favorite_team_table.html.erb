@@ -87,7 +87,7 @@
 
           <% stat_order_arr.each do |stat_obj| %>
             <% stat_obj.each do |stat_id, delimiter_right| %>
-              <td class='<%= 'delimiter-right' if delimiter_right %>'><%= @team.league.player_stats[roto_id][stat_id] || '' %></td>
+              <td class='<%= 'delimiter-right' if delimiter_right %>'><%= @team.league.player_stats[roto_id][stat_id] ? @team.league.player_stats[roto_id][stat_id].round() : '' %></td>
             <% end %>
           <% end %>
         </tr>

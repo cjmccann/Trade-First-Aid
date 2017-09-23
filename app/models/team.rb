@@ -181,7 +181,7 @@ class Team < ApplicationRecord
     stats = self.league.player_stats
 
     self.rotoplayer_arr.each do |id|
-      sorted_list.push({ id: id, val: stats[id]['total'], pos: self.player_metadata[id]['position'] })
+      sorted_list.push({ id: id, val: stats[id]['total'], pos: self.player_metadata[id]['position'], benched: self.player_metadata[id]['benched'] })
     end
     
     sorted_list.sort! { |a, b|  -(a[:val] <=> b[:val]) }

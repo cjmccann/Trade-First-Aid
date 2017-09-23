@@ -1,7 +1,6 @@
 class TeamsController < ApplicationController
   def show
     @team = Team.find(team_params[:id])
-    binding.pry
     @sync_success = true if team_params['synced']
   end
   

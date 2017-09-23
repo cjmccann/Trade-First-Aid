@@ -75,6 +75,9 @@ div.innerStandingsContainer {
     text-overflow: ellipsis;
 }
 
+.teamtable {
+    white-space: nowrap;
+}
 #standingsTable {
     overflow: hidden;
     white-space: nowrap;
@@ -310,7 +313,7 @@ th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
     z-index: 10;
 }
 
-.search-icon {
+th.search-icon {
     cursor: pointer;
 }
 
@@ -360,4 +363,8 @@ th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
 
 .teamheader-dropdown {
     position: inherit;
+}
+
+.traded {
+    opacity: 0.3;
 }

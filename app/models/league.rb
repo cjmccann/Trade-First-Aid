@@ -270,7 +270,7 @@ class League < ApplicationRecord
     stats.each do |team|
       team.each do |k, v|
         if v.is_a?(Numeric)
-          digits = (k == 'total' ? 1 : 0)
+          digits = (k == 'total' ? 1 : 1)
           team[k] = v.round(digits)
         end
       end
@@ -287,7 +287,7 @@ class League < ApplicationRecord
     stats.each do |k, v|
       v.each do |k2, v2|
         if v2.is_a?(Numeric)
-          digits = (k2 == 'total' ? 1 : 0)
+          digits = (k2 == 'total' ? 1 : 1)
           v[k2] = v2.round(digits)
         end
       end
