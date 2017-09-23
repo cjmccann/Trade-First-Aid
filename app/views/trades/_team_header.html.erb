@@ -4,22 +4,18 @@
       <button id="myTeamHeader" class="btn btn-default dropdown-toggle disabled teamHeaderButton" type="button" data-toggle="dropdown">
         <img class="team-header-img img-circle" src="<%= @cur_team.icon_url %>">
         <%= @cur_team.name %>
-        <div class='bench-cb'>
-          <input type='checkbox' name='use-bench' class='use-bench'>
-          <span class='use-bench'>Include bench</span>
-        </div>
       </button>
     </div>
   </div>
 <% else %>
   <div class='text-center'>
-    <div class="dropdown btn-group teamHeader">
-      <button class="btn btn-success btn-outline dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown">
+    <div class="dropdown btn-group teamHeader teamheader-dropdown">
+      <button id='teamHeaderButton' class="btn btn-success btn-outline dropdown-toggle teamHeaderButton" type="button" data-toggle="dropdown">
         <img class="team-header-img img-circle" src="<%= @cur_team.icon_url %>">
         <%= @cur_team.name %>
         <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu">
+      <ul class="dropdown-menu teams-dropdown-menu">
       <% @cur_team.league.teams.each do |team| %>
         <% if team.manager_id != @cur_team.league.manager_id && team.manager_id != @cur_team.manager_id %>
           <% if @demo %>

@@ -127,6 +127,11 @@ class League < ApplicationRecord
       positions[obj['position']] = obj['count'].to_i
     end
 
+    positions['W/R'] = 0 if positions['W/R'].nil?
+    positions['W/T'] = 0 if positions['W/T'].nil?
+    positions['W/R/T'] = 0 if positions['W/R/T'].nil?
+    positions['Q/W/R/T'] = 0 if positions['Q/W/R/T'].nil?  
+
     positions
   end
 
@@ -269,6 +274,12 @@ class League < ApplicationRecord
           team[k] = v.round(digits)
         end
       end
+    end
+  end
+
+  def get_team_stats(input_team)
+    self.team_stats.each do |team|
+      return team if team['name'] == input_team.name
     end
   end
 

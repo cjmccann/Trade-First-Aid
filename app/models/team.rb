@@ -136,7 +136,9 @@ class Team < ApplicationRecord
                                                     'bye_week' => rotoplayer.ByeWeek,
                                                     'name' => rotoplayer.Name,
                                                     'position' => rotoplayer.Position,
-                                                    'benched' => false
+                                                    'benched' => false,
+                                                    'flex' => false,
+                                                    'flex_pos' => nil
       }
     end
 
@@ -156,14 +158,91 @@ class Team < ApplicationRecord
 
     point_order.each do |obj|
       cur_pos = self.player_metadata[obj[:id]]['position']
+
       if position_settings[cur_pos] > 0
         position_settings[cur_pos] -= 1
+
+      elsif available_flex?(position_settings, cur_pos)
+        flex_slot = get_flex_slot(position_settings, cur_pos)
+        position_settings[flex_slot] -= 1
+        self.player_metadata[obj[:id]]['flex'] = true
+        self.player_metadata[obj[:id]]['flex_pos'] = flex_slot
+
       else
         self.player_metadata[obj[:id]]['benched'] = true
       end
     end
 
     self.save
+  end
+
+  def get_sorted_players
+    sorted_list = []
+    stats = self.league.player_stats
+
+    self.rotoplayer_arr.each do |id|
+      sorted_list.push({ id: id, val: stats[id]['total'], pos: self.player_metadata[id]['position'] })
+    end
+    
+    sorted_list.sort! { |a, b|  -(a[:val] <=> b[:val]) }
+  end
+
+  def available_flex?(settings, cur_pos)
+    case cur_pos
+    when 'WR'
+      return true if settings['W/T'] > 0 || settings['W/R'] > 0 || settings['W/R/T'] > 0 || settings['Q/W/R/T'] > 0
+    when 'RB'
+      return true if settings['W/R'] > 0 || settings['W/R/T'] > 0 || settings['Q/W/R/T'] > 0
+    when 'TE'
+      return true if settings['W/T'] > 0 || settings['W/R/T'] > 0 || settings['Q/W/R/T'] > 0
+    when 'QB'
+      return true if settings['Q/W/R/T'] > 0
+    end
+
+    false
+  end
+
+  def get_flex_slot(settings, cur_pos)
+    case cur_pos
+    when 'WR'
+      if settings['W/T'] > 0
+        return 'W/T'
+      elsif settings['W/R'] > 0
+        return 'W/R'
+      elsif settings['W/R/T'] > 0
+        return 'W/R/T'
+      elsif settings['Q/W/R/T'] > 0
+        return 'Q/W/R/T'
+      else
+        return nil
+      end
+    when 'RB'
+      if settings['W/R'] > 0
+        return 'W/R'
+      elsif settings['W/R/T'] > 0
+        return 'W/R/T'
+      elsif settings['Q/W/R/T'] > 0
+        return 'Q/W/R/T'
+      else
+        return nil
+      end
+    when 'TE'
+      if settings['W/T'] > 0
+        return 'W/T'
+      elsif settings['W/R/T'] > 0
+        return 'W/R/T'
+      elsif settings['Q/W/R/T'] > 0
+        return 'Q/W/R/T'
+      else
+        return nil
+      end
+    when 'QB'
+      if settings['Q/W/R/T'] > 0
+        return 'Q/W/R/T'
+      else
+        return nil
+      end
+    end
   end
 
   def get_benched_players
@@ -173,6 +252,24 @@ class Team < ApplicationRecord
       players.push(k) if v['benched']
     end
 
+    players
+  end
+
+  def get_player_positions
+    players = { }
+
+    self.rotoplayer_arr.each do |id|
+      data = self.player_metadata[id]
+
+      if data['benched']
+        players[id] = data['position'] + ' (BN)'
+      elsif data['flex']
+        players[id] = data['flex_pos']
+      else
+        players[id] = data['position']
+      end
+    end
+    
     players
   end
 end

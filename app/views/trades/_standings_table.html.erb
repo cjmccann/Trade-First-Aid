@@ -45,8 +45,17 @@
       </thead>
     </table>
 
-    <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>' data-negative-stats='<%= @league.get_negative_stats %>'
-                                 data-team-stats='<%= @league.team_stats.to_json %>'>
+    <% player_positions = @my_team.get_player_positions.merge(@other_team.get_player_positions).to_json %>
+    <div id='standingsTableData' data-stat-order='<%= stat_order_map.to_json %>' 
+                                 data-negative-stats='<%= @league.get_negative_stats %>'
+                                 data-team-stats='<%= @league.team_stats.to_json %>'
+                                 data-init-pos='<%= player_positions %>'
+                                 data-prev-pos='<%= player_positions %>'
+                                 data-my-init-stats='<%= @league.get_team_stats(@my_team).to_json %>'
+                                 data-<%= @my_team.id %>-sorted='<%= @my_team.get_sorted_players.to_json %>'
+                                 data-other-init-stats='<%= @league.get_team_stats(@other_team).to_json %>'
+                                 data-<%= @other_team.id %>-sorted='<%= @other_team.get_sorted_players.to_json %>'
+                                 data-position-settings='<%= @league.position_settings.to_json %>'>
     </div>
   </div>
 </div>

@@ -352,3 +352,12 @@ th.th-final, div > div.fixed-table-footer > table > tbody > tr > td.th-final {
     bottom:0;
     font-size:12px;
 }
+
+.dropdown-menu {
+    position: aboslute;
+    z-index: 10;
+}
+
+.teamheader-dropdown {
+    position: inherit;
+}
