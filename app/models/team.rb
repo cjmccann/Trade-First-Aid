@@ -167,12 +167,14 @@ class Team < ApplicationRecord
 
       if position_settings[cur_pos] && position_settings[cur_pos] > 0
         position_settings[cur_pos] -= 1
+        self.player_metadata[obj[:id]]['benched'] = false
 
       elsif available_flex?(position_settings, cur_pos)
         flex_slot = get_flex_slot(position_settings, cur_pos)
         position_settings[flex_slot] -= 1
         self.player_metadata[obj[:id]]['flex'] = true
         self.player_metadata[obj[:id]]['flex_pos'] = flex_slot
+        self.player_metadata[obj[:id]]['benched'] = false
 
       else
         self.player_metadata[obj[:id]]['benched'] = true
