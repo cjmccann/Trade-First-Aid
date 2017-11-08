@@ -1,4 +1,4 @@
-# ${1:Trade First Aid}
+# Trade First Aid
 Trade First Aid is an open-source tool to provide Fantasy Football users in-depth trade analysis customized to their league and settings.
 ## Features
 - Login with your Yahoo account to import leagues and teams.
