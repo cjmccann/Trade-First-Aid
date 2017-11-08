@@ -86,39 +86,39 @@ function disableTradeButton() {
 }
 
 function setStatusBusy() {
-    elem = $('#statusButton');
+    let elem = $('#statusButton');
     elem.html('<i class="fa fa-cog fa-spin fa-fw"></i> Syncing rosters...');
     setStatusButtonClass(elem, 'btn-info');
 }
 
 function setStatusSuccess() {
-    elem = $('#statusButton');
+    let elem = $('#statusButton');
     elem.html('<i class="fa fa-check-circle-o"></i> Synced!');
     setStatusButtonClass(elem, 'btn-success');
 }
 
 function setStatusWarning() {
-    elem = $('#statusButton');
+    let elem = $('#statusButton');
     elem.html('<i class="fa fa-warning"></i> Update failed. Try again later.');
     setStatusButtonClass(elem, 'btn-warning');
 }
 
 function setStatusFavorited() {
-    elem = $('#statusButton');
+    let elem = $('#statusButton');
     elem.html('<i class="fa fa-check-circle-o"></i> Set as favorite.');
     setStatusButtonClass(elem, 'btn-success');
 }
 
 function setStatusFavWarning() {
-    elem = $('#statusButton');
+    let elem = $('#statusButton');
     elem.html('<i class="fa fa-warning"></i> Setting as favorite failed. Try again later.');
     setStatusButtonClass(elem, 'btn-warning');
 }
 
 function setStatusButtonClass(elem, aClass) {
-    btn_classes = ['btn-info', 'btn-success', 'btn-warning']
+    let btn_classes = ['btn-info', 'btn-success', 'btn-warning']
 
-    for(var i = 0; i < btn_classes.length; i++) {
+    for(let i = 0; i < btn_classes.length; i++) {
         if (btn_classes[i] == aClass) {
             elem.addClass(aClass);
         } else {
@@ -152,8 +152,8 @@ function setFavorite() {
 function handleSetFavoriteSuccess() {
     setStatusFavorited();
 
-    team = $('#syncManager').data('team')
-    heart_i = $('a:has(i[class*="fa-heart"])').find('i').detach();
+    let team = $('#syncManager').data('team')
+    let heart_i = $('a:has(i[class*="fa-heart"])').find('i').detach();
 
     heart_i.appendTo($('a[href="/teams/' + team + '"]'))
 
@@ -163,7 +163,7 @@ function handleSetFavoriteSuccess() {
 
 function rankFormatter(value, row, index) {
     if (row['name'] == $('#tradeData').data('my-team')) { 
-        data_elem = $('#favStandingsTableData')
+        let data_elem = $('#favStandingsTableData')
 
         if (!data_elem.data('rank')) {
             data_elem.data('start-rank', index + 1);
