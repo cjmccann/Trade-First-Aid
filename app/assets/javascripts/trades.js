@@ -267,10 +267,10 @@ function updateTeamStats(teamName, teamId, refresh) {
         }
     }
 
-    setTeamDeltas(teamName, initStats, newStats, refresh);
+    setTeamDeltas(teamName, initStats, newStats, refresh, tradeDataDiv);
 }
 
-function setTeamDeltas(team, initStats, newStats, refresh) {
+function setTeamDeltas(team, initStats, newStats, refresh, tradeDataDiv) {
     let myTeam = tradeDataDiv.data('my-team')
     let deltas = tradeDataDiv.data('deltas')
     let tr = $('#standingsTable').find('td:contains("' + team + '")').parent();
