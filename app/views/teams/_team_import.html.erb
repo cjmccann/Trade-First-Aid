@@ -8,7 +8,7 @@
   </tr>
 
   <% if current_user.teams.empty? %>
-    <tr><td colspan='3'>No fantasy teams found for the 2017 season!</td></tr>
+    <tr><td colspan='3'>No fantasy teams found for the <%= Date.current.year %> season!</td></tr>
   <% else %>
     <% current_user.teams.each do |team| %>
       <tr>
