@@ -38,7 +38,7 @@ module Yahoo
     @@cache = { }
 
     GAMES_URL = '/fantasy/v2/users;use_login=1/games'
-    SEASONS_URL = '/fantasy/v2/users;use_login=1/games;seasons=2017/teams' 
+    SEASONS_URL = "/fantasy/v2/users;use_login=1/games;seasons=#{Date.current.year}/teams"
 
     def self.get(user)
       if @@cache[user.username.hash].nil?

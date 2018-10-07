@@ -15,7 +15,7 @@ class HomeController < ApplicationController
 
       @sync_success = true if home_params['synced'] == 'true'
     else
-      @demo_league = League.where( league_id: '995273').first
+      @demo_league = League.where( league_id: '590984').first
     end
   end
 

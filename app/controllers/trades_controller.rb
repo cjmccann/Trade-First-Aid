@@ -26,7 +26,7 @@ class TradesController < ApplicationController
   end
 
   def demo
-    @league = League.where('league_id' => '995273').first
+    @league = League.where('league_id' => '590984').first
 
     if @league.nil?
       redirect_to root_path

@@ -23,7 +23,7 @@ class League < ApplicationRecord
     end
 
     seasons.each do |season|
-      next unless season['season'] == '2017' 
+      next unless season['season'] == Date.current.year.to_s
 
       if season['code'] == 'nfl'
         if season['teams']['team'].kind_of?(Array)
@@ -73,7 +73,7 @@ class League < ApplicationRecord
   end
 
   def self.get_current_week
-    RotoTimeframe.where( 'SeasonType' => 1, 'Season' => 2017 )
+    RotoTimeframe.where( 'SeasonType' => 1, 'Season' => Date.current.year)
       .where("DATE(EndDate) >= ?", Time.now.utc.to_date)
       .order('StartDate' => :asc).first['Week']
   end
@@ -181,7 +181,7 @@ class League < ApplicationRecord
 
     self.teams.each do |team|
       players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
-                                               'Season' => 2017, 
+                                               'Season' => Date.current.year, 
                                                'Week' => (starting_week)..17)
 
       team_stats = { 'name' => team.name }
@@ -222,7 +222,7 @@ class League < ApplicationRecord
 
     self.teams.each do |team|
       players = RotoPlayerGameProjection.where('PlayerID' => team.rotoplayer_arr, 
-                                               'Season' => 2017, 
+                                               'Season' => Date.current.year, 
                                                'Week' => (starting_week)..17)
       
       players.each do |player|
